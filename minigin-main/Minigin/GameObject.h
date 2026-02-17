@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
-#include "Transform.h"
 #include "Components.h"
 
 namespace dae
@@ -30,6 +29,10 @@ namespace dae
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args)
 		{
+			//Safety check so a component can't be added twice
+			if (HasComponent<T>())
+				return nullptr;
+
 			auto component = std::unique_ptr<T>(new T(this, std::forward<Args>(args)...));
 			T* ptr = component.get();
 			m_pComponents.push_back(std::move(component));

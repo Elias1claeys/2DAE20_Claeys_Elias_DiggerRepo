@@ -1,11 +1,29 @@
 #include "Components.h"
 #include "Font.h"
-#include <string>
-#include <SDL3_ttf/SDL_ttf.h>
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "GameObject.h"
+
+//-------------------------------
+// TransForm Component
+//-------------------------------
+dae::TransformComponent::TransformComponent(GameObject* owner)
+	: Component(owner)
+{
+}
+
+void dae::TransformComponent::SetPosition(float x, float y, float z)
+{
+	m_position.x = x;
+	m_position.y = y;
+	m_position.z = z;
+}
+
+void dae::TransformComponent::SetPosition(const glm::vec3& position)
+{
+	m_position = position;
+}
 
 //-------------------------------
 // TextureComponent
@@ -13,22 +31,23 @@
 dae::TextureComponent::TextureComponent(GameObject* owner)
 	: Component(owner)
 {
+	if (!owner->HasComponent<TransformComponent>())
+	{
+		owner->AddComponent<TransformComponent>();
+	}
+	
+	m_transform = owner->GetComponent<TransformComponent>();
 }
 
 void dae::TextureComponent::Render() const
 {
-	const auto& pos = m_transform.GetPosition();
+	const auto& pos = m_transform->GetPosition();
 	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }
 
 void dae::TextureComponent::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
-}
-
-void dae::TextureComponent::SetPosition(float x, float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
 }
 
 //-------------------------------
@@ -43,6 +62,12 @@ dae::TextComponent::TextComponent(GameObject* owner, const std::string& text, st
 	, m_font(std::move(font))
 	, m_textTexture(nullptr)
 {
+	if (!owner->HasComponent<TransformComponent>())
+	{
+		owner->AddComponent<TransformComponent>();
+	}
+
+	m_transform = owner->GetComponent<TransformComponent>();
 }
 
 void dae::TextComponent::Update()
@@ -69,7 +94,7 @@ void dae::TextComponent::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_transform.GetPosition();
+		const auto& pos = m_transform->GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
@@ -78,11 +103,6 @@ void dae::TextComponent::SetText(const std::string& text)
 {
 	m_text = text;
 	m_needsUpdate = true;
-}
-
-void dae::TextComponent::SetPosition(const float x, const float y)
-{
-	m_transform.SetPosition(x, y);
 }
 
 void dae::TextComponent::SetColor(const SDL_Color& color)
@@ -99,6 +119,10 @@ dae::FPSComponent::FPSComponent(GameObject* owner)
 	: Component(owner)
 	, m_Time(0.f)
 {
+	if (!owner->HasComponent<TextComponent>())
+	{
+		owner->AddComponent<TextComponent>("0 FPS", ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
+	}
 }
 
 void dae::FPSComponent::Update()
@@ -114,14 +138,6 @@ void dae::FPSComponent::Update()
 
 		std::string fpsText = std::format("{:.2f} FPS", fps);
 
-		if (owner->HasComponent<TextComponent>())
-		{
-			owner->GetComponent<TextComponent>()->SetText(fpsText);
-		}
-		else
-		{
-			auto textComp = owner->AddComponent<TextComponent>(fpsText, ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
-			textComp->SetPosition(5, 5);
-		}
+		owner->GetComponent<TextComponent>()->SetText(fpsText);
 	}
 }

@@ -2,7 +2,8 @@
 #include <string>
 #include <memory>
 #include <SDL3/SDL_pixels.h>
-#include "Transform.h"
+#include <SDL3_ttf/SDL_ttf.h>
+#include <glm/glm.hpp>
 
 namespace dae
 {
@@ -11,7 +12,7 @@ namespace dae
 	class GameObject;
 
 	//-------------------------------
-	// Base Component class, all components will derive from this
+	// Base Component class
 	//-------------------------------
 
 	class Component
@@ -35,21 +36,41 @@ namespace dae
 	};
 
 	//-------------------------------
-	// TextureComponent, renders a texture to the screen
+	// Transform Component
+	//-------------------------------
+
+	class TransformComponent : public Component
+	{
+	private:
+		glm::vec3 m_position{ 0, 0, 0 };
+
+	public:
+		const glm::vec3& GetPosition() const { return m_position; }
+		void SetPosition(float x, float y, float z = 0);
+		void SetPosition(const glm::vec3& position);
+
+		TransformComponent(GameObject* owner);
+		virtual ~TransformComponent() = default;
+		TransformComponent(const TransformComponent& other) = delete;
+		TransformComponent(TransformComponent&& other) = delete;
+		TransformComponent& operator=(const TransformComponent& other) = delete;
+		TransformComponent& operator=(TransformComponent&& other) = delete;
+	};
+
+	//-------------------------------
+	// TextureComponent
 	//-------------------------------
 
 	class TextureComponent : public Component
 	{
 	private:
-
-		Transform m_transform{};
+		TransformComponent* m_transform{};
 		std::shared_ptr<Texture2D> m_texture{};
 
 	public:
 		void Render() const override;
 
 		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
 
 		TextureComponent(GameObject* owner);
 		virtual ~TextureComponent() = default;
@@ -66,10 +87,10 @@ namespace dae
 	class TextComponent : public Component
 	{
 	private :
+		TransformComponent* m_transform{};
 		bool m_needsUpdate{};
 		std::string m_text{};
 		SDL_Color m_color{ 255, 255, 255, 255 };
-		Transform m_transform{};
 		std::shared_ptr<Font> m_font{};
 		std::shared_ptr<Texture2D> m_textTexture{};
 
@@ -79,7 +100,6 @@ namespace dae
 		void Render() const override;
 
 		void SetText(const std::string& text);
-		void SetPosition(float x, float y);
 		void SetColor(const SDL_Color& color);
 
 		TextComponent(GameObject* owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255,255,255,255 });
