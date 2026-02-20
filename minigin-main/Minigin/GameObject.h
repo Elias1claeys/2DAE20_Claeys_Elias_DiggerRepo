@@ -20,9 +20,9 @@ namespace dae
 
 		void Render() const 
 		{
-			for (auto& comp : m_pComponents)
+			if (auto renderComp = GetComponent<RenderComponent>())
 			{
-				comp->Render();
+				renderComp->Render();
 			}
 		};
 
@@ -40,7 +40,7 @@ namespace dae
 		}
 
 		template<typename T>
-		T* GetComponent()
+		T* GetComponent() const 
 		{
 			for (auto& comp : m_pComponents)
 			{

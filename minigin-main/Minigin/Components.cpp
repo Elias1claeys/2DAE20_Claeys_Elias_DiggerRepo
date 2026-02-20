@@ -36,15 +36,13 @@ dae::RenderComponent::RenderComponent(GameObject* owner)
 	{
 		owner->AddComponent<TransformComponent>();
 	}
-	
-	m_transform = owner->GetComponent<TransformComponent>();
 }
 
 void dae::RenderComponent::Render() const
 {
 	if (m_texture != nullptr)
 	{
-		const auto& pos = m_transform->GetPosition();
+		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 	}
 }
@@ -75,8 +73,6 @@ dae::TextComponent::TextComponent(GameObject* owner, const std::string& text, st
 	{
 		owner->AddComponent<RenderComponent>();
 	}
-
-	m_Render = owner->GetComponent<RenderComponent>();
 }
 
 void dae::TextComponent::Update()
@@ -94,7 +90,7 @@ void dae::TextComponent::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_Render->SetTexture(texture);
+		GetOwner()->GetComponent<RenderComponent>()->SetTexture(texture);
 		m_needsUpdate = false;
 	}
 }
@@ -132,12 +128,11 @@ void dae::FPSComponent::Update()
 	if (m_Time >= 0.5f)
 	{
 		m_Time = 0.f;
-		auto owner = GetOwner();
 		auto fps = 1.f / Time::GetInstance().GetDeltaTime();
 		fps = std::round(fps * 100.f) / 100.f;
 
 		std::string fpsText = std::format("{:.2f} FPS", fps);
 
-		owner->GetComponent<TextComponent>()->SetText(fpsText);
+		GetOwner()->GetComponent<TextComponent>()->SetText(fpsText);
 	}
 }

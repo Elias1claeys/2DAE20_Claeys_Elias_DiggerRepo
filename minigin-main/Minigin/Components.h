@@ -20,9 +20,6 @@ namespace dae
 	private:
 		GameObject* m_pOwner{};
 
-	protected:
-		Component(GameObject* owner) : m_pOwner(owner) {}
-
 	public:
 
 		virtual ~Component() = default;
@@ -32,7 +29,9 @@ namespace dae
 		Component& operator=(Component&& other) = delete;
 
 		virtual void Update() {}
-		virtual void Render() const {}
+		
+	protected:
+		explicit Component(GameObject* owner) : m_pOwner(owner) {}
 		GameObject* GetOwner() const { return m_pOwner; }
 	};
 
@@ -65,11 +64,10 @@ namespace dae
 	class RenderComponent : public Component
 	{
 	private:
-		TransformComponent* m_transform{};
 		std::shared_ptr<Texture2D> m_texture{};
 
 	public:
-		void Render() const override;
+		void Render() const;
 
 		void SetTexture(const std::string& filename);
 		void SetTexture(SDL_Texture* texture);
@@ -89,7 +87,6 @@ namespace dae
 	class TextComponent : public Component
 	{
 	private :
-		RenderComponent* m_Render{};
 		bool m_needsUpdate{};
 		std::string m_text{};
 		SDL_Color m_color{ 255, 255, 255, 255 };
