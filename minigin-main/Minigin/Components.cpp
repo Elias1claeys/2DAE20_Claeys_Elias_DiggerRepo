@@ -27,9 +27,9 @@ void dae::TransformComponent::SetPosition(const glm::vec3& position)
 }
 
 //-------------------------------
-// TextureComponent
+// Render Component
 //-------------------------------
-dae::TextureComponent::TextureComponent(GameObject* owner)
+dae::RenderComponent::RenderComponent(GameObject* owner)
 	: Component(owner)
 {
 	if (!owner->HasComponent<TransformComponent>())
@@ -40,15 +40,23 @@ dae::TextureComponent::TextureComponent(GameObject* owner)
 	m_transform = owner->GetComponent<TransformComponent>();
 }
 
-void dae::TextureComponent::Render() const
+void dae::RenderComponent::Render() const
 {
-	const auto& pos = m_transform->GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	if (m_texture != nullptr)
+	{
+		const auto& pos = m_transform->GetPosition();
+		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	}
 }
 
-void dae::TextureComponent::SetTexture(const std::string& filename)
+void dae::RenderComponent::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+}
+
+void dae::RenderComponent::SetTexture(SDL_Texture* texture)
+{
+	m_texture = std::make_shared<Texture2D>(texture);
 }
 
 //-------------------------------
@@ -63,12 +71,12 @@ dae::TextComponent::TextComponent(GameObject* owner, const std::string& text, st
 	, m_font(std::move(font))
 	, m_textTexture(nullptr)
 {
-	if (!owner->HasComponent<TransformComponent>())
+	if (!owner->HasComponent<RenderComponent>())
 	{
-		owner->AddComponent<TransformComponent>();
+		owner->AddComponent<RenderComponent>();
 	}
 
-	m_transform = owner->GetComponent<TransformComponent>();
+	m_Render = owner->GetComponent<RenderComponent>();
 }
 
 void dae::TextComponent::Update()
@@ -86,17 +94,8 @@ void dae::TextComponent::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_textTexture = std::make_shared<Texture2D>(texture);
+		m_Render->SetTexture(texture);
 		m_needsUpdate = false;
-	}
-}
-
-void dae::TextComponent::Render() const
-{
-	if (m_textTexture != nullptr)
-	{
-		const auto& pos = m_transform->GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
 

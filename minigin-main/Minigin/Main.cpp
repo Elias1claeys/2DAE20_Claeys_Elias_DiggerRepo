@@ -19,13 +19,13 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->AddComponent<dae::TextureComponent>();
-	go->GetComponent<dae::TextureComponent>()->SetTexture("background.png");
+	go->AddComponent<dae::RenderComponent>();
+	go->GetComponent<dae::RenderComponent>()->SetTexture("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->AddComponent<dae::TextureComponent>();
-	go->GetComponent<dae::TextureComponent>()->SetTexture("logo.png");
+	go->AddComponent<dae::RenderComponent>();
+	go->GetComponent<dae::RenderComponent>()->SetTexture("logo.png");
 	go->GetComponent<dae::TransformComponent>()->SetPosition(358, 180);
 	scene.Add(std::move(go));
 

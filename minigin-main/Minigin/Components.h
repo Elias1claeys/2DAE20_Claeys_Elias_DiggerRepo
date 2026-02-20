@@ -59,10 +59,10 @@ namespace dae
 	};
 
 	//-------------------------------
-	// Texture Component
+	// Render Component
 	//-------------------------------
 
-	class TextureComponent : public Component
+	class RenderComponent : public Component
 	{
 	private:
 		TransformComponent* m_transform{};
@@ -72,13 +72,14 @@ namespace dae
 		void Render() const override;
 
 		void SetTexture(const std::string& filename);
+		void SetTexture(SDL_Texture* texture);
 
-		TextureComponent(GameObject* owner);
-		virtual ~TextureComponent() = default;
-		TextureComponent(const TextureComponent& other) = delete;
-		TextureComponent(TextureComponent&& other) = delete;
-		TextureComponent& operator=(const TextureComponent& other) = delete;
-		TextureComponent& operator=(TextureComponent&& other) = delete;
+		RenderComponent(GameObject* owner);
+		virtual ~RenderComponent() = default;
+		RenderComponent(const RenderComponent& other) = delete;
+		RenderComponent(RenderComponent&& other) = delete;
+		RenderComponent& operator=(const RenderComponent& other) = delete;
+		RenderComponent& operator=(RenderComponent&& other) = delete;
 	};
 
 	//-------------------------------
@@ -88,7 +89,7 @@ namespace dae
 	class TextComponent : public Component
 	{
 	private :
-		TransformComponent* m_transform{};
+		RenderComponent* m_Render{};
 		bool m_needsUpdate{};
 		std::string m_text{};
 		SDL_Color m_color{ 255, 255, 255, 255 };
@@ -98,7 +99,6 @@ namespace dae
 	public:
 
 		void Update() override;
-		void Render() const override;
 
 		void SetText(const std::string& text);
 		void SetColor(const SDL_Color& color);
