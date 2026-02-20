@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "GameObject.h"
+#include "DeltaTime.h"
 
 //-------------------------------
 // TransForm Component

@@ -16,6 +16,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "DeltaTime.h"
 
 SDL_Window* g_window{};
 
@@ -109,7 +110,7 @@ void dae::Minigin::RunOneFrame()
 	SceneManager::GetInstance().Update();
 	Renderer::GetInstance().Render();
 
-	const auto sleepTime = currentTime + std::chrono::milliseconds(16) - std::chrono::high_resolution_clock::now();
+	const auto sleepTime = currentTime + std::chrono::milliseconds(15) - std::chrono::high_resolution_clock::now();
 
 	std::this_thread::sleep_for(sleepTime);
 }

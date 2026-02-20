@@ -10,7 +10,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		virtual void Update() 
+		void Update() 
 		{
 			for (auto& comp : m_pComponents)
 			{
@@ -18,7 +18,7 @@ namespace dae
 			}
 		};
 
-		virtual void Render() const 
+		void Render() const 
 		{
 			for (auto& comp : m_pComponents)
 			{

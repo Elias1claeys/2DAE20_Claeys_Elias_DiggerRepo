@@ -17,13 +17,14 @@ namespace dae
 
 	class Component
 	{
+	private:
+		GameObject* m_pOwner{};
 
 	protected:
-		GameObject* m_pOwner{};
+		Component(GameObject* owner) : m_pOwner(owner) {}
 
 	public:
 
-		Component(GameObject* owner) : m_pOwner(owner) {}
 		virtual ~Component() = default;
 		Component(const Component& other) = delete;
 		Component(Component&& other) = delete;
@@ -58,7 +59,7 @@ namespace dae
 	};
 
 	//-------------------------------
-	// TextureComponent
+	// Texture Component
 	//-------------------------------
 
 	class TextureComponent : public Component
@@ -81,7 +82,7 @@ namespace dae
 	};
 
 	//-------------------------------
-	// Text Component, renders text to the screen
+	// Text Component
 	//-------------------------------
 
 	class TextComponent : public Component
@@ -111,7 +112,7 @@ namespace dae
 	};
 
 	//-------------------------------
-	// FPSComponent, renders the current FPS to the screen
+	// FPS Component
 	//-------------------------------
 
 	class FPSComponent : public Component
