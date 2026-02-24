@@ -16,12 +16,25 @@ namespace dae
 			{
 				comp->Update();
 			}
+
+			m_pComponents.erase(
+				std::remove_if(
+					m_pComponents.begin(),
+					m_pComponents.end(),
+					[](const auto& comp)
+					{
+						return comp->IsMarkedForDelete();
+					}
+				),
+				m_pComponents.end()
+			);
 		};
 
 		void Render() const 
 		{
-			if (auto renderComp = GetComponent<RenderComponent>())
+			if (HasComponent<RenderComponent>())
 			{
+				auto renderComp = GetComponent<RenderComponent>();
 				renderComp->Render();
 			}
 		};
@@ -51,7 +64,7 @@ namespace dae
 		}
 
 		template<typename T, typename... Args>
-		bool HasComponent(Args&&... args)
+		bool HasComponent(Args&&... args) const
 		{
 			for (auto& comp : m_pComponents)
 			{
@@ -64,14 +77,11 @@ namespace dae
 		template<typename T, typename... Args>
 		void RemoveComponent(Args&&... args)
 		{
-			m_pComponents.erase(
-				std::remove_if(
-					m_pComponents.begin(),
-					m_pComponents.end(),
-					[&](const auto& comp) { return dynamic_cast<T*>(comp.get()) != nullptr; }
-				),
-				m_pComponents.end()
-			);
+			for (auto& comp : m_pComponents)
+			{
+				if (dynamic_cast<T*>(comp.get()))
+					comp->MarkForDelete();
+			}
 		}
 
 		GameObject() = default;
@@ -83,6 +93,6 @@ namespace dae
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
-
+		bool m_markedForDelete{ false };
 	};
 }

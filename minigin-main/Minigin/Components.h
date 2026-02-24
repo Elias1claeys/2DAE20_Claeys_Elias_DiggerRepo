@@ -19,16 +19,19 @@ namespace dae
 	{
 	private:
 		GameObject* m_pOwner{};
+		bool m_markedForDelete{ false };
 
 	public:
+
+		virtual void Update() {}
+		void MarkForDelete() { m_markedForDelete = true; }
+		bool IsMarkedForDelete() const { return m_markedForDelete; }
 
 		virtual ~Component() = default;
 		Component(const Component& other) = delete;
 		Component(Component&& other) = delete;
 		Component& operator=(const Component& other) = delete;
 		Component& operator=(Component&& other) = delete;
-
-		virtual void Update() {}
 		
 	protected:
 		explicit Component(GameObject* owner) : m_pOwner(owner) {}
@@ -68,7 +71,6 @@ namespace dae
 
 	public:
 		void Render() const;
-
 		void SetTexture(const std::string& filename);
 		void SetTexture(SDL_Texture* texture);
 
@@ -96,7 +98,6 @@ namespace dae
 	public:
 
 		void Update() override;
-
 		void SetText(const std::string& text);
 		void SetColor(const SDL_Color& color);
 
