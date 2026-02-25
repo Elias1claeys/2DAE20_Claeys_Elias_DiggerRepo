@@ -26,19 +26,34 @@ static void load()
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
 	go->GetComponent<dae::RenderComponent>()->SetTexture("logo.png");
-	go->GetComponent<dae::TransformComponent>()->SetPosition(358, 180);
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(358, 180);
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto to = std::make_unique<dae::GameObject>();
 	to->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
 	to->GetComponent<dae::TextComponent>()->SetColor({ 255, 255, 255, 255 });
-	to->GetComponent<dae::TransformComponent>()->SetPosition(292, 20);
+	to->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 20);
 	scene.Add(std::move(to));
 
 	auto fps = std::make_unique<dae::GameObject>();
 	fps->AddComponent<dae::FPSComponent>();	
 	scene.Add(std::move(fps));
+
+	auto rotator1 = std::make_unique<dae::GameObject>();
+	rotator1->AddComponent<dae::RenderComponent>();
+	rotator1->GetComponent<dae::RenderComponent>()->SetTexture("media/Digger/dig1.png");
+	rotator1->AddComponent<dae::RotatorComponent>(5.f, false);
+	rotator1->GetComponent<dae::RotatorComponent>()->SetRotationPoint(200, 200);
+
+	auto rotator2 = std::make_unique<dae::GameObject>();
+	rotator2->AddComponent<dae::RenderComponent>();
+	rotator2->GetComponent<dae::RenderComponent>()->SetTexture("media/hob/hob1.png");
+	rotator2->AddComponent<dae::RotatorComponent>(5.f, true);
+	rotator2->GetComponent<dae::RotatorComponent>()->SetRotationDirection(false);
+	rotator2->SetParent(rotator1.get(), true);
+	scene.Add(std::move(rotator1));
+	scene.Add(std::move(rotator2));
 }
 
 int main(int, char*[]) {

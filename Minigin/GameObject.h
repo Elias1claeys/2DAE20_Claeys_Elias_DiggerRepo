@@ -9,35 +9,30 @@ namespace dae
 {
 	class GameObject final
 	{
+
+	private:
+		std::vector<std::unique_ptr<Component>> m_pComponents{};
+		GameObject* m_pParent{};
+		std::vector<GameObject*> m_pChildren{};
+		
 	public:
-		void Update() 
-		{
-			for (auto& comp : m_pComponents)
-			{
-				comp->Update();
-			}
 
-			m_pComponents.erase(
-				std::remove_if(
-					m_pComponents.begin(),
-					m_pComponents.end(),
-					[](const auto& comp)
-					{
-						return comp->IsMarkedForDelete();
-					}
-				),
-				m_pComponents.end()
-			);
-		};
+		GameObject() = default;
+		virtual ~GameObject() = default;
+		GameObject(const GameObject& other) = delete;
+		GameObject(GameObject&& other) = delete;
+		GameObject& operator=(const GameObject& other) = delete;
+		GameObject& operator=(GameObject&& other) = delete;
 
-		void Render() const 
-		{
-			if (HasComponent<RenderComponent>())
-			{
-				auto renderComp = GetComponent<RenderComponent>();
-				renderComp->Render();
-			}
-		};
+		void Update();
+		void Render();
+
+		bool IsChild(GameObject* child) const;
+		void SetParent(GameObject* parent, bool keepWorldPosition);
+		void AddChild(GameObject* child, bool keepWorldPosition);
+		void RemoveChild(GameObject* child, bool keepWorldPosition);
+		GameObject* GetParent() const { return m_pParent; }
+		std::vector<GameObject*> GetChildren() const { return m_pChildren; }
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args)
@@ -53,7 +48,7 @@ namespace dae
 		}
 
 		template<typename T>
-		T* GetComponent() const 
+		T* GetComponent() const
 		{
 			for (auto& comp : m_pComponents)
 			{
@@ -83,16 +78,5 @@ namespace dae
 					comp->MarkForDelete();
 			}
 		}
-
-		GameObject() = default;
-		virtual ~GameObject() = default;
-		GameObject(const GameObject& other) = delete;
-		GameObject(GameObject&& other) = delete;
-		GameObject& operator=(const GameObject& other) = delete;
-		GameObject& operator=(GameObject&& other) = delete;
-
-	private:
-		std::vector<std::unique_ptr<Component>> m_pComponents{};
-		bool m_markedForDelete{ false };
 	};
 }

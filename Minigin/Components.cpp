@@ -14,16 +14,51 @@ dae::TransformComponent::TransformComponent(GameObject* owner)
 {
 }
 
-void dae::TransformComponent::SetPosition(float x, float y, float z)
+void dae::TransformComponent::SetLocalPosition(float x, float y, float z)
 {
-	m_position.x = x;
-	m_position.y = y;
-	m_position.z = z;
+	m_LocalPosition.x = x;
+	m_LocalPosition.y = y;
+	m_LocalPosition.z = z;
+	SetPositionDirty();
 }
 
-void dae::TransformComponent::SetPosition(const glm::vec3& position)
+void dae::TransformComponent::SetLocalPosition(const glm::vec3& position)
 {
-	m_position = position;
+	m_LocalPosition = position;
+	SetPositionDirty();
+}
+
+const glm::vec3& dae::TransformComponent::GetWorldPosition()
+{
+	if (m_PositionIsDirty)
+		UpdateWorldPosition();
+	return m_WorldPosition;
+}
+
+void dae::TransformComponent::SetPositionDirty()
+{
+	m_PositionIsDirty = true;
+
+	for (auto& child : GetOwner()->GetChildren())
+	{
+		if (child->HasComponent<TransformComponent>())
+			child->GetComponent<TransformComponent>()->SetPositionDirty();
+	}
+}
+
+void dae::TransformComponent::UpdateWorldPosition()
+{
+	GameObject* parent = GetOwner()->GetParent();
+
+	if (m_PositionIsDirty)
+	{
+		if(parent == nullptr)
+			m_WorldPosition = m_LocalPosition;
+		else
+			m_WorldPosition = parent->GetComponent<TransformComponent>()->GetWorldPosition() + m_LocalPosition;
+
+		m_PositionIsDirty = false;
+	}
 }
 
 //-------------------------------
@@ -42,7 +77,7 @@ void dae::RenderComponent::Render() const
 {
 	if (m_texture != nullptr)
 	{
-		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetPosition();
+		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetLocalPosition();
 		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 	}
 }
@@ -135,4 +170,55 @@ void dae::FPSComponent::Update()
 
 		GetOwner()->GetComponent<TextComponent>()->SetText(fpsText);
 	}
+}
+
+//-------------------------------
+// Rotation Component
+//-------------------------------
+
+dae::RotatorComponent::RotatorComponent(GameObject* owner, float rotationSpeed, bool rotateAroundParent)
+	: Component(owner)
+	, m_RotationSpeed(rotationSpeed)
+	, m_RotateAroundParent(rotateAroundParent)
+{
+	if (!owner->HasComponent<TransformComponent>())
+	{
+		owner->AddComponent<TransformComponent>();
+	}
+}
+
+void dae::RotatorComponent::SetRotationPoint(float x, float y, float z)
+{
+	m_RotationPoint.x = x;
+	m_RotationPoint.y = y;
+	m_RotationPoint.z = z;
+}
+
+void dae::RotatorComponent::SetRotationPoint(const glm::vec3& rotation)
+{
+	m_RotationPoint = rotation;
+}
+
+void dae::RotatorComponent::SetRotationDirection(bool clockwise)
+{
+	m_RotationDirection = clockwise ? 1.f : -1.f;
+}
+
+void dae::RotatorComponent::Update()
+{
+	if (m_RotateAroundParent && GetOwner()->GetParent() != nullptr)
+	{
+		m_RotationPoint = GetOwner()->GetParent()->GetComponent<TransformComponent>()->GetWorldPosition();
+	}
+
+	auto transform = GetOwner()->GetComponent<TransformComponent>();
+	auto localPos = transform->GetLocalPosition();
+
+	m_CurrentAngle += m_RotationDirection * m_RotationSpeed * Time::GetInstance().GetDeltaTime();
+
+	transform->SetLocalPosition(
+		m_RotationPoint.x + std::cos(m_CurrentAngle) * 50.f,
+		m_RotationPoint.y + std::sin(m_CurrentAngle) * 50.f,
+		localPos.z
+	);
 }

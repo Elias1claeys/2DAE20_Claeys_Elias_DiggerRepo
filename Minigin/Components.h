@@ -45,12 +45,19 @@ namespace dae
 	class TransformComponent : public Component
 	{
 	private:
-		glm::vec3 m_position{ 0, 0, 0 };
+		glm::vec3 m_LocalPosition{ 0, 0, 0 };
+		glm::vec3 m_WorldPosition{ 0, 0, 0 };
+		bool m_PositionIsDirty{ false };
+
+		void UpdateWorldPosition();
 
 	public:
-		const glm::vec3& GetPosition() const { return m_position; }
-		void SetPosition(float x, float y, float z = 0);
-		void SetPosition(const glm::vec3& position);
+		void SetPositionDirty();
+		void SetLocalPosition(float x, float y, float z = 0);
+		void SetLocalPosition(const glm::vec3& position);
+		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
+		const glm::vec3& GetWorldPosition();
+		
 
 		TransformComponent(GameObject* owner);
 		virtual ~TransformComponent() = default;
@@ -127,5 +134,33 @@ namespace dae
 		FPSComponent(FPSComponent&& other) = delete;
 		FPSComponent& operator=(const FPSComponent& other) = delete;
 		FPSComponent& operator=(FPSComponent&& other) = delete;
+	};
+
+	//-------------------------------
+	// Rotator Component
+	//-------------------------------
+
+	class RotatorComponent : public Component
+	{
+	private:
+		float m_RotationSpeed;
+		float m_CurrentAngle{ 0.f };
+		float m_RotationDirection{ 1.f };
+		bool m_RotateAroundParent{ false };
+		glm::vec3 m_RotationPoint{ 0, 0, 0 };
+
+	public:
+		void Update() override;
+		void SetRotationPoint(float x, float y, float z = 0);
+		void SetRotationPoint(const glm::vec3& rotation);
+		void SetRotationDirection(bool clockwise);
+		
+
+		RotatorComponent(GameObject* owner, float rotationSpeed, bool rotateAroundParent);
+		virtual ~RotatorComponent() = default;
+		RotatorComponent(const RotatorComponent& other) = delete;
+		RotatorComponent(RotatorComponent&& other) = delete;
+		RotatorComponent& operator=(const RotatorComponent& other) = delete;
+		RotatorComponent& operator=(RotatorComponent&& other) = delete;
 	};
 }
