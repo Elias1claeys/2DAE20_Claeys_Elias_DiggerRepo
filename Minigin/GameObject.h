@@ -18,7 +18,7 @@ namespace dae
 	public:
 
 		GameObject() = default;
-		virtual ~GameObject() = default;
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
@@ -58,8 +58,8 @@ namespace dae
 			return nullptr;
 		}
 
-		template<typename T, typename... Args>
-		bool HasComponent(Args&&... args) const
+		template<typename T>
+		bool HasComponent() const
 		{
 			for (auto& comp : m_pComponents)
 			{
@@ -69,8 +69,8 @@ namespace dae
 			return false;
 		}
 
-		template<typename T, typename... Args>
-		void RemoveComponent(Args&&... args)
+		template<typename T>
+		void RemoveComponent()
 		{
 			for (auto& comp : m_pComponents)
 			{
