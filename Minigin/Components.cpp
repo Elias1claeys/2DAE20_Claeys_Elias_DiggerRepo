@@ -77,7 +77,7 @@ void dae::RenderComponent::Render() const
 {
 	if (m_texture != nullptr)
 	{
-		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetLocalPosition();
+		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 	}
 }
@@ -176,49 +176,27 @@ void dae::FPSComponent::Update()
 // Rotation Component
 //-------------------------------
 
-dae::RotatorComponent::RotatorComponent(GameObject* owner, float rotationSpeed, bool rotateAroundParent)
+dae::RotatorComponent::RotatorComponent(GameObject* owner, float rotationSpeed)
 	: Component(owner)
 	, m_RotationSpeed(rotationSpeed)
-	, m_RotateAroundParent(rotateAroundParent)
 {
 	if (!owner->HasComponent<TransformComponent>())
 	{
 		owner->AddComponent<TransformComponent>();
 	}
-}
 
-void dae::RotatorComponent::SetRotationPoint(float x, float y, float z)
-{
-	m_RotationPoint.x = x;
-	m_RotationPoint.y = y;
-	m_RotationPoint.z = z;
-}
-
-void dae::RotatorComponent::SetRotationPoint(const glm::vec3& rotation)
-{
-	m_RotationPoint = rotation;
-}
-
-void dae::RotatorComponent::SetRotationDirection(bool clockwise)
-{
-	m_RotationDirection = clockwise ? 1.f : -1.f;
+	m_RotationCenter = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
 }
 
 void dae::RotatorComponent::Update()
-{
-	if (m_RotateAroundParent && GetOwner()->GetParent() != nullptr)
-	{
-		m_RotationPoint = GetOwner()->GetParent()->GetComponent<TransformComponent>()->GetWorldPosition();
-	}
-
+{	
 	auto transform = GetOwner()->GetComponent<TransformComponent>();
-	auto localPos = transform->GetLocalPosition();
 
-	m_CurrentAngle += m_RotationDirection * m_RotationSpeed * Time::GetInstance().GetDeltaTime();
+	m_CurrentAngle += m_RotationSpeed * Time::GetInstance().GetDeltaTime();
 
 	transform->SetLocalPosition(
-		m_RotationPoint.x + std::cos(m_CurrentAngle) * 50.f,
-		m_RotationPoint.y + std::sin(m_CurrentAngle) * 50.f,
-		localPos.z
+		m_RotationCenter.x + std::cos(m_CurrentAngle) * 50.f,
+		m_RotationCenter.y + std::sin(m_CurrentAngle) * 50.f,
+		m_RotationCenter.z
 	);
 }

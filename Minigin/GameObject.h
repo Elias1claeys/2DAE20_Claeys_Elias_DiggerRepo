@@ -14,6 +14,11 @@ namespace dae
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		GameObject* m_pParent{};
 		std::vector<GameObject*> m_pChildren{};
+
+		bool IsChild(GameObject* child) const;
+		void AddChild(GameObject* child, bool keepWorldPosition);
+		void RemoveChild(GameObject* child, bool keepWorldPosition);
+		void UpdateTransForm(GameObject* child, bool keepWorldPosition);
 		
 	public:
 
@@ -27,10 +32,7 @@ namespace dae
 		void Update();
 		void Render();
 
-		bool IsChild(GameObject* child) const;
 		void SetParent(GameObject* parent, bool keepWorldPosition);
-		void AddChild(GameObject* child, bool keepWorldPosition);
-		void RemoveChild(GameObject* child, bool keepWorldPosition);
 		GameObject* GetParent() const { return m_pParent; }
 		std::vector<GameObject*> GetChildren() const { return m_pChildren; }
 

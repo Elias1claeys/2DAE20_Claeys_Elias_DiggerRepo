@@ -42,16 +42,7 @@ namespace dae
 		if (IsChild(parent) || parent == this || m_pParent == parent)
 			return;
 
-		TransformComponent* transform = this->GetComponent<TransformComponent>();
-
-		if (parent == nullptr)
-			transform->SetLocalPosition(transform->GetWorldPosition());
-		else
-		{
-			if (keepWorldPosition)
-				transform->SetLocalPosition(transform->GetWorldPosition() - parent->GetComponent<TransformComponent>()->GetWorldPosition());
-			transform->SetPositionDirty();
-		}
+		UpdateTransForm(parent, keepWorldPosition);
 
 		if (m_pParent) m_pParent->RemoveChild(this, keepWorldPosition);
 		m_pParent = parent;
@@ -64,19 +55,10 @@ namespace dae
 		if (child == nullptr || child == this || IsChild(child))
 			return;
 
-		TransformComponent* transform = this->GetComponent<TransformComponent>();
+		UpdateTransForm(child, keepWorldPosition);
 
-		if (child == nullptr)
-			transform->SetLocalPosition(transform->GetWorldPosition());
-		else
-		{
-			if (keepWorldPosition)
-				transform->SetLocalPosition(transform->GetWorldPosition() - child->GetComponent<TransformComponent>()->GetWorldPosition());
-			transform->SetPositionDirty();
-		}
-
-		RemoveChild(child, keepWorldPosition);
-		//m_pParent = this;
+		if (child->m_pParent) child->m_pParent->RemoveChild(child, keepWorldPosition);
+		child->m_pParent = this;
 		m_pChildren.push_back(child);
 	}
 
@@ -85,6 +67,14 @@ namespace dae
 		if (child == nullptr || child == this || !IsChild(child))
 			return;
 
+		UpdateTransForm(child, keepWorldPosition);
+
+		m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), child), m_pChildren.end());
+		child->m_pParent = nullptr;
+	}
+
+	void GameObject::UpdateTransForm(GameObject* child, bool keepWorldPosition)
+	{
 		TransformComponent* transform = this->GetComponent<TransformComponent>();
 
 		if (child == nullptr)
@@ -95,8 +85,5 @@ namespace dae
 				transform->SetLocalPosition(transform->GetWorldPosition() - child->GetComponent<TransformComponent>()->GetWorldPosition());
 			transform->SetPositionDirty();
 		}
-
-		m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), child), m_pChildren.end());
-		child->m_pParent = nullptr;
 	}
 }

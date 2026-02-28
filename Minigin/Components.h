@@ -55,7 +55,6 @@ namespace dae
 		void SetPositionDirty();
 		void SetLocalPosition(float x, float y, float z = 0);
 		void SetLocalPosition(const glm::vec3& position);
-		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
 		const glm::vec3& GetWorldPosition();
 		
 
@@ -145,18 +144,12 @@ namespace dae
 	private:
 		float m_RotationSpeed;
 		float m_CurrentAngle{ 0.f };
-		float m_RotationDirection{ 1.f };
-		bool m_RotateAroundParent{ false };
-		glm::vec3 m_RotationPoint{ 0, 0, 0 };
+		glm::vec3 m_RotationCenter{};
 
 	public:
 		void Update() override;
-		void SetRotationPoint(float x, float y, float z = 0);
-		void SetRotationPoint(const glm::vec3& rotation);
-		void SetRotationDirection(bool clockwise);
-		
 
-		RotatorComponent(GameObject* owner, float rotationSpeed, bool rotateAroundParent);
+		RotatorComponent(GameObject* owner, float rotationSpeed);
 		virtual ~RotatorComponent() = default;
 		RotatorComponent(const RotatorComponent& other) = delete;
 		RotatorComponent(RotatorComponent&& other) = delete;
