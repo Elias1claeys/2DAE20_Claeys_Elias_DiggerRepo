@@ -59,6 +59,8 @@ static void load()
 	rotationMiddle->GetComponent<dae::RenderComponent>()->SetTexture("media/Digger/dig1.png");
 	rotationMiddle->GetComponent<dae::TransformComponent>()->SetLocalPosition(200, 200);
 	scene.Add(std::move(rotationMiddle));
+
+	
 }
 
 int main(int, char*[]) {

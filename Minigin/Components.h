@@ -5,6 +5,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <glm/glm.hpp>
 
+
 namespace dae
 {
 	class Font;
@@ -74,6 +75,7 @@ namespace dae
 	{
 	private:
 		std::shared_ptr<Texture2D> m_texture{};
+		
 
 	public:
 		void Render() const;

@@ -126,10 +126,14 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
 )
 
-target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${sdl3_SOURCE_DIR}/include)
+target_include_directories(imgui PUBLIC 
+${imgui_SOURCE_DIR} 
+${sdl3_SOURCE_DIR}/include)
+
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
-# enable c++20 features
 target_compile_features(imgui PUBLIC cxx_std_20)
+
+
 
 # Add steam if available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
@@ -141,6 +145,16 @@ target_include_directories("${TARGET_NAME}" PUBLIC
   ${VLD_INCLUDE_DIR}
 )
 
+#imgui_plot
+FetchContent_Declare(
+    imgui_plot
+    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
+    GIT_TAG v0.1.0
+    EXCLUDE_FROM_ALL
+)
+FetchContent_MakeAvailable(imgui_plot)
+
+
 target_link_libraries("${TARGET_NAME}" PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
@@ -148,6 +162,8 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   imgui
   ${VLD_LIBRARIES}
 )
+
+
 
 if(MSVC)
   # compile at warning level 4 + treat warnings as errors

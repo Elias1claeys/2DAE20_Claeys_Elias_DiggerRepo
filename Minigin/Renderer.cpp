@@ -4,6 +4,8 @@
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "Texture2D.h"
+
+//ImGui
 #include <imgui.h>
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
@@ -46,9 +48,19 @@ void dae::Renderer::Render() const
 {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
+
 	ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow(); // For demonstration purposes, do not keep this in your engine
+	int sampleCount = 100;
+	ImGui::SliderInt("# samples", &sampleCount, 0, 1000, "%d");
+
+	if (ImGui::Button("Thrash the cache with GameObject3D")) {
+		TrashTheCaseGameObject3D(sampleCount);
+	}
+
+	if (ImGui::Button("Thrash the cache with GameObject3DAlt")) {
+		TrashTheCaseGameObject3DAlt(sampleCount);
+	}
 
 	ImGui::Render();
 
@@ -95,3 +107,35 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 }
 
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
+
+void dae::Renderer::TrashTheCaseGameObject3D(int size) const
+{
+	std::vector<GameObject3D> arr(size);
+
+	for (int stepsize = 1; stepsize <= 1024; stepsize *= 2)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < arr.size(); i += stepsize)
+		{
+			arr[i].ID *= 2;
+		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	}
+}
+
+void dae::Renderer::TrashTheCaseGameObject3DAlt(int size) const
+{
+	std::vector<int> arr(size);
+
+	for (int stepsize = 1; stepsize <= 1024; stepsize *= 2)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < arr.size(); i += stepsize)
+		{
+			arr[i] *= 2;
+		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	}
+}
