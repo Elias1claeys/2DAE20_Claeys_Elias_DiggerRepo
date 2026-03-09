@@ -60,7 +60,9 @@ static void load()
 	rotationMiddle->GetComponent<dae::TransformComponent>()->SetLocalPosition(200, 200);
 	scene.Add(std::move(rotationMiddle));
 
-	
+	auto trashTheCache = std::make_unique<dae::GameObject>();
+	trashTheCache->AddComponent<dae::TrashCacheComponent>();
+	scene.Add(std::move(trashTheCache));
 }
 
 int main(int, char*[]) {

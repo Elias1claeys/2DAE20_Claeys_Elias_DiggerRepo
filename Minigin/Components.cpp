@@ -200,3 +200,67 @@ void dae::RotatorComponent::Update()
 		m_RotationCenter.z
 	);
 }
+
+//----------------------------------
+// Trash Cache Component
+//----------------------------------
+
+dae::TrashCacheComponent::TrashCacheComponent(GameObject* owner)
+	:Component(owner)
+	,m_SampleCount{100}
+{
+
+}
+
+void dae::TrashCacheComponent::CreateImguiBoard()
+{
+	ImGui::InputInt("Value", &m_SampleCount);
+
+	if (ImGui::Button("Thrash the cache with GameObject3D")) {
+		TrashCacheInt(m_SampleCount);
+	}
+
+	if (ImGui::Button("Thrash the cache with GameObject3DAlt")) {
+		TrashCacheGameObject3D(m_SampleCount);
+	}
+}
+
+float dae::TrashCacheComponent::GetTrashValue(void* data, int idx)
+{
+	auto* vec = static_cast<std::vector<std::pair<int, long>>*>(data);
+	return (float)(*vec)[idx].second;
+}
+
+void dae::TrashCacheComponent::TrashCacheGameObject3D(int size)
+{
+	std::vector<GameObject3D> arr(size);
+
+	for (int stepsize = 1; stepsize <= 1024; stepsize *= 2)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < arr.size(); i += stepsize)
+		{
+			arr[i].ID *= 2;
+		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+		//m_TrashCacheGameobject3D.push_back({ stepsize, elapsed.count() });
+	}
+}
+
+void dae::TrashCacheComponent::TrashCacheInt(int size)
+{
+	std::vector<int> arr(size);
+
+	for (int stepsize = 1; stepsize <= 1024; stepsize *= 2)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < arr.size(); i += stepsize)
+		{
+			arr[i] *= 2;
+		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+		//m_TrashCacheInt.push_back({ stepsize, elapsed.count() });
+	}
+}
