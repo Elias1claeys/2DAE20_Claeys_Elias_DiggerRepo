@@ -30,19 +30,6 @@ namespace dae
 			auto renderComp = GetComponent<RenderComponent>();
 			renderComp->Render();
 		}
-
-		if (HasComponent<TrashCacheComponent>())
-		{
-			ImGui_ImplSDLRenderer3_NewFrame();
-			ImGui_ImplSDL3_NewFrame();
-
-			ImGui::NewFrame();
-
-			auto trashCache = GetComponent<TrashCacheComponent>();
-			trashCache->CreateImguiBoard();
-
-			ImGui::Render();
-		}
 	}
 
 	bool GameObject::IsChild(GameObject* child) const

@@ -1,7 +1,6 @@
 #include "Components.h"
 #include "Font.h"
 #include "ResourceManager.h"
-#include "Renderer.h"
 #include "Texture2D.h"
 #include "GameObject.h"
 #include "DeltaTime.h"
@@ -263,4 +262,53 @@ void dae::TrashCacheComponent::TrashCacheInt(int size)
 		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 		//m_TrashCacheInt.push_back({ stepsize, elapsed.count() });
 	}
+}
+
+//------------------------------------
+//	Actor Component
+//------------------------------------
+
+dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float speed)
+	:Component(Owner),
+	m_Speed(speed)
+{
+	if (!GetOwner()->HasComponent<TransformComponent>())
+	{
+		GetOwner()->AddComponent<TransformComponent>();
+	}
+
+	if (!GetOwner()->HasComponent<RenderComponent>())
+	{
+		GetOwner()->AddComponent<RenderComponent>();
+		GetOwner()->GetComponent<RenderComponent>()->SetTexture("media/Digger/dig1.png");
+	}
+
+	auto moveUp = std::make_shared<dae::MoveUp>(this);
+	auto moveDown = std::make_shared<dae::MoveDown>(this);
+	auto moveLeft = std::make_shared<dae::MoveLeft>(this);
+	auto moveRight = std::make_shared<dae::MoveRight>(this);
+
+	if (input == InputType::keyBoard)
+	{
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_W, moveUp);
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_A, moveLeft);
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_S, moveDown);
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_D, moveRight);
+	}
+	else
+	{
+		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_DOWN, moveDown);
+		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_RIGHT, moveRight);
+		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_LEFT, moveLeft);
+		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_UP, moveUp);
+	}
+}
+
+void dae::PlayerComponent::Move(glm::vec3 dir)
+{
+	dir.x *= m_Speed;
+	dir.y *= m_Speed;
+
+	glm::vec3 pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
+	GetOwner()->GetComponent<TransformComponent>()->SetLocalPosition(pos + dir);
 }

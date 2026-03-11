@@ -40,29 +40,15 @@ static void load()
 	fps->AddComponent<dae::FPSComponent>();	
 	scene.Add(std::move(fps));
 
-	auto rotator1 = std::make_unique<dae::GameObject>();
-	rotator1->AddComponent<dae::RenderComponent>();
-	rotator1->GetComponent<dae::RenderComponent>()->SetTexture("media/Digger/dig1.png");
-	rotator1->GetComponent<dae::TransformComponent>()->SetLocalPosition(200, 200);
-	rotator1->AddComponent<dae::RotatorComponent>(5.f);
+	auto player = std::make_unique<dae::GameObject>();
+	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 5.f);
+	player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 100, 300, 100 });
+	scene.Add(std::move(player));
 
-	auto rotator2 = std::make_unique<dae::GameObject>();
-	rotator2->AddComponent<dae::RenderComponent>();
-	rotator2->GetComponent<dae::RenderComponent>()->SetTexture("media/hob/hob1.png");
-	rotator2->AddComponent<dae::RotatorComponent>(-2.5f);
-	rotator2->SetParent(rotator1.get(), true);
-	scene.Add(std::move(rotator1));
-	scene.Add(std::move(rotator2));
-
-	auto rotationMiddle = std::make_unique<dae::GameObject>();
-	rotationMiddle->AddComponent<dae::RenderComponent>();
-	rotationMiddle->GetComponent<dae::RenderComponent>()->SetTexture("media/Digger/dig1.png");
-	rotationMiddle->GetComponent<dae::TransformComponent>()->SetLocalPosition(200, 200);
-	scene.Add(std::move(rotationMiddle));
-
-	auto trashTheCache = std::make_unique<dae::GameObject>();
-	trashTheCache->AddComponent<dae::TrashCacheComponent>();
-	scene.Add(std::move(trashTheCache));
+	auto player2 = std::make_unique<dae::GameObject>();
+	player2->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::controller, 10.f);
+	player2->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 200, 300, 100 });
+	scene.Add(std::move(player2));
 }
 
 int main(int, char*[]) {

@@ -4,6 +4,7 @@
 #include <SDL3/SDL_pixels.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <glm/glm.hpp>
+#include <InputManager.h>
 
 //ImGui
 #include <imgui.h>
@@ -203,5 +204,32 @@ namespace dae
 		TrashCacheComponent(TrashCacheComponent&& other) = delete;
 		TrashCacheComponent& operator=(const TrashCacheComponent& other) = delete;
 		TrashCacheComponent& operator=(TrashCacheComponent&& other) = delete;
+	};
+
+	//------------------------------------
+	//	Player Component
+	//------------------------------------
+
+	class PlayerComponent : public Component
+	{
+	private:
+		float m_Speed{};
+
+	public:
+		enum InputType
+		{
+			keyBoard,
+			controller
+		};
+
+		void Move(glm::vec3 direction);
+
+        PlayerComponent(GameObject* owner, InputType input, float speed);
+		virtual ~PlayerComponent() = default;
+		PlayerComponent(const PlayerComponent& other) = delete;
+		PlayerComponent(PlayerComponent&& other) = delete;
+		PlayerComponent& operator=(const PlayerComponent& other) = delete;
+		PlayerComponent& operator=(PlayerComponent&& other) = delete;
+
 	};
 }
