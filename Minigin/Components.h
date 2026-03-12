@@ -214,6 +214,8 @@ namespace dae
 	{
 	private:
 		float m_Speed{};
+		glm::vec3 m_Direction{};
+		TransformComponent* m_Transform{};
 
 	public:
 		enum InputType
@@ -222,7 +224,9 @@ namespace dae
 			controller
 		};
 
-		void Move(glm::vec3 direction);
+		glm::vec3 GetDirection() { return m_Direction; };
+		void SetDirection(glm::vec3 direction);
+		void Update();
 
         PlayerComponent(GameObject* owner, InputType input, float speed);
 		virtual ~PlayerComponent() = default;

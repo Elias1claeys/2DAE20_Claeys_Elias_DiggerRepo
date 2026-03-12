@@ -17,6 +17,6 @@ private:
     XINPUT_STATE currentState{};
     XINPUT_STATE previousState{};
 
-    bool buttonsPressedThisFrame{};
-    bool buttonsReleasedThisFrame{};
+    unsigned int buttonsPressedThisFrame{};
+    unsigned int buttonsReleasedThisFrame{};
 };

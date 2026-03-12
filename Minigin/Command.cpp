@@ -17,11 +17,15 @@ namespace dae
         switch (state)
         {
         case KeyState::Down:
-            break;
-        case KeyState::Pressed:
-            GetGameActor()->Move({ m_Direction });
+            GetGameActor()->SetDirection(m_Direction);
             break;
         case KeyState::Up:
+
+            //If the player was still moving in that direction, stop him
+            if (m_Direction == GetGameActor()->GetDirection())
+            {
+                GetGameActor()->SetDirection({ 0, 0, 0 });
+            }
             break;
         }
     }

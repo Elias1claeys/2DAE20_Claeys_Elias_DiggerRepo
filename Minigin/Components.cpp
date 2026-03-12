@@ -278,6 +278,8 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 		GetOwner()->GetComponent<RenderComponent>()->SetTexture("media/Digger/dig1.png");
 	}
 
+	m_Transform = GetOwner()->GetComponent<TransformComponent>();
+
 	auto moveUp = std::make_shared<dae::Move>(this, glm::vec3{0, -1, 0});
 	auto moveDown = std::make_shared<dae::Move>(this, glm::vec3{0, 1, 0});
 	auto moveLeft = std::make_shared<dae::Move>(this, glm::vec3{-1, 0, 0});
@@ -299,11 +301,17 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 	}
 }
 
-void dae::PlayerComponent::Move(glm::vec3 dir)
+void dae::PlayerComponent::Update()
 {
-	dir.x *= m_Speed;
-	dir.y *= m_Speed;
+	glm::vec3 pos = m_Transform->GetWorldPosition();
 
-	glm::vec3 pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
-	GetOwner()->GetComponent<TransformComponent>()->SetLocalPosition(pos + dir);
+	pos.x += m_Direction.x * m_Speed * Time::GetInstance().GetDeltaTime();
+	pos.y += m_Direction.y * m_Speed * Time::GetInstance().GetDeltaTime();
+
+	m_Transform->SetLocalPosition(pos);
+}
+
+void dae::PlayerComponent::SetDirection(glm::vec3 dir)
+{
+	m_Direction = dir;
 }

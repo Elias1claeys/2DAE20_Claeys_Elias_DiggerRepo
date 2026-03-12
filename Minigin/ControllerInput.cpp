@@ -22,15 +22,15 @@ void ControllerInput::ProcessInput()
 
 bool ControllerInput::IsDownThisFrame(unsigned int button) const
 {
-    return buttonsPressedThisFrame && button;
+    return (buttonsPressedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsUpThisFrame(unsigned int button) const
 {
-    return buttonsReleasedThisFrame && button;
+    return (buttonsReleasedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsPressed(unsigned int button) const
 {
-    return currentState.Gamepad.wButtons & button;
+    return (currentState.Gamepad.wButtons & button) != 0;
 }

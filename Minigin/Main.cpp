@@ -41,12 +41,12 @@ static void load()
 	scene.Add(std::move(fps));
 
 	auto player = std::make_unique<dae::GameObject>();
-	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 5.f);
+	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
 	player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 100, 300, 100 });
 	scene.Add(std::move(player));
 
 	auto player2 = std::make_unique<dae::GameObject>();
-	player2->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::controller, 10.f);
+	player2->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::controller, 400.f);
 	player2->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 200, 300, 100 });
 	scene.Add(std::move(player2));
 }
