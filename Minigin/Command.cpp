@@ -3,56 +3,23 @@
 
 namespace dae
 {
-    void MoveLeft::Execute(KeyState state)
+    //-----------------------------
+    // Movement
+    //-----------------------------
+
+    Move::Move(PlayerComponent* actor, glm::vec3 dir)
+        : GameActorCommand(actor), m_Direction(dir)
     {
-        switch (state)
-        {
-        case KeyState::Down:
-            break;
-        case KeyState::Pressed:
-            GetGameActor()->Move({ -1, 0, 0 });
-            break;
-        case KeyState::Up:
-            break;
-        }
     }
 
-    void MoveRight::Execute(KeyState state)
+    void Move::Execute(KeyState state)
     {
         switch (state)
         {
         case KeyState::Down:
             break;
         case KeyState::Pressed:
-            GetGameActor()->Move({ 1, 0, 0 });
-            break;
-        case KeyState::Up:
-            break;
-        }
-    }
-
-    void MoveUp::Execute(KeyState state)
-    {
-        switch (state)
-        {
-        case KeyState::Down:
-            break;
-        case KeyState::Pressed:
-            GetGameActor()->Move({ 0, -1, 0 });
-            break;
-        case KeyState::Up:
-            break;
-        }
-    }
-
-    void MoveDown::Execute(KeyState state)
-    {
-        switch (state)
-        {
-        case KeyState::Down:
-            break;
-        case KeyState::Pressed:
-            GetGameActor()->Move({ 0, 1, 0 });
+            GetGameActor()->Move({ m_Direction });
             break;
         case KeyState::Up:
             break;

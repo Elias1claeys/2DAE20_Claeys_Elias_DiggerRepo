@@ -30,6 +30,11 @@ namespace dae
 			auto renderComp = GetComponent<RenderComponent>();
 			renderComp->Render();
 		}
+		if (HasComponent<TrashCacheComponent>())
+		{
+			auto trashCase = GetComponent<TrashCacheComponent>();
+			trashCase->Render();
+		}
 	}
 
 	bool GameObject::IsChild(GameObject* child) const

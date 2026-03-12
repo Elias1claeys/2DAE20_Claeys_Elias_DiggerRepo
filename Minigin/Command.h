@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 namespace dae
 {
 	enum class KeyState {
@@ -7,7 +8,6 @@ namespace dae
 		Up
 	};
 
-	class PlayerComponent;
 	class Command
 	{
 	public:
@@ -15,6 +15,7 @@ namespace dae
 		virtual void Execute(KeyState state) = 0;
 	};
 
+	class PlayerComponent;
 	class GameActorCommand : public Command
 	{
 		PlayerComponent* m_Actor;
@@ -29,31 +30,20 @@ namespace dae
 	//	Movement
 	//----------------------------
 
-	class MoveLeft : public GameActorCommand
+	class Move : public GameActorCommand
 	{
 	public:
-      MoveLeft(PlayerComponent* actor) : GameActorCommand(actor) {};
+		
 		void Execute(KeyState state) override;
-	};
 
-	class MoveRight : public GameActorCommand
-	{
-	public:
-     MoveRight(PlayerComponent* actor) : GameActorCommand(actor) {};
-		void Execute(KeyState state) override;
-	};
+		Move(PlayerComponent* actor, glm::vec3 dir);
+		virtual ~Move() = default;
+		Move(const Move& other) = delete;
+		Move(Move&& other) = delete;
+		Move& operator=(const Move& other) = delete;
+		Move& operator=(Move&& other) = delete;
 
-	class MoveUp : public GameActorCommand
-	{
-	public:
-        MoveUp(PlayerComponent* actor) : GameActorCommand(actor) {};
-		void Execute(KeyState state) override;
-	};
-
-	class MoveDown : public GameActorCommand
-	{
-	public:
-      MoveDown(PlayerComponent* actor) : GameActorCommand(actor) {};
-		void Execute(KeyState state) override;
+	private:
+		glm::vec3 m_Direction;
 	};
 }

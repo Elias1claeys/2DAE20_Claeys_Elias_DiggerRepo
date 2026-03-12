@@ -52,10 +52,11 @@ void dae::Renderer::Render() const
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_renderer);
-
-	SceneManager::GetInstance().Render();
 	
 	ImGui::NewFrame();
+
+	SceneManager::GetInstance().Render();
+
 	ImGui::Render();
 
 	if (m_RenderImgui)

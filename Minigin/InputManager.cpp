@@ -25,7 +25,7 @@ bool dae::InputManager::ProcessInput()
 		ImGui_ImplSDL3_ProcessEvent(&e);
 	}
 
-	// Continuous input
+	// Continuous input:
 	const bool* state = SDL_GetKeyboardState(nullptr);
 	
 	for (auto& com : keyboardCommands)

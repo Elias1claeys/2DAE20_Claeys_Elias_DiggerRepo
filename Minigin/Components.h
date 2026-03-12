@@ -196,7 +196,7 @@ namespace dae
 		float GetTrashValue(void* data, int idx);
 
 	public:
-		void CreateImguiBoard();
+		void Render();
 
 		TrashCacheComponent(GameObject* owner);
 		virtual ~TrashCacheComponent() = default;

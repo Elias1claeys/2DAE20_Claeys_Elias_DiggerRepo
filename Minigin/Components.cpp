@@ -211,7 +211,7 @@ dae::TrashCacheComponent::TrashCacheComponent(GameObject* owner)
 
 }
 
-void dae::TrashCacheComponent::CreateImguiBoard()
+void dae::TrashCacheComponent::Render()
 {
 	ImGui::InputInt("Value", &m_SampleCount);
 
@@ -272,21 +272,16 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 	:Component(Owner),
 	m_Speed(speed)
 {
-	if (!GetOwner()->HasComponent<TransformComponent>())
-	{
-		GetOwner()->AddComponent<TransformComponent>();
-	}
-
 	if (!GetOwner()->HasComponent<RenderComponent>())
 	{
 		GetOwner()->AddComponent<RenderComponent>();
 		GetOwner()->GetComponent<RenderComponent>()->SetTexture("media/Digger/dig1.png");
 	}
 
-	auto moveUp = std::make_shared<dae::MoveUp>(this);
-	auto moveDown = std::make_shared<dae::MoveDown>(this);
-	auto moveLeft = std::make_shared<dae::MoveLeft>(this);
-	auto moveRight = std::make_shared<dae::MoveRight>(this);
+	auto moveUp = std::make_shared<dae::Move>(this, glm::vec3{0, -1, 0});
+	auto moveDown = std::make_shared<dae::Move>(this, glm::vec3{0, 1, 0});
+	auto moveLeft = std::make_shared<dae::Move>(this, glm::vec3{-1, 0, 0});
+	auto moveRight = std::make_shared<dae::Move>(this, glm::vec3{1, 0, 0});
 
 	if (input == InputType::keyBoard)
 	{
