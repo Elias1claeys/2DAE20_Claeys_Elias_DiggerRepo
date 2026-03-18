@@ -1,5 +1,4 @@
 #include "ControllerInput.h"
-#include <Windows.h>
 #include "XInput.h"
 
 class ControllerInput::Impl

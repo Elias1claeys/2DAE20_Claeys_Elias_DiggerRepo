@@ -164,48 +164,6 @@ namespace dae
 		RotatorComponent& operator=(RotatorComponent&& other) = delete;
 	};
 
-	//----------------------------------
-	// Trash Cache Component
-	//----------------------------------
-
-	struct Transform
-	{
-		float matrix[16] = {
-			1,0,0,0,
-			0,1,0,0,
-			0,0,1,0,
-			0,0,0,1 };
-	};
-
-	class GameObject3D
-	{
-	public:
-		Transform transform;
-		int ID = 1;
-	};
-
-	class TrashCacheComponent : public Component
-	{
-	private:
-		int m_SampleCount;
-		std::vector<std::pair<int, long>> m_TrashCacheInt;
-		std::vector<std::pair<int, long>> m_TrashCacheGameobject3D;
-
-		void TrashCacheInt(int size);
-		void TrashCacheGameObject3D(int size);
-		float GetTrashValue(void* data, int idx);
-
-	public:
-		void Render();
-
-		TrashCacheComponent(GameObject* owner);
-		virtual ~TrashCacheComponent() = default;
-		TrashCacheComponent(const TrashCacheComponent& other) = delete;
-		TrashCacheComponent(TrashCacheComponent&& other) = delete;
-		TrashCacheComponent& operator=(const TrashCacheComponent& other) = delete;
-		TrashCacheComponent& operator=(TrashCacheComponent&& other) = delete;
-	};
-
 	//------------------------------------
 	//	Player Component
 	//------------------------------------
