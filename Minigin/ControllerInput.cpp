@@ -1,7 +1,21 @@
 #include "ControllerInput.h"
-#include <minwinbase.h>
+#include <Windows.h>
+#include "XInput.h"
 
-void ControllerInput::ProcessInput()
+class ControllerInput::Impl
+{
+public:
+    int index = 0;
+    XINPUT_STATE currentState{};
+    XINPUT_STATE previousState{};
+
+    unsigned int buttonsPressedThisFrame{};
+    unsigned int buttonsReleasedThisFrame{};
+
+    void ProcessInput();
+};
+
+void ControllerInput::Impl::ProcessInput()
 {
     CopyMemory(&previousState, &currentState, sizeof(XINPUT_STATE));
     ZeroMemory(&currentState, sizeof(XINPUT_STATE));
@@ -20,17 +34,29 @@ void ControllerInput::ProcessInput()
     }
 }
 
+ControllerInput::ControllerInput()
+    : impl(std::make_unique<Impl>())
+{ 
+}
+
+ControllerInput::~ControllerInput() = default;
+
+void ControllerInput::ProcessInput()
+{
+    impl->ProcessInput();
+}
+
 bool ControllerInput::IsDownThisFrame(unsigned int button) const
 {
-    return (buttonsPressedThisFrame & button) != 0;
+    return (impl->buttonsPressedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsUpThisFrame(unsigned int button) const
 {
-    return (buttonsReleasedThisFrame & button) != 0;
+    return (impl->buttonsReleasedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsPressed(unsigned int button) const
 {
-    return (currentState.Gamepad.wButtons & button) != 0;
+    return (impl->currentState.Gamepad.wButtons & button) != 0;
 }

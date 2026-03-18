@@ -294,10 +294,10 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 	}
 	else
 	{
-		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_DOWN, moveDown);
-		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_RIGHT, moveRight);
-		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_LEFT, moveLeft);
-		InputManager::GetInstance().BindControllerCommand(XINPUT_GAMEPAD_DPAD_UP, moveUp);
+		InputManager::GetInstance().BindControllerCommand(0x0002, moveDown);
+		InputManager::GetInstance().BindControllerCommand(0x0008, moveRight);
+		InputManager::GetInstance().BindControllerCommand(0x0004, moveLeft);
+		InputManager::GetInstance().BindControllerCommand(0x001, moveUp);
 	}
 }
 
