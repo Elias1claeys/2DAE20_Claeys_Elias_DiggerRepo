@@ -179,7 +179,6 @@ namespace dae
 		};
 
 		void DoDamage();
-		void AddPoints();
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 
@@ -192,5 +191,24 @@ namespace dae
 		PlayerComponent& operator=(const PlayerComponent& other) = delete;
 		PlayerComponent& operator=(PlayerComponent&& other) = delete;
 
+	};
+
+	//------------------------------------
+	//	Level Component
+	//------------------------------------
+
+	class LevelComponent : public Component
+	{
+	
+	public:
+
+		void CreateLevel(int level);
+
+		LevelComponent(GameObject* owner);
+		virtual ~LevelComponent() = default;
+		LevelComponent(const LevelComponent& other) = delete;
+		LevelComponent(LevelComponent&& other) = delete;
+		LevelComponent& operator=(const LevelComponent& other) = delete;
+		LevelComponent& operator=(LevelComponent&& other) = delete;
 	};
 }

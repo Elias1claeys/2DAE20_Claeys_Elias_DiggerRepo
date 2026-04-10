@@ -260,12 +260,23 @@ void dae::PlayerComponent::SetDirection(glm::vec3 dir)
 	m_MoveDirection = dir;
 }
 
-void dae::PlayerComponent::AddPoints()
-{
-	
-}
-
 void dae::PlayerComponent::DoDamage()
 {
 	Notify(Event{ make_sdbm_hash("PlayerHit") }, GetOwner());
+	Notify(Event{ make_sdbm_hash("PlayerScored") }, GetOwner());
+}
+
+//-------------------------------
+// Level component
+//-------------------------------
+
+dae::LevelComponent::LevelComponent(GameObject* owner)
+	: Component(owner)
+{
+	CreateLevel(1);
+}
+
+void dae::LevelComponent::CreateLevel(int level)
+{
+	auto obj = std::make_unique<GameObject>();
 }

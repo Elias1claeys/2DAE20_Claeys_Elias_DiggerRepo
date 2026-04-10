@@ -51,7 +51,6 @@ namespace dae
         {
         case dae::KeyState::Down:
             GetGameActor()->DoDamage();
-            GetGameActor()->AddPoints();
             break;
         }
     }
