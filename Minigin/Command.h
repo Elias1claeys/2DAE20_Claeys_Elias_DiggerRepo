@@ -46,4 +46,22 @@ namespace dae
 	private:
 		glm::vec3 m_Direction;
 	};
+
+	//---------------------------------
+	// Attack
+	//---------------------------------
+
+	class Attack : public GameActorCommand
+	{
+	public:
+		
+		void Execute(KeyState state) override;
+
+		Attack(PlayerComponent* actor);
+		virtual ~Attack() = default;
+		Attack(const Attack& other) = delete;
+		Attack(Attack&& other) = delete;
+		Attack& operator=(const Attack& other) = delete;
+		Attack& operator=(Attack&& other) = delete;
+	};
 }

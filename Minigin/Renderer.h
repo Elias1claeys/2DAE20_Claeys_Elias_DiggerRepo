@@ -16,7 +16,6 @@ namespace dae
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};
-		bool m_RenderImgui;
 
 	public:
 		void Init(SDL_Window* window);

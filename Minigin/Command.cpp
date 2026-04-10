@@ -19,6 +19,12 @@ namespace dae
         case KeyState::Down:
             GetGameActor()->SetDirection(m_Direction);
             break;
+        case KeyState::Pressed:
+            if (glm::vec3(0, 0, 0) == GetGameActor()->GetDirection())
+            {
+                GetGameActor()->SetDirection(m_Direction);
+            }
+            break;
         case KeyState::Up:
 
             //If the player was still moving in that direction, stop him
@@ -26,6 +32,26 @@ namespace dae
             {
                 GetGameActor()->SetDirection({ 0, 0, 0 });
             }
+            break;
+        }
+    }
+
+    //-----------------------------
+    // Attack
+    //-----------------------------
+
+    Attack::Attack(PlayerComponent* actor)
+        : GameActorCommand(actor)
+    {
+    }
+
+    void Attack::Execute(KeyState state)
+    {
+        switch (state)
+        {
+        case dae::KeyState::Down:
+            GetGameActor()->DoDamage();
+            GetGameActor()->AddPoints();
             break;
         }
     }

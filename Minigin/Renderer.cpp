@@ -59,10 +59,9 @@ void dae::Renderer::Render() const
 
 	ImGui::Render();
 
-	if (m_RenderImgui)
-	{
-		ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer);
-	}
+	
+	ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer);
+	
 	
 	SDL_RenderPresent(m_renderer);
 }

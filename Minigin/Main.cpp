@@ -10,6 +10,7 @@
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "Components.h"
+#include "Observer.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -40,15 +41,23 @@ static void load()
 	fps->AddComponent<dae::FPSComponent>();	
 	scene.Add(std::move(fps));
 
+	auto healthDisplay = std::make_unique<dae::GameObject>();
+	healthDisplay->AddComponent<dae::TextComponent>("5", font);
+	healthDisplay->GetComponent<dae::TransformComponent>()->SetLocalPosition(10, 50);
+	auto healthObserver = std::make_unique<dae::HealthObserver>(healthDisplay.get());
+	scene.Add(std::move(healthDisplay));
+
 	auto player = std::make_unique<dae::GameObject>();
 	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
 	player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 100, 300, 100 });
+	player->GetComponent<dae::PlayerComponent>()->AddObserver(std::move(healthObserver));
 	scene.Add(std::move(player));
 
 	auto player2 = std::make_unique<dae::GameObject>();
 	player2->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::controller, 400.f);
 	player2->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 200, 300, 100 });
 	scene.Add(std::move(player2));
+
 }
 
 int main(int, char*[]) {

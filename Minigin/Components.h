@@ -4,12 +4,8 @@
 #include <SDL3/SDL_pixels.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <glm/glm.hpp>
-#include <InputManager.h>
+#include "Subject.h"
 
-//ImGui
-#include <imgui.h>
-#include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_sdlrenderer3.h>
 
 namespace dae
 {
@@ -168,11 +164,11 @@ namespace dae
 	//	Player Component
 	//------------------------------------
 
-	class PlayerComponent : public Component
+	class PlayerComponent : public Component, public Subject
 	{
 	private:
 		float m_Speed{};
-		glm::vec3 m_Direction{};
+		glm::vec3 m_MoveDirection{};
 		TransformComponent* m_Transform{};
 
 	public:
@@ -182,8 +178,11 @@ namespace dae
 			controller
 		};
 
-		glm::vec3 GetDirection() { return m_Direction; };
+		void DoDamage();
+		void AddPoints();
+		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
+
 		void Update();
 
         PlayerComponent(GameObject* owner, InputType input, float speed);

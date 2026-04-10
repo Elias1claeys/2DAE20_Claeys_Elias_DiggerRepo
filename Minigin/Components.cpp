@@ -4,6 +4,11 @@
 #include "Texture2D.h"
 #include "GameObject.h"
 #include "DeltaTime.h"
+#include "InputManager.h"
+#include "Renderer.h"
+
+
+
 
 //-------------------------------
 // TransForm Component
@@ -220,6 +225,7 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 	auto moveDown = std::make_shared<dae::Move>(this, glm::vec3{0, 1, 0});
 	auto moveLeft = std::make_shared<dae::Move>(this, glm::vec3{-1, 0, 0});
 	auto moveRight = std::make_shared<dae::Move>(this, glm::vec3{1, 0, 0});
+	auto attack = std::make_shared<dae::Attack>(this);
 
 	if (input == InputType::keyBoard)
 	{
@@ -227,13 +233,15 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_A, moveLeft);
 		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_S, moveDown);
 		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_D, moveRight);
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_SPACE, attack);
 	}
 	else
 	{
 		InputManager::GetInstance().BindControllerCommand(0x0002, moveDown);
 		InputManager::GetInstance().BindControllerCommand(0x0008, moveRight);
 		InputManager::GetInstance().BindControllerCommand(0x0004, moveLeft);
-		InputManager::GetInstance().BindControllerCommand(0x001, moveUp);
+		InputManager::GetInstance().BindControllerCommand(0x0010, moveUp);
+		InputManager::GetInstance().BindControllerCommand(0x4000, attack);
 	}
 }
 
@@ -241,13 +249,23 @@ void dae::PlayerComponent::Update()
 {
 	glm::vec3 pos = m_Transform->GetWorldPosition();
 
-	pos.x += m_Direction.x * m_Speed * Time::GetInstance().GetDeltaTime();
-	pos.y += m_Direction.y * m_Speed * Time::GetInstance().GetDeltaTime();
+	pos.x += m_MoveDirection.x * m_Speed * Time::GetInstance().GetDeltaTime();
+	pos.y += m_MoveDirection.y * m_Speed * Time::GetInstance().GetDeltaTime();
 
 	m_Transform->SetLocalPosition(pos);
 }
 
 void dae::PlayerComponent::SetDirection(glm::vec3 dir)
 {
-	m_Direction = dir;
+	m_MoveDirection = dir;
+}
+
+void dae::PlayerComponent::AddPoints()
+{
+	
+}
+
+void dae::PlayerComponent::DoDamage()
+{
+	Notify(Event{ make_sdbm_hash("PlayerHit") }, GetOwner());
 }
