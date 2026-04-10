@@ -70,7 +70,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 	g_window = SDL_CreateWindow(
 		"Programming 4 assignment",
 		1024,
-		576,
+		768,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr) 

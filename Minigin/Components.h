@@ -12,6 +12,7 @@ namespace dae
 	class Font;
 	class Texture2D;
 	class GameObject;
+	class Scene; 
 
 	//-------------------------------
 	// Base Component class
@@ -191,7 +192,7 @@ namespace dae
 		PlayerComponent& operator=(const PlayerComponent& other) = delete;
 		PlayerComponent& operator=(PlayerComponent&& other) = delete;
 
-	};
+		};
 
 	//------------------------------------
 	//	Level Component
@@ -199,12 +200,14 @@ namespace dae
 
 	class LevelComponent : public Component
 	{
+	private:
+		Scene* m_CurrentScene{};
 	
 	public:
 
 		void CreateLevel(int level);
 
-		LevelComponent(GameObject* owner);
+		LevelComponent(GameObject* owner, Scene* currentScene);
 		virtual ~LevelComponent() = default;
 		LevelComponent(const LevelComponent& other) = delete;
 		LevelComponent(LevelComponent&& other) = delete;

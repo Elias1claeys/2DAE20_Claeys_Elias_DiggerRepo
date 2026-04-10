@@ -6,6 +6,10 @@
 #include "DeltaTime.h"
 #include "InputManager.h"
 #include "Renderer.h"
+#include "SceneManager.h"
+
+#include <filesystem>
+#include <fstream>
 
 
 
@@ -270,13 +274,74 @@ void dae::PlayerComponent::DoDamage()
 // Level component
 //-------------------------------
 
-dae::LevelComponent::LevelComponent(GameObject* owner)
-	: Component(owner)
+dae::LevelComponent::LevelComponent(GameObject* owner, Scene* currentScene)
+	: Component(owner), m_CurrentScene(currentScene)
 {
 	CreateLevel(1);
 }
 
 void dae::LevelComponent::CreateLevel(int level)
 {
-	auto obj = std::make_unique<GameObject>();
+	std::string line;
+	std::string levelData = "./Data/media/levels/" + std::to_string(level) + "/Data.txt";
+	std::string levelBack = "media/levels/" + std::to_string(level) + "/Back.png";
+	std::ifstream file{ levelData };
+
+	float tileSize = 64;
+
+	for (float x = 0; x <= 15; x++)
+	{
+		for (float y = 0; y <= 10; y++)
+		{
+			auto obj = std::make_unique<GameObject>();
+			obj->AddComponent<RenderComponent>();
+			obj->GetComponent<RenderComponent>()->SetTexture(levelBack);
+			obj->GetComponent<TransformComponent>()->SetLocalPosition(x * tileSize, tileSize + y * tileSize);
+			m_CurrentScene->Add(std::move(obj));
+		}
+	}
+	
+	if (file.is_open())
+	{
+		int Startx = 32;
+		int Starty = 96;
+		int x = 0;
+		int y = 0;
+
+		while (std::getline(file, line))
+		{
+			for (auto& c : line)
+			{
+				auto obj = std::make_unique<GameObject>();
+
+				switch (c)
+				{
+				case 'S':
+					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/StartHole.png");
+					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+					break;
+				case 'B':
+					break;
+				case 'H':
+					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/HorizontalHole.png");
+					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+					break;
+				case 'V':
+					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/VerticalHole.png");
+					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+					break;
+				case 'C':
+					break;
+				}
+
+				if(c != ' ')
+					m_CurrentScene->Add(std::move(obj));
+
+				x++;
+			}
+
+			y++;
+			x = 0;
+		}
+	}
 }
