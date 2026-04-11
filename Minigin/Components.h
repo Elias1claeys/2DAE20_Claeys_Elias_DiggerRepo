@@ -77,12 +77,15 @@ namespace dae
 	{
 	private:
 		std::shared_ptr<Texture2D> m_texture{};
-		
+		float m_rotationAngle{ 0.f };
+		glm::vec2 m_size{ 0, 0 };
 
 	public:
 		void Render() const;
 		void SetTexture(const std::string& filename);
 		void SetTexture(SDL_Texture* texture);
+		void SetRotation(float angle){m_rotationAngle = angle;}
+		void SetSize(const glm::vec2& size) { m_size = size; }
 
 		RenderComponent(GameObject* owner);
 		virtual ~RenderComponent() = default;
@@ -202,6 +205,9 @@ namespace dae
 	{
 	private:
 		Scene* m_CurrentScene{};
+
+		bool IsHorizontal(char c);
+		bool IsVertical(char c);
 	
 	public:
 

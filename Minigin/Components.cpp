@@ -86,18 +86,20 @@ void dae::RenderComponent::Render() const
 	if (m_texture != nullptr)
 	{
 		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
-		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
 	}
 }
 
 void dae::RenderComponent::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+	m_size = m_texture->GetSize();
 }
 
 void dae::RenderComponent::SetTexture(SDL_Texture* texture)
 {
 	m_texture = std::make_shared<Texture2D>(texture);
+	m_size = m_texture->GetSize();
 }
 
 //-------------------------------
@@ -277,7 +279,17 @@ void dae::PlayerComponent::DoDamage()
 dae::LevelComponent::LevelComponent(GameObject* owner, Scene* currentScene)
 	: Component(owner), m_CurrentScene(currentScene)
 {
-	CreateLevel(1);
+	CreateLevel(8);
+}
+
+bool dae::LevelComponent::IsHorizontal(char c)
+{
+	return c == 'H' || c == 'L' || c == 'S';
+}
+
+bool dae::LevelComponent::IsVertical(char c)
+{
+	return c == 'V' || c == 'L' || c == 'S';
 }
 
 void dae::LevelComponent::CreateLevel(int level)
@@ -286,6 +298,7 @@ void dae::LevelComponent::CreateLevel(int level)
 	std::string levelData = "./Data/media/levels/" + std::to_string(level) + "/Data.txt";
 	std::string levelBack = "media/levels/" + std::to_string(level) + "/Back.png";
 	std::ifstream file{ levelData };
+	std::vector<std::string> lines;
 
 	float tileSize = 64;
 
@@ -305,43 +318,72 @@ void dae::LevelComponent::CreateLevel(int level)
 	{
 		int Startx = 32;
 		int Starty = 96;
-		int x = 0;
-		int y = 0;
 
 		while (std::getline(file, line))
 		{
-			for (auto& c : line)
+			lines.push_back(line);
+		}
+
+		for (int y = 0; y < lines.size(); y++)
+		{
+			for (int x = 0; x < lines[y].size(); x++)
 			{
+				if(lines[y][x] == ' ' || lines[y][x] == 'B' || lines[y][x] == 'C')
+					continue;
+
 				auto obj = std::make_unique<GameObject>();
 
-				switch (c)
+				bool up = (y > 0) && IsVertical(lines[y - 1][x]);
+				bool down = (y < lines.size() - 1) && IsVertical(lines[y + 1][x]);
+				bool left = (x > 0) && IsHorizontal(lines[y][x - 1]);
+				bool right = (x < lines[y].size() - 1) && IsHorizontal(lines[y][x + 1]);
+				float rotation = 0.f;
+
+				switch (lines[y][x])
 				{
 				case 'S':
 					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/StartHole.png");
-					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 					break;
+
 				case 'B':
 					break;
+
 				case 'H':
 					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/HorizontalHole.png");
-					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 					break;
+
 				case 'V':
 					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/VerticalHole.png");
-					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 					break;
+
+				case'L':
+					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/LHole.png");
+
+					if (right && down)        rotation = 90.f;
+					else if (down && left)    rotation = 180.f;
+					else if (left && up)      rotation = 270.f;
+
+					obj->GetComponent<dae::RenderComponent>()->SetRotation(rotation);
+					
+					break;
+
+				case 'T':
+					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/THole.png");
+
+					if (up && left && down)        rotation = 90.f;
+					else if (right && up && left)    rotation = 180.f;
+					else if (down && right && up)      rotation = 270.f;
+
+					obj->GetComponent<dae::RenderComponent>()->SetRotation(rotation);
+					break;
+
 				case 'C':
 					break;
 				}
 
-				if(c != ' ')
-					m_CurrentScene->Add(std::move(obj));
-
-				x++;
+				obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+				m_CurrentScene->Add(std::move(obj));
 			}
-
-			y++;
-			x = 0;
 		}
 	}
 }
