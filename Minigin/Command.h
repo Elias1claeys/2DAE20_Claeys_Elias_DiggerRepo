@@ -16,6 +16,8 @@ namespace dae
 	};
 
 	class PlayerComponent;
+	class LevelComponent;
+
 	class GameActorCommand : public Command
 	{
 		PlayerComponent* m_Actor;
@@ -63,5 +65,25 @@ namespace dae
 		Attack(Attack&& other) = delete;
 		Attack& operator=(const Attack& other) = delete;
 		Attack& operator=(Attack&& other) = delete;
+	};
+
+	//----------------------------
+	//	Next Level
+	//----------------------------
+
+	class NextLevel : public Command
+	{
+	protected:
+		LevelComponent* m_Actor;
+
+	public:
+		void Execute(KeyState state) override;
+
+		NextLevel(LevelComponent* actor);
+		virtual ~NextLevel() = default;
+		NextLevel(const NextLevel& other) = delete;
+		NextLevel(NextLevel&& other) = delete;
+		NextLevel& operator=(const NextLevel& other) = delete;
+		NextLevel& operator=(NextLevel&& other) = delete;
 	};
 }

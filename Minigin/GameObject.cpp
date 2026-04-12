@@ -73,8 +73,19 @@ namespace dae
 		child->m_pParent = nullptr;
 	}
 
+	void GameObject::RemoveAllChilderen()
+	{
+		for (auto child: m_pChildren)
+		{
+			RemoveChild(child, false);
+		}
+	}
+
 	void GameObject::UpdateTransForm(GameObject* child, bool keepWorldPosition)
 	{
+		if (!this->HasComponent<TransformComponent>())
+			this->AddComponent<TransformComponent>();
+
 		TransformComponent* transform = this->GetComponent<TransformComponent>();
 
 		if (child == nullptr)

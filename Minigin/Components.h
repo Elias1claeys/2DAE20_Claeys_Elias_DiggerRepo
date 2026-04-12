@@ -183,6 +183,7 @@ namespace dae
 		};
 
 		void DoDamage();
+
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 
@@ -204,7 +205,9 @@ namespace dae
 	class LevelComponent : public Component
 	{
 	private:
+		std::vector<GameObject*> m_LevelObjects;
 		Scene* m_CurrentScene{};
+		int m_CurrentLevel{ 1 };
 
 		bool IsHorizontal(char c);
 		bool IsVertical(char c);
@@ -212,6 +215,7 @@ namespace dae
 	public:
 
 		void CreateLevel(int level);
+		void NextLevel();
 
 		LevelComponent(GameObject* owner, Scene* currentScene);
 		virtual ~LevelComponent() = default;

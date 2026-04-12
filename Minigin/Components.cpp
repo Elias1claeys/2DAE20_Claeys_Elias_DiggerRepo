@@ -279,7 +279,10 @@ void dae::PlayerComponent::DoDamage()
 dae::LevelComponent::LevelComponent(GameObject* owner, Scene* currentScene)
 	: Component(owner), m_CurrentScene(currentScene)
 {
-	CreateLevel(8);
+	auto nextLevel = std::make_shared<dae::NextLevel>(this);
+	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
+
+	CreateLevel(m_CurrentLevel);
 }
 
 bool dae::LevelComponent::IsHorizontal(char c)
@@ -302,18 +305,27 @@ void dae::LevelComponent::CreateLevel(int level)
 
 	float tileSize = 64;
 
+	//-------------------------------
+	// Background tiles
+	//-------------------------------
 	for (float x = 0; x <= 15; x++)
 	{
 		for (float y = 0; y <= 10; y++)
 		{
 			auto obj = std::make_unique<GameObject>();
-			obj->AddComponent<RenderComponent>();
-			obj->GetComponent<RenderComponent>()->SetTexture(levelBack);
+			GameObject* rawPtr = obj.get();
+
+			obj->AddComponent<RenderComponent>()->SetTexture(levelBack);;
 			obj->GetComponent<TransformComponent>()->SetLocalPosition(x * tileSize, tileSize + y * tileSize);
+
 			m_CurrentScene->Add(std::move(obj));
+			m_LevelObjects.push_back(rawPtr);
 		}
 	}
 	
+	// -------------------------------
+	// Load level file
+	// -------------------------------
 	if (file.is_open())
 	{
 		int Startx = 32;
@@ -332,6 +344,7 @@ void dae::LevelComponent::CreateLevel(int level)
 					continue;
 
 				auto obj = std::make_unique<GameObject>();
+				GameObject* rawPtr = obj.get();
 
 				bool up = (y > 0) && IsVertical(lines[y - 1][x]);
 				bool down = (y < lines.size() - 1) && IsVertical(lines[y + 1][x]);
@@ -382,8 +395,26 @@ void dae::LevelComponent::CreateLevel(int level)
 				}
 
 				obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+
 				m_CurrentScene->Add(std::move(obj));
+				m_LevelObjects.push_back(rawPtr);
 			}
 		}
 	}
+}
+
+void dae::LevelComponent::NextLevel()
+{
+	for (auto& obj: m_LevelObjects )
+	{
+		m_CurrentScene->Remove(*obj);
+	}
+	m_LevelObjects.clear();
+
+	if (m_CurrentLevel == 8)
+		m_CurrentLevel = 1;
+	else
+		m_CurrentLevel++;
+
+	CreateLevel(m_CurrentLevel);
 }

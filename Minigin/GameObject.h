@@ -33,6 +33,7 @@ namespace dae
 		void Update();
 		void Render();
 
+		void RemoveAllChilderen();
 		void SetParent(GameObject* parent, bool keepWorldPosition);
 		GameObject* GetParent() const { return m_pParent; }
 		std::vector<GameObject*> GetChildren() const { return m_pChildren; }

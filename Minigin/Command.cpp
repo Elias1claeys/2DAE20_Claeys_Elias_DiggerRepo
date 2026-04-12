@@ -54,4 +54,23 @@ namespace dae
             break;
         }
     }
+
+	//-----------------------------
+	//	NextLevel
+	//-----------------------------
+
+    NextLevel::NextLevel(LevelComponent* actor)
+        : m_Actor(actor)
+    {
+    }
+
+    void NextLevel::Execute(KeyState state)
+    {
+        switch (state)
+        {
+        case dae::KeyState::Down:
+            m_Actor->NextLevel();
+            break;
+        }
+    }
 }
