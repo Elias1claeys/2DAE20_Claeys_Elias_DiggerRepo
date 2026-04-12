@@ -47,11 +47,6 @@ static void load()
 	//auto healthObserver = std::make_unique<dae::HealthObserver>(healthDisplay.get());
 	//scene.Add(std::move(healthDisplay));
 	//
-	//auto player = std::make_unique<dae::GameObject>();
-	//player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
-	//player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 100, 300, 100 });
-	//player->GetComponent<dae::PlayerComponent>()->AddObserver(std::move(healthObserver));
-	//scene.Add(std::move(player));
 	//
 	//auto player2 = std::make_unique<dae::GameObject>();
 	//player2->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::controller, 400.f);
@@ -61,6 +56,11 @@ static void load()
 	auto level = std::make_unique<dae::GameObject>();
 	level->AddComponent<dae::LevelComponent>(&scene);
 	scene.Add(std::move(level));
+
+	auto scoreDisplay = std::make_unique<dae::GameObject>();
+	scoreDisplay->AddComponent<dae::TextComponent>("00000", dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 50));
+	scoreDisplay->GetComponent<dae::TransformComponent>()->SetLocalPosition(10, 10);
+	scene.Add(std::move(scoreDisplay));
 
 }
 

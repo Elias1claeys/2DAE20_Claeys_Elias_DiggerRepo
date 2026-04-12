@@ -224,4 +224,39 @@ namespace dae
 		LevelComponent& operator=(const LevelComponent& other) = delete;
 		LevelComponent& operator=(LevelComponent&& other) = delete;
 	};
+
+	//------------------------------------
+	//	Emerald Component
+	//------------------------------------
+
+	class EmeraldComponent : public Component
+	{
+	private:
+		bool m_IsCollected{ false };
+
+	public:
+		
+		EmeraldComponent(GameObject* owner);
+		virtual ~EmeraldComponent() = default;
+		EmeraldComponent(const EmeraldComponent& other) = delete;
+		EmeraldComponent(EmeraldComponent&& other) = delete;
+		EmeraldComponent& operator=(const EmeraldComponent& other) = delete;
+		EmeraldComponent& operator=(EmeraldComponent&& other) = delete;
+	};
+
+	//------------------------------------
+	//	Bag Component
+	//------------------------------------
+
+	class BagComponent : public Component
+	{
+	public:
+
+		BagComponent(GameObject* owner);
+		virtual ~BagComponent() = default;
+		BagComponent(const BagComponent& other) = delete;
+		BagComponent(BagComponent&& other) = delete;
+		BagComponent& operator=(const BagComponent& other) = delete;
+		BagComponent& operator=(BagComponent&& other) = delete;
+	};
 }

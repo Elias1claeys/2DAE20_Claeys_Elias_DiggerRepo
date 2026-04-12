@@ -223,6 +223,7 @@ dae::PlayerComponent::PlayerComponent(GameObject* Owner, InputType input, float 
 	{
 		GetOwner()->AddComponent<RenderComponent>();
 		GetOwner()->GetComponent<RenderComponent>()->SetTexture("media/Digger/dig1.png");
+		GetOwner()->GetComponent<RenderComponent>()->SetSize({ 32, 32 });
 	}
 
 	m_Transform = GetOwner()->GetComponent<TransformComponent>();
@@ -305,9 +306,7 @@ void dae::LevelComponent::CreateLevel(int level)
 
 	float tileSize = 64;
 
-	//-------------------------------
 	// Background tiles
-	//-------------------------------
 	for (float x = 0; x <= 15; x++)
 	{
 		for (float y = 0; y <= 10; y++)
@@ -323,9 +322,7 @@ void dae::LevelComponent::CreateLevel(int level)
 		}
 	}
 	
-	// -------------------------------
 	// Load level file
-	// -------------------------------
 	if (file.is_open())
 	{
 		int Startx = 32;
@@ -340,7 +337,7 @@ void dae::LevelComponent::CreateLevel(int level)
 		{
 			for (int x = 0; x < lines[y].size(); x++)
 			{
-				if(lines[y][x] == ' ' || lines[y][x] == 'B' || lines[y][x] == 'C')
+				if(lines[y][x] == ' ')
 					continue;
 
 				auto obj = std::make_unique<GameObject>();
@@ -359,6 +356,7 @@ void dae::LevelComponent::CreateLevel(int level)
 					break;
 
 				case 'B':
+					obj->AddComponent<dae::BagComponent>();
 					break;
 
 				case 'H':
@@ -391,6 +389,7 @@ void dae::LevelComponent::CreateLevel(int level)
 					break;
 
 				case 'C':
+					obj->AddComponent<dae::EmeraldComponent>();
 					break;
 				}
 
@@ -401,6 +400,14 @@ void dae::LevelComponent::CreateLevel(int level)
 			}
 		}
 	}
+
+	//Adding the player to the level
+	auto player = std::make_unique<dae::GameObject>();
+	GameObject* rawPtr = player.get();
+	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
+	player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 49, 112, 0 });
+	m_CurrentScene->Add(std::move(player));
+	m_LevelObjects.push_back(rawPtr);
 }
 
 void dae::LevelComponent::NextLevel()
@@ -417,4 +424,24 @@ void dae::LevelComponent::NextLevel()
 		m_CurrentLevel++;
 
 	CreateLevel(m_CurrentLevel);
+}
+
+//------------------------------------
+//	Emerald Component
+//------------------------------------
+
+dae::EmeraldComponent::EmeraldComponent(GameObject* owner)
+	: Component(owner)
+{
+	GetOwner()->AddComponent<RenderComponent>()->SetTexture("media/Emerald/emerald.png");
+}
+
+//------------------------------------
+//	Bag Component
+//------------------------------------
+
+dae::BagComponent::BagComponent(GameObject* owner)
+	: Component(owner)
+{
+	GetOwner()->AddComponent<RenderComponent>()->SetTexture("media/Bag/bag.png");
 }
