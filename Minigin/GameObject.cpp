@@ -25,10 +25,9 @@ namespace dae
 
 	void GameObject::Render()
 	{
-		if (HasComponent<RenderComponent>())
+		for (auto& comp : m_pComponents)
 		{
-			auto renderComp = GetComponent<RenderComponent>();
-			renderComp->Render();
+			comp->Render();
 		}
 	}
 

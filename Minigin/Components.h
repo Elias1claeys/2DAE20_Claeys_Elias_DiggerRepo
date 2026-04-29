@@ -26,6 +26,7 @@ namespace dae
 
 	public:
 
+		const virtual void Render() {}
 		virtual void Update() {}
 		void MarkForDelete() { m_markedForDelete = true; }
 		bool IsMarkedForDelete() const { return m_markedForDelete; }
@@ -81,21 +82,12 @@ namespace dae
 		float m_rotationAngle{ 0.f };
 		glm::vec2 m_size{ 0, 0 };
 
-		std::vector<SDL_FRect> m_FilledRects{};
-		std::vector<SDL_FRect> m_DrawnRects{};
-		SDL_Color m_Color{};
-
 	public:
-		void Render() const;
+		const void Render() override;
 		void SetTexture(const std::string& filename);
 		void SetTexture(SDL_Texture* texture);
 		void SetRotation(float angle){m_rotationAngle = angle;}
 		void SetSize(const glm::vec2& size) { m_size = size; }
-		
-
-		void DrawRect(const glm::vec2& position, const glm::vec2& size);
-		void FillRect(const glm::vec2& position, const glm::vec2& size);
-		void SetColor(const SDL_Color& color);
 
 		RenderComponent(GameObject* owner);
 		virtual ~RenderComponent() = default;
@@ -288,9 +280,62 @@ namespace dae
 		Tile m_DigGrid[150];
 		int m_tileSize;
 
+		bool StartPattern[8][8] =
+		{
+			{0,0,1,1,1,1,0,0},
+			{0,1,1,1,1,1,1,0},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{0,1,1,1,1,1,1,0},
+			{0,0,1,1,1,1,0,0}
+		};
+
+		bool TunnlePattern[8][8] =
+		{
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0}
+		};
+
+		bool LShapePattern[8][8] =
+		{
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,1,1},
+			{0,0,1,1,1,1,1,1},
+			{0,0,1,1,1,1,1,1},
+			{0,0,1,1,1,1,1,1},
+			{0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0}
+		};
+
+		bool TShapePattern[8][8] =
+		{
+			{0,0,1,1,1,1,0,0},
+			{0,0,1,1,1,1,0,0},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1},
+			{0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0}
+		};
+
+		void DrawAllDigTiles();
+		void FillAllDigTiles();
+		void RotateShape(bool pattern[8][8], int rotationTimes);
+
 	public:
 
-		void DrawAllDigtiles();
+		const void Render() override;
+		void FillDigShape(int tileId, char shape, int rotationTimes);
 
 		HoleComponent(GameObject* owner, int tileSize);
 		virtual ~HoleComponent() = default;

@@ -82,22 +82,12 @@ dae::RenderComponent::RenderComponent(GameObject* owner)
 	}
 }
 
-void dae::RenderComponent::Render() const
+const void dae::RenderComponent::Render() 
 {
 	if (m_texture != nullptr)
 	{
 		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
-	}
-
-	for (auto& rect : m_DrawnRects)
-	{
-		Renderer::GetInstance().DrawRect(m_Color, rect);
-	}
-
-	for (auto& rect : m_FilledRects)
-	{
-		Renderer::GetInstance().FillRect(m_Color, rect);
 	}
 }
 
@@ -111,33 +101,6 @@ void dae::RenderComponent::SetTexture(SDL_Texture* texture)
 {
 	m_texture = std::make_shared<Texture2D>(texture);
 	m_size = m_texture->GetSize();
-}
-
-void dae::RenderComponent::DrawRect(const glm::vec2& position, const glm::vec2& size)
-{
-	SDL_FRect rect;
-	rect.x = position.x;
-	rect.y = position.y;
-	rect.w = size.x;
-	rect.h = size.y;
-
-	m_DrawnRects.push_back(rect);
-}
-
-void dae::RenderComponent::FillRect(const glm::vec2& position, const glm::vec2& size)
-{
-	SDL_FRect rect;
-	rect.x = position.x;
-	rect.y = position.y;
-	rect.w = size.x;
-	rect.h = size.y;
-
-	m_FilledRects.push_back(rect);
-}
-
-void dae::RenderComponent::SetColor(const SDL_Color& color)
-{
-	m_Color = color;
 }
 
 //-------------------------------
@@ -359,10 +322,14 @@ void dae::LevelComponent::CreateLevel(int level)
 			m_LevelScene->Add(std::move(BackGround));
 		}
 	}
+
+	auto digGround = std::make_unique<GameObject>();
+	digGround->AddComponent<dae::HoleComponent>(64);
 	
 	// Load level file
 	if (file.is_open())
 	{
+		int index = -1;
 		int Startx = 32;
 		int Starty = 96;
 
@@ -375,6 +342,8 @@ void dae::LevelComponent::CreateLevel(int level)
 		{
 			for (int x = 0; x < lines[y].size(); x++)
 			{
+				index++;
+
 				if(lines[y][x] == ' ')
 					continue;
 
@@ -384,66 +353,61 @@ void dae::LevelComponent::CreateLevel(int level)
 				bool down = (y < lines.size() - 1) && IsVertical(lines[y + 1][x]);
 				bool left = (x > 0) && IsHorizontal(lines[y][x - 1]);
 				bool right = (x < lines[y].size() - 1) && IsHorizontal(lines[y][x + 1]);
-				float rotation = 0.f;
+				int rotation = 0;
 
 				switch (lines[y][x])
 				{
 				case 'S':
-					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/StartHole.png");
+					digGround->GetComponent<dae::HoleComponent>()->FillDigShape(index, 'S', 0);
 					break;
 
 				case 'B':
 					obj->AddComponent<dae::BagComponent>();
+					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+					m_LevelScene->Add(std::move(obj));
 					break;
 
 				case 'H':
-					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/HorizontalHole.png");
+					digGround->GetComponent<dae::HoleComponent>()->FillDigShape(index, 'H', 1);
 					break;
 
 				case 'V':
-					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/VerticalHole.png");
+					digGround->GetComponent<dae::HoleComponent>()->FillDigShape(index, 'V', 0);
 					break;
 
 				case'L':
-					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/LHole.png");
-
-					if (right && down)        rotation = 90.f;
-					else if (down && left)    rotation = 180.f;
-					else if (left && up)      rotation = 270.f;
-
-					obj->GetComponent<dae::RenderComponent>()->SetRotation(rotation);
+					if (right && down)        rotation = 1;
+					else if (down && left)    rotation = 2;
+					else if (left && up)      rotation = 3;
+					
+					digGround->GetComponent<dae::HoleComponent>()->FillDigShape(index, 'L', rotation);
 					
 					break;
 
 				case 'T':
-					obj->AddComponent<dae::RenderComponent>()->SetTexture("media/Hole/THole.png");
-
-					if (up && left && down)        rotation = 90.f;
-					else if (right && up && left)    rotation = 180.f;
-					else if (down && right && up)      rotation = 270.f;
-
-					obj->GetComponent<dae::RenderComponent>()->SetRotation(rotation);
+					if (up && left && down)        rotation = 1;
+					else if (right && up && left)  rotation = 2;
+					else if (down && right && up)  rotation = 3;
+					
+					digGround->GetComponent<dae::HoleComponent>()->FillDigShape(index, 'T', rotation);
 					break;
 
 				case 'C':
 					obj->AddComponent<dae::EmeraldComponent>();
+					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+					m_LevelScene->Add(std::move(obj));
 					break;
 				}
-
-				obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
-
-				m_LevelScene->Add(std::move(obj));
 			}
-
-			auto digGround = std::make_unique<GameObject>();
-			digGround->AddComponent<HoleComponent>(64)->DrawAllDigtiles();
-			m_LevelScene->Add(std::move(digGround));
-
-			auto player = std::make_unique<GameObject>();
-			player->AddComponent<PlayerComponent>(PlayerComponent::InputType::keyBoard, 100.f);
-			m_LevelScene->Add(std::move(player));
 		}
+
+		m_LevelScene->Add(std::move(digGround));
 	}
+
+	auto player = std::make_unique<GameObject>();
+	player->AddComponent<PlayerComponent>(PlayerComponent::InputType::keyBoard, 100.f);
+	player->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3{ 48, 112, 0 });
+	m_LevelScene->Add(std::move(player));
 }
 
 void dae::LevelComponent::NextLevel()
@@ -466,7 +430,6 @@ void dae::LevelComponent::NextLevel()
 dae::HoleComponent::HoleComponent(GameObject* owner, int tileSize)
 	: Component(owner), m_tileSize(tileSize), m_DigGrid()
 {
-	GetOwner()->AddComponent<RenderComponent>()->SetColor({1, 0, 0, 0});
 
 	int index = 0;
 	int nextLineStart = 0;
@@ -494,31 +457,120 @@ dae::HoleComponent::HoleComponent(GameObject* owner, int tileSize)
 	}
 }
 
-void dae::HoleComponent::DrawAllDigtiles()
+const void dae::HoleComponent::Render()
 {
-	int size = m_tileSize / 4;
+	//DrawAllDigTiles();
+	FillAllDigTiles();
+}
 
+void dae::HoleComponent::DrawAllDigTiles()
+{
+	int size = m_tileSize / 8;
+	
 	for (auto& tile : m_DigGrid)
 	{
-		for (int y = 0; y < 4; ++y)
+		for (int y = 0; y < 8; ++y)
 		{
-			for (int x = 0; x < 4; ++x)
+			for (int x = 0; x < 8; ++x)
 			{
-				// Optional: only draw if dug
-				//if (!tile.DigCells[y][x])
-				//	continue;
-
 				int posx = (m_tileSize / 2) + (tile.StartTilex + x * size);
 				int posy = (m_tileSize + m_tileSize / 2) + (tile.StartTiley + y * size);
-
-				GetOwner()->GetComponent<RenderComponent>()
-					->DrawRect(glm::vec2(posx, posy), glm::vec2(size, size));
+				
+				SDL_FRect rect{};
+				rect.x = (float)posx;
+				rect.y = (float)posy;
+				rect.w = (float)size;
+				rect.h = (float)size;
+	
+				Renderer::GetInstance().DrawRect({ 0, 0, 0, 0 }, rect);
 			}
 		}
 	}
 }
 
+void dae::HoleComponent::FillAllDigTiles()
+{
+	int size = m_tileSize / 8;
 
+	for (auto& tile : m_DigGrid)
+	{
+		for (int y = 0; y < 8; ++y)
+		{
+			for (int x = 0; x < 8; ++x)
+			{
+				if (!tile.DigCells[y][x])
+					continue;
+
+				int posx = (m_tileSize / 2) + (tile.StartTilex + x * size);
+				int posy = (m_tileSize + m_tileSize / 2) + (tile.StartTiley + y * size);
+
+				SDL_FRect rect{};
+				rect.x = (float)posx;
+				rect.y = (float)posy;
+				rect.w = (float)size;
+				rect.h = (float)size;
+
+				Renderer::GetInstance().FillRect({ 0, 0, 0, 0 }, rect);
+			}
+		}
+	}
+}
+
+void dae::HoleComponent::FillDigShape(int tileId, char shape, int rotation)
+{
+	bool pattern[8][8];
+
+	switch (shape)
+	{
+	case 'S':
+		memcpy(pattern, StartPattern, sizeof(pattern));
+		break;
+	case 'H':
+	case 'V':
+		memcpy(pattern, TunnlePattern, sizeof(pattern));
+		break;
+	case 'L':
+		memcpy(pattern, LShapePattern, sizeof(pattern));
+		break;
+	case 'T':
+		memcpy(pattern, TShapePattern, sizeof(pattern));
+		break;
+	}
+
+	RotateShape(pattern, rotation);
+
+	for (int y = 0; y < 8; ++y)
+	{
+		for (int x = 0; x < 8; ++x)
+		{
+			m_DigGrid[tileId].DigCells[y][x] = pattern[y][x];
+		}
+	}
+}
+
+void dae::HoleComponent::RotateShape(bool pattern[8][8], int rotationTimes)
+{
+	for (int r = 0; r < rotationTimes; r++)
+	{
+		bool temp[8][8];
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				temp[x][7 - y] = pattern[y][x];
+			}
+		}
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				pattern[y][x] = temp[y][x];
+			}
+		}
+	}
+}
 
 //------------------------------------
 //	Emerald Component
