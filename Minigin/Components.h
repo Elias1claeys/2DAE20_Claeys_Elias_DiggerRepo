@@ -76,9 +76,14 @@ namespace dae
 	class RenderComponent : public Component
 	{
 	private:
+		//TextureRedering
 		std::shared_ptr<Texture2D> m_texture{};
 		float m_rotationAngle{ 0.f };
 		glm::vec2 m_size{ 0, 0 };
+
+		std::vector<SDL_FRect> m_FilledRects{};
+		std::vector<SDL_FRect> m_DrawnRects{};
+		SDL_Color m_Color{};
 
 	public:
 		void Render() const;
@@ -86,6 +91,11 @@ namespace dae
 		void SetTexture(SDL_Texture* texture);
 		void SetRotation(float angle){m_rotationAngle = angle;}
 		void SetSize(const glm::vec2& size) { m_size = size; }
+		
+
+		void DrawRect(const glm::vec2& position, const glm::vec2& size);
+		void FillRect(const glm::vec2& position, const glm::vec2& size);
+		void SetColor(const SDL_Color& color);
 
 		RenderComponent(GameObject* owner);
 		virtual ~RenderComponent() = default;
@@ -187,7 +197,7 @@ namespace dae
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 
-		void Update();
+		void Update() override;
 
         PlayerComponent(GameObject* owner, InputType input, float speed);
 		virtual ~PlayerComponent() = default;
@@ -206,7 +216,7 @@ namespace dae
 	{
 	private:
 		std::vector<GameObject*> m_LevelObjects;
-		Scene* m_CurrentScene{};
+		Scene* m_LevelScene{};
 		int m_CurrentLevel{ 1 };
 
 		bool IsHorizontal(char c);
@@ -217,7 +227,7 @@ namespace dae
 		void CreateLevel(int level);
 		void NextLevel();
 
-		LevelComponent(GameObject* owner, Scene* currentScene);
+		LevelComponent(GameObject* owner);
 		virtual ~LevelComponent() = default;
 		LevelComponent(const LevelComponent& other) = delete;
 		LevelComponent(LevelComponent&& other) = delete;
@@ -258,5 +268,51 @@ namespace dae
 		BagComponent(BagComponent&& other) = delete;
 		BagComponent& operator=(const BagComponent& other) = delete;
 		BagComponent& operator=(BagComponent&& other) = delete;
+	};
+
+	//-------------------------------
+	//	Hole Component
+	//-------------------------------
+
+	class HoleComponent : public Component
+	{
+	private:
+
+		struct Tile
+		{
+			int StartTilex;
+			int StartTiley;
+			bool DigCells[8][8];
+		};
+
+		Tile m_DigGrid[150];
+		int m_tileSize;
+
+	public:
+
+		void DrawAllDigtiles();
+
+		HoleComponent(GameObject* owner, int tileSize);
+		virtual ~HoleComponent() = default;
+		HoleComponent(const HoleComponent& other) = delete;
+		HoleComponent(HoleComponent&& other) = delete;
+		HoleComponent& operator=(const HoleComponent& other) = delete;
+		HoleComponent& operator=(HoleComponent&& other) = delete;
+	};
+
+	//-------------------------------
+	//  Collision Component
+	//-------------------------------
+
+	class CollisionComponent : public Component
+	{
+	public:
+
+		CollisionComponent(GameObject* owner);
+		virtual ~CollisionComponent() = default;
+		CollisionComponent(const CollisionComponent& other) = delete;
+		CollisionComponent(CollisionComponent&& other) = delete;
+		CollisionComponent& operator=(const CollisionComponent& other) = delete;
+		CollisionComponent& operator=(CollisionComponent&& other) = delete;
 	};
 }

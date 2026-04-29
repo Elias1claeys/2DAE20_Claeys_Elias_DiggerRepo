@@ -7,6 +7,7 @@
 #include "InputManager.h"
 #include "Renderer.h"
 #include "SceneManager.h"
+#include "Scene.h"
 
 #include <filesystem>
 #include <fstream>
@@ -88,6 +89,16 @@ void dae::RenderComponent::Render() const
 		const auto& pos = GetOwner()->GetComponent<TransformComponent>()->GetWorldPosition();
 		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
 	}
+
+	for (auto& rect : m_DrawnRects)
+	{
+		Renderer::GetInstance().DrawRect(m_Color, rect);
+	}
+
+	for (auto& rect : m_FilledRects)
+	{
+		Renderer::GetInstance().FillRect(m_Color, rect);
+	}
 }
 
 void dae::RenderComponent::SetTexture(const std::string& filename)
@@ -100,6 +111,33 @@ void dae::RenderComponent::SetTexture(SDL_Texture* texture)
 {
 	m_texture = std::make_shared<Texture2D>(texture);
 	m_size = m_texture->GetSize();
+}
+
+void dae::RenderComponent::DrawRect(const glm::vec2& position, const glm::vec2& size)
+{
+	SDL_FRect rect;
+	rect.x = position.x;
+	rect.y = position.y;
+	rect.w = size.x;
+	rect.h = size.y;
+
+	m_DrawnRects.push_back(rect);
+}
+
+void dae::RenderComponent::FillRect(const glm::vec2& position, const glm::vec2& size)
+{
+	SDL_FRect rect;
+	rect.x = position.x;
+	rect.y = position.y;
+	rect.w = size.x;
+	rect.h = size.y;
+
+	m_FilledRects.push_back(rect);
+}
+
+void dae::RenderComponent::SetColor(const SDL_Color& color)
+{
+	m_Color = color;
 }
 
 //-------------------------------
@@ -269,20 +307,22 @@ void dae::PlayerComponent::SetDirection(glm::vec3 dir)
 
 void dae::PlayerComponent::DoDamage()
 {
-	Notify(Event{ make_sdbm_hash("PlayerHit") }, GetOwner());
-	Notify(Event{ make_sdbm_hash("PlayerScored") }, GetOwner());
+	EventId PLAYER_SCORED = make_sdbm_hash("PlayerScored");
+
+	Notify(Event{ PLAYER_SCORED }, GetOwner());
 }
 
 //-------------------------------
 // Level component
 //-------------------------------
 
-dae::LevelComponent::LevelComponent(GameObject* owner, Scene* currentScene)
-	: Component(owner), m_CurrentScene(currentScene)
+dae::LevelComponent::LevelComponent(GameObject* owner)
+	: Component(owner)
 {
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
+	m_LevelScene = &dae::SceneManager::GetInstance().CreateScene();
 	CreateLevel(m_CurrentLevel);
 }
 
@@ -311,14 +351,12 @@ void dae::LevelComponent::CreateLevel(int level)
 	{
 		for (float y = 0; y <= 10; y++)
 		{
-			auto obj = std::make_unique<GameObject>();
-			GameObject* rawPtr = obj.get();
+			auto BackGround = std::make_unique<GameObject>();
 
-			obj->AddComponent<RenderComponent>()->SetTexture(levelBack);;
-			obj->GetComponent<TransformComponent>()->SetLocalPosition(x * tileSize, tileSize + y * tileSize);
+			BackGround->AddComponent<RenderComponent>()->SetTexture(levelBack);;
+			BackGround->GetComponent<TransformComponent>()->SetLocalPosition(x * tileSize, tileSize + y * tileSize);
 
-			m_CurrentScene->Add(std::move(obj));
-			m_LevelObjects.push_back(rawPtr);
+			m_LevelScene->Add(std::move(BackGround));
 		}
 	}
 	
@@ -341,7 +379,6 @@ void dae::LevelComponent::CreateLevel(int level)
 					continue;
 
 				auto obj = std::make_unique<GameObject>();
-				GameObject* rawPtr = obj.get();
 
 				bool up = (y > 0) && IsVertical(lines[y - 1][x]);
 				bool down = (y < lines.size() - 1) && IsVertical(lines[y + 1][x]);
@@ -395,36 +432,93 @@ void dae::LevelComponent::CreateLevel(int level)
 
 				obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 
-				m_CurrentScene->Add(std::move(obj));
-				m_LevelObjects.push_back(rawPtr);
+				m_LevelScene->Add(std::move(obj));
 			}
+
+			auto digGround = std::make_unique<GameObject>();
+			digGround->AddComponent<HoleComponent>(64)->DrawAllDigtiles();
+			m_LevelScene->Add(std::move(digGround));
+
+			auto player = std::make_unique<GameObject>();
+			player->AddComponent<PlayerComponent>(PlayerComponent::InputType::keyBoard, 100.f);
+			m_LevelScene->Add(std::move(player));
 		}
 	}
-
-	//Adding the player to the level
-	auto player = std::make_unique<dae::GameObject>();
-	GameObject* rawPtr = player.get();
-	player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
-	player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 49, 112, 0 });
-	m_CurrentScene->Add(std::move(player));
-	m_LevelObjects.push_back(rawPtr);
 }
 
 void dae::LevelComponent::NextLevel()
 {
-	for (auto& obj: m_LevelObjects )
-	{
-		m_CurrentScene->Remove(*obj);
-	}
-	m_LevelObjects.clear();
+	m_LevelScene->RemoveAll();
 
 	if (m_CurrentLevel == 8)
 		m_CurrentLevel = 1;
 	else
 		m_CurrentLevel++;
 
+	GetOwner()->RemoveComponent<HoleComponent>();
 	CreateLevel(m_CurrentLevel);
 }
+
+//------------------------------------
+//	Hole Component
+//------------------------------------
+
+dae::HoleComponent::HoleComponent(GameObject* owner, int tileSize)
+	: Component(owner), m_tileSize(tileSize), m_DigGrid()
+{
+	GetOwner()->AddComponent<RenderComponent>()->SetColor({1, 0, 0, 0});
+
+	int index = 0;
+	int nextLineStart = 0;
+
+	for (auto& tile : m_DigGrid)
+	{
+		tile.StartTilex = tileSize * index;
+		tile.StartTiley = tileSize * nextLineStart;
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				tile.DigCells[y][x] = false;
+			}
+		}
+
+		index++;
+
+		if (index == 15)
+		{
+			index = 0;
+			nextLineStart++;
+		}
+	}
+}
+
+void dae::HoleComponent::DrawAllDigtiles()
+{
+	int size = m_tileSize / 4;
+
+	for (auto& tile : m_DigGrid)
+	{
+		for (int y = 0; y < 4; ++y)
+		{
+			for (int x = 0; x < 4; ++x)
+			{
+				// Optional: only draw if dug
+				//if (!tile.DigCells[y][x])
+				//	continue;
+
+				int posx = (m_tileSize / 2) + (tile.StartTilex + x * size);
+				int posy = (m_tileSize + m_tileSize / 2) + (tile.StartTiley + y * size);
+
+				GetOwner()->GetComponent<RenderComponent>()
+					->DrawRect(glm::vec2(posx, posy), glm::vec2(size, size));
+			}
+		}
+	}
+}
+
+
 
 //------------------------------------
 //	Emerald Component
@@ -445,3 +539,4 @@ dae::BagComponent::BagComponent(GameObject* owner)
 {
 	GetOwner()->AddComponent<RenderComponent>()->SetTexture("media/Bag/bag.png");
 }
+

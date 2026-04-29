@@ -113,4 +113,16 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 	SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst, angle, &center, SDL_FLIP_NONE);
 }
 
+void dae::Renderer::DrawRect(const SDL_Color& color, SDL_FRect rect) const
+{
+	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderRect(GetSDLRenderer(), &rect);
+}
+
+void dae::Renderer::FillRect(const SDL_Color& color, SDL_FRect rect) const
+{
+	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderFillRect(GetSDLRenderer(), &rect);
+}
+
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
