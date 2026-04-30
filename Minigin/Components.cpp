@@ -264,6 +264,15 @@ void dae::PlayerComponent::Update()
 
 	if (m_MoveDirection != glm::vec3(0, 0, 0))
 	{
+		if ((m_MoveDirection == glm::vec3(-1, 0, 0) && pos.x <= 32) ||
+			(m_MoveDirection == glm::vec3(1, 0, 0) && pos.x >= 965) ||
+			(m_MoveDirection == glm::vec3(0, 1, 0) && pos.y >= 709) ||
+			(m_MoveDirection == glm::vec3(0, -1, 0) && pos.y <= 96))
+		{
+			m_MoveDirection = glm::vec3(0, 0, 0);
+			return;
+		}
+
 		EventId PLAYER_MOVED = make_sdbm_hash("PlayerMoved");
 		Notify(Event{ PLAYER_MOVED }, GetOwner());
 
@@ -483,7 +492,7 @@ dae::HoleComponent::HoleComponent(GameObject* owner, int tileSize)
 
 const void dae::HoleComponent::Render()
 {
-	DrawAllDigTiles();
+	//DrawAllDigTiles();
 	FillAllDigTiles();
 }
 
