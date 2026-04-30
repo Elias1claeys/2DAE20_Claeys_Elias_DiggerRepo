@@ -88,6 +88,7 @@ namespace dae
 		void SetTexture(SDL_Texture* texture);
 		void SetRotation(float angle){m_rotationAngle = angle;}
 		void SetSize(const glm::vec2& size) { m_size = size; }
+		glm::vec2 GetSize();
 
 		RenderComponent(GameObject* owner);
 		virtual ~RenderComponent() = default;
@@ -336,6 +337,7 @@ namespace dae
 
 		const void Render() override;
 		void FillDigShape(int tileId, char shape, int rotationTimes);
+		void DigTile(glm::vec3 playerPos, glm::vec2 playerSize);
 
 		HoleComponent(GameObject* owner, int tileSize);
 		virtual ~HoleComponent() = default;

@@ -31,3 +31,23 @@ void dae::HealthObserver::OnNotify(GameObject*, Event event)
 
 	m_pHealthDisplay->GetComponent<TextComponent>()->SetText(std::to_string(m_Health));
 }
+
+//------------------------------------
+//	Dig Observer
+//------------------------------------
+
+dae::DigObserver::DigObserver(GameObject* digGround)
+	:m_pDigGround{digGround}
+{
+}
+
+void dae::DigObserver::OnNotify(GameObject* gameObject, Event event)
+{
+	if (event.id == make_sdbm_hash("PlayerMoved"))
+	{
+		glm::vec3 playerPos = gameObject->GetComponent<TransformComponent>()->GetWorldPosition();
+		glm::vec2 playerSize = gameObject->GetComponent<RenderComponent>()->GetSize();
+
+		m_pDigGround->GetComponent<HoleComponent>()->DigTile(playerPos, playerSize);
+	}
+}

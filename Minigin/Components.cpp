@@ -103,6 +103,11 @@ void dae::RenderComponent::SetTexture(SDL_Texture* texture)
 	m_size = m_texture->GetSize();
 }
 
+glm::vec2 dae::RenderComponent::GetSize()
+{
+	return m_texture->GetSize();
+}
+
 //-------------------------------
 // Text Component
 //-------------------------------
@@ -257,15 +262,23 @@ void dae::PlayerComponent::Update()
 {
 	glm::vec3 pos = m_Transform->GetWorldPosition();
 
-	pos.x += m_MoveDirection.x * m_Speed * Time::GetInstance().GetDeltaTime();
-	pos.y += m_MoveDirection.y * m_Speed * Time::GetInstance().GetDeltaTime();
+	if (m_MoveDirection != glm::vec3(0, 0, 0))
+	{
+		EventId PLAYER_MOVED = make_sdbm_hash("PlayerMoved");
+		Notify(Event{ PLAYER_MOVED }, GetOwner());
 
-	m_Transform->SetLocalPosition(pos);
+		pos.x += m_MoveDirection.x * m_Speed * Time::GetInstance().GetDeltaTime();
+		pos.y += m_MoveDirection.y * m_Speed * Time::GetInstance().GetDeltaTime();
+
+		m_Transform->SetLocalPosition(pos);
+	}
 }
 
 void dae::PlayerComponent::SetDirection(glm::vec3 dir)
 {
 	m_MoveDirection = dir;
+
+	
 }
 
 void dae::PlayerComponent::DoDamage()
@@ -325,6 +338,8 @@ void dae::LevelComponent::CreateLevel(int level)
 
 	auto digGround = std::make_unique<GameObject>();
 	digGround->AddComponent<dae::HoleComponent>(64);
+
+	std::vector<std::unique_ptr<GameObject>> levelObjects;
 	
 	// Load level file
 	if (file.is_open())
@@ -364,7 +379,7 @@ void dae::LevelComponent::CreateLevel(int level)
 				case 'B':
 					obj->AddComponent<dae::BagComponent>();
 					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
-					m_LevelScene->Add(std::move(obj));
+					levelObjects.push_back(std::move(obj));
 					break;
 
 				case 'H':
@@ -395,18 +410,27 @@ void dae::LevelComponent::CreateLevel(int level)
 				case 'C':
 					obj->AddComponent<dae::EmeraldComponent>();
 					obj->GetComponent<dae::TransformComponent>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
-					m_LevelScene->Add(std::move(obj));
+					levelObjects.push_back(std::move(obj));
 					break;
 				}
 			}
 		}
-
-		m_LevelScene->Add(std::move(digGround));
 	}
 
+	
+	std::unique_ptr<DigObserver> digObserver = std::make_unique<DigObserver>(digGround.get());
 	auto player = std::make_unique<GameObject>();
 	player->AddComponent<PlayerComponent>(PlayerComponent::InputType::keyBoard, 100.f);
 	player->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3{ 48, 112, 0 });
+	player->GetComponent<PlayerComponent>()->AddObserver(std::move(digObserver));
+
+	m_LevelScene->Add(std::move(digGround));
+
+	for(auto& obj : levelObjects)
+	{
+		m_LevelScene->Add(std::move(obj));
+	}
+
 	m_LevelScene->Add(std::move(player));
 }
 
@@ -459,7 +483,7 @@ dae::HoleComponent::HoleComponent(GameObject* owner, int tileSize)
 
 const void dae::HoleComponent::Render()
 {
-	//DrawAllDigTiles();
+	DrawAllDigTiles();
 	FillAllDigTiles();
 }
 
@@ -568,6 +592,45 @@ void dae::HoleComponent::RotateShape(bool pattern[8][8], int rotationTimes)
 			{
 				pattern[y][x] = temp[y][x];
 			}
+		}
+	}
+}
+
+void dae::HoleComponent::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
+{
+	float offsetX = (float)m_tileSize / 2;
+	float offsetY = (float)m_tileSize + (float)m_tileSize / 2;
+
+	playerSize.x /= 2;
+	playerSize.y /= 2;
+
+	float left = playerPos.x - offsetX;
+	float right = playerPos.x + playerSize.x - offsetX;
+	float bottem = playerPos.y + playerSize.y - offsetY;
+	float top = playerPos.y - offsetY;
+
+	int cellSize = m_tileSize / 8;
+
+	for (auto y = top; y < bottem; y += cellSize)
+	{
+		for (auto x = left; x < right; x += cellSize)
+		{
+			int tileX = int(x) / m_tileSize;
+			int tileY = int(y) / m_tileSize;
+
+			// Bounds check
+			if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
+				continue;
+
+			int tileId = tileY * 15 + tileX;
+
+			int localX = int(x) % m_tileSize;
+			int localY = int(y) % m_tileSize;
+
+			int cellX = localX / cellSize;
+			int cellY = localY / cellSize;
+
+			m_DigGrid[tileId].DigCells[cellY][cellX] = true;
 		}
 	}
 }
