@@ -551,22 +551,22 @@ void dae::HoleComponent::FillAllDigTiles()
 
 void dae::HoleComponent::FillDigShape(int tileId, char shape, int rotation)
 {
-	bool pattern[8][8];
+	std::array<std::array<bool, 8>, 8> pattern{};
 
 	switch (shape)
 	{
 	case 'S':
-		memcpy(pattern, StartPattern, sizeof(pattern));
+		pattern = StartPattern;
 		break;
 	case 'H':
 	case 'V':
-		memcpy(pattern, TunnlePattern, sizeof(pattern));
+		pattern = TunnlePattern;
 		break;
 	case 'L':
-		memcpy(pattern, LShapePattern, sizeof(pattern));
+		pattern = LShapePattern;
 		break;
 	case 'T':
-		memcpy(pattern, TShapePattern, sizeof(pattern));
+		pattern = TShapePattern;
 		break;
 	}
 
@@ -581,7 +581,7 @@ void dae::HoleComponent::FillDigShape(int tileId, char shape, int rotation)
 	}
 }
 
-void dae::HoleComponent::RotateShape(bool pattern[8][8], int rotationTimes)
+void dae::HoleComponent::RotateShape(std::array<std::array<bool, 8>, 8> &pattern, int rotationTimes)
 {
 	for (int r = 0; r < rotationTimes; r++)
 	{

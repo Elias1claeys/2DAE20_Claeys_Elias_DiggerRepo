@@ -34,7 +34,7 @@ void ControllerInput::Impl::ProcessInput()
 }
 
 ControllerInput::ControllerInput()
-    : m_Impl(std::make_unique<Impl>())
+    : m_pImpl(std::make_unique<Impl>())
 { 
 }
 
@@ -42,20 +42,20 @@ ControllerInput::~ControllerInput() = default;
 
 void ControllerInput::ProcessInput()
 {
-    m_Impl->ProcessInput();
+    m_pImpl->ProcessInput();
 }
 
 bool ControllerInput::IsDownThisFrame(unsigned int button) const
 {
-    return (m_Impl->m_ButtonsPressedThisFrame & button) != 0;
+    return (m_pImpl->m_ButtonsPressedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsUpThisFrame(unsigned int button) const
 {
-    return (m_Impl->m_ButtonsReleasedThisFrame & button) != 0;
+    return (m_pImpl->m_ButtonsReleasedThisFrame & button) != 0;
 }
 
 bool ControllerInput::IsPressed(unsigned int button) const
 {
-    return (m_Impl->m_CurrentState.Gamepad.wButtons & button) != 0;
+    return (m_pImpl->m_CurrentState.Gamepad.wButtons & button) != 0;
 }

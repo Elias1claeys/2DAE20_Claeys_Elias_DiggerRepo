@@ -5,6 +5,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <glm/glm.hpp>
 #include "Subject.h"
+#include <array>
 
 
 namespace dae
@@ -275,14 +276,14 @@ namespace dae
 		{
 			int StartTilex;
 			int StartTiley;
-			bool DigCells[8][8];
+			std::array<std::array<bool, 8>, 8> DigCells;
 		};
 
 		Tile m_DigGrid[150];
 		int m_tileSize;
 
-		bool StartPattern[8][8] =
-		{
+		std::array<std::array<bool, 8>, 8> StartPattern
+		{{
 			{0,0,1,1,1,1,0,0},
 			{0,1,1,1,1,1,1,0},
 			{1,1,1,1,1,1,1,1},
@@ -291,10 +292,10 @@ namespace dae
 			{1,1,1,1,1,1,1,1},
 			{0,1,1,1,1,1,1,0},
 			{0,0,1,1,1,1,0,0}
-		};
+		}};
 
-		bool TunnlePattern[8][8] =
-		{
+		std::array<std::array<bool, 8>, 8> TunnlePattern
+		{{
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0},
@@ -303,10 +304,10 @@ namespace dae
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0}
-		};
+		}};
 
-		bool LShapePattern[8][8] =
-		{
+		std::array<std::array<bool, 8>, 8> LShapePattern =
+		{{
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,1,1},
@@ -315,10 +316,10 @@ namespace dae
 			{0,0,1,1,1,1,1,1},
 			{0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0}
-		};
+		}};
 
-		bool TShapePattern[8][8] =
-		{
+		std::array<std::array<bool, 8>, 8> TShapePattern =
+		{{
 			{0,0,1,1,1,1,0,0},
 			{0,0,1,1,1,1,0,0},
 			{1,1,1,1,1,1,1,1},
@@ -327,11 +328,11 @@ namespace dae
 			{1,1,1,1,1,1,1,1},
 			{0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0}
-		};
+		}};
 
 		void DrawAllDigTiles();
 		void FillAllDigTiles();
-		void RotateShape(bool pattern[8][8], int rotationTimes);
+		void RotateShape(std::array<std::array<bool, 8>, 8> &pattern, int rotationTimes);
 
 	public:
 
