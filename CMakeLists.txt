@@ -13,58 +13,13 @@ else()
   set(TARGET_PARAM WIN32)
 endif()
 
-#Minigin files
-add_library(Minigin STATIC
-  Minigin/Core/Minigin.cpp
-  Minigin/Core/GameObject.cpp
-  Minigin/Core/Scene.cpp
-  Minigin/Core/SceneManager.cpp
-  Minigin/Components/Transform.cpp
-  Minigin/Components/RenderTexture.cpp
-  Minigin/Components/Text.cpp
-  Minigin/Components/FPS.cpp
-  Minigin/Components/Rotator.cpp
-  Minigin/Event/Subject.cpp
-  Minigin/Input/InputManager.cpp
-  Minigin/Input/ControllerInput.cpp 
-  Minigin/Rendering/Renderer.cpp
-  Minigin/Rendering/Font.cpp
-  Minigin/Rendering/Texture2D.cpp
-  Minigin/Resources/ResourceManager.cpp
-)
-
-target_include_directories(Minigin PUBLIC
-  ${CMAKE_SOURCE_DIR}/Minigin
-)
-
-#Digger files
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  Digger/Main.cpp
-  Digger/Bag/Bag.cpp
-  Digger/Emerald/Emerald.cpp
-  Digger/Hole/Hole.cpp
-  Digger/Level/Level.cpp
-  Digger/Level/LevelControls.cpp
-  Digger/Player/Player.cpp
-  Digger/Player/PlayerControls.cpp
-  Digger/Observers/Digged.cpp
-  Digger/Observers/LostHealth.cpp 
-  Digger/Observers/Scored.cpp
-)
-
-target_include_directories(${TARGET_NAME} PUBLIC
-  ${CMAKE_SOURCE_DIR}/Digger
-)
-
-target_link_libraries(${TARGET_NAME} PUBLIC
-  Minigin
-)
-
-# enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-
 include(FetchContent)
-# add glm
+
+# ============================================================
+# External dependencies 
+# ============================================================
+
+# GLM
 find_package(glm CONFIG QUIET)
 if(NOT glm_FOUND)
   FetchContent_Declare(
@@ -76,7 +31,7 @@ if(NOT glm_FOUND)
   FetchContent_MakeAvailable(glm)
 endif()
 
-# Add SDL3
+# SDL3
 find_package(SDL3 3.4 CONFIG QUIET)
 if(NOT SDL3_FOUND)
   if (WIN32)
@@ -101,7 +56,7 @@ if(NOT SDL3_FOUND)
   endif()
 endif()
 
-# Add SDL3_ttf
+# SDL3_ttf
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
 if(NOT SDL3_ttf_FOUND)
   if (WIN32)
@@ -135,8 +90,8 @@ if(NOT SDL3_ttf_FOUND)
   endif()
 endif()
 
+# VLD
 if (WIN32)
-  # Add VLD (Visual Leak Detector) for memory leak detection on Windows
   find_package(VLD CONFIG)
 endif()
 
@@ -166,19 +121,7 @@ ${sdl3_SOURCE_DIR}/include)
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
 target_compile_features(imgui PUBLIC cxx_std_20)
 
-
-
-# Add steam if available
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
-find_package(Steamworks QUIET)
-
-target_include_directories("${TARGET_NAME}" PUBLIC
-  ${CMAKE_SOURCE_DIR}/Minigin/
-  ${imgui_SOURCE_DIR}
-  ${VLD_INCLUDE_DIR}
-)
-
-#imgui_plot
+# imgui_plot
 FetchContent_Declare(
     imgui_plot
     GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
@@ -187,6 +130,38 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(imgui_plot)
 
+# SteamWorks
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
+find_package(Steamworks QUIET)
+
+# ============================================================
+# Minigin static library
+# ============================================================
+
+add_library(Minigin STATIC
+  Minigin/Core/Minigin.cpp
+  Minigin/Core/GameObject.cpp
+  Minigin/Core/Scene.cpp
+  Minigin/Core/SceneManager.cpp
+  Minigin/Components/Transform.cpp
+  Minigin/Components/RenderTexture.cpp
+  Minigin/Components/Text.cpp
+  Minigin/Components/FPS.cpp
+  Minigin/Components/Rotator.cpp
+  Minigin/Event/Subject.cpp
+  Minigin/Input/InputManager.cpp
+  Minigin/Input/ControllerInput.cpp 
+  Minigin/Rendering/Renderer.cpp
+  Minigin/Rendering/Font.cpp
+  Minigin/Rendering/Texture2D.cpp
+  Minigin/Resources/ResourceManager.cpp
+)
+
+target_include_directories(Minigin PUBLIC
+  ${CMAKE_SOURCE_DIR}/Minigin/
+  ${imgui_SOURCE_DIR}
+  ${VLD_INCLUDE_DIR}
+)
 
 target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
@@ -196,12 +171,45 @@ target_link_libraries(Minigin PUBLIC
   ${VLD_LIBRARIES}
 )
 
+# ============================================================
+# Digger executable
+# ============================================================
+
+add_executable(${TARGET_NAME} ${TARGET_PARAM}
+  Digger/Main.cpp
+  Digger/Bag/Bag.cpp
+  Digger/Emerald/Emerald.cpp
+  Digger/Hole/Hole.cpp
+  Digger/Level/Level.cpp
+  Digger/Level/LevelControls.cpp
+  Digger/Player/Player.cpp
+  Digger/Player/PlayerControls.cpp
+  Digger/Observers/Digged.cpp
+  Digger/Observers/LostHealth.cpp 
+  Digger/Observers/Scored.cpp
+)
+
+target_include_directories(${TARGET_NAME} PUBLIC
+  ${CMAKE_SOURCE_DIR}/Digger
+)
+
+target_link_libraries(${TARGET_NAME} PUBLIC
+  Minigin
+)
+
+# enable c++20 features
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
 if(WIN32)
   # Link XInput for controller support on Windows
   target_link_libraries(${TARGET_NAME} PUBLIC Xinput)
 endif()
 
 
+
+# ============================================================
+# Platform-specific post-build / packaging
+# ============================================================
 
 if(MSVC)
   # compile at warning level 4 + treat warnings as errors
