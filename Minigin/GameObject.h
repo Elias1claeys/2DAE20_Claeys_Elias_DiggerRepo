@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
-#include "Components.h"
+#include "BaseComponent.h"
 #include "Renderer.h"
 
 namespace dae

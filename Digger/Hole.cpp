@@ -1,0 +1,185 @@
+#include "Hole.h"
+
+dae::Hole::Hole(GameObject* owner, int tileSize)
+	: Component(owner), m_tileSize(tileSize), m_DigGrid()
+{
+
+	int index = 0;
+	int nextLineStart = 0;
+
+	for (auto& tile : m_DigGrid)
+	{
+		tile.StartTilex = tileSize * index;
+		tile.StartTiley = tileSize * nextLineStart;
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				tile.DigCells[y][x] = false;
+			}
+		}
+
+		index++;
+
+		if (index == 15)
+		{
+			index = 0;
+			nextLineStart++;
+		}
+	}
+}
+
+const void dae::Hole::Render()
+{
+	//DrawAllDigTiles();
+	FillAllDigTiles();
+}
+
+void dae::Hole::DrawAllDigTiles()
+{
+	int size = m_tileSize / 8;
+
+	for (auto& tile : m_DigGrid)
+	{
+		for (int y = 0; y < 8; ++y)
+		{
+			for (int x = 0; x < 8; ++x)
+			{
+				int posx = (m_tileSize / 2) + (tile.StartTilex + x * size);
+				int posy = (m_tileSize + m_tileSize / 2) + (tile.StartTiley + y * size);
+
+				SDL_FRect rect{};
+				rect.x = (float)posx;
+				rect.y = (float)posy;
+				rect.w = (float)size;
+				rect.h = (float)size;
+
+				Renderer::GetInstance().DrawRect({ 0, 0, 0, 0 }, rect);
+			}
+		}
+	}
+}
+
+void dae::Hole::FillAllDigTiles()
+{
+	int size = m_tileSize / 8;
+
+	for (auto& tile : m_DigGrid)
+	{
+		for (int y = 0; y < 8; ++y)
+		{
+			for (int x = 0; x < 8; ++x)
+			{
+				if (!tile.DigCells[y][x])
+					continue;
+
+				int posx = (m_tileSize / 2) + (tile.StartTilex + x * size);
+				int posy = (m_tileSize + m_tileSize / 2) + (tile.StartTiley + y * size);
+
+				SDL_FRect rect{};
+				rect.x = (float)posx;
+				rect.y = (float)posy;
+				rect.w = (float)size;
+				rect.h = (float)size;
+
+				Renderer::GetInstance().FillRect({ 0, 0, 0, 0 }, rect);
+			}
+		}
+	}
+}
+
+void dae::Hole::FillDigShape(int tileId, char shape, int rotation)
+{
+	std::array<std::array<bool, 8>, 8> pattern{};
+
+	switch (shape)
+	{
+	case 'S':
+		pattern = StartPattern;
+		break;
+	case 'H':
+	case 'V':
+		pattern = TunnlePattern;
+		break;
+	case 'L':
+		pattern = LShapePattern;
+		break;
+	case 'T':
+		pattern = TShapePattern;
+		break;
+	}
+
+	RotateShape(pattern, rotation);
+
+	for (int y = 0; y < 8; ++y)
+	{
+		for (int x = 0; x < 8; ++x)
+		{
+			m_DigGrid[tileId].DigCells[y][x] = pattern[y][x];
+		}
+	}
+}
+
+void dae::Hole::RotateShape(std::array<std::array<bool, 8>, 8>& pattern, int rotationTimes)
+{
+	for (int r = 0; r < rotationTimes; r++)
+	{
+		bool temp[8][8];
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				temp[x][7 - y] = pattern[y][x];
+			}
+		}
+
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				pattern[y][x] = temp[y][x];
+			}
+		}
+	}
+}
+
+void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
+{
+	float offsetX = (float)m_tileSize / 2;
+	float offsetY = (float)m_tileSize + (float)m_tileSize / 2;
+
+	playerSize.x /= 2;
+	playerSize.y /= 2;
+
+	float left = playerPos.x - offsetX;
+	float right = playerPos.x + playerSize.x - offsetX;
+	float bottem = playerPos.y + playerSize.y - offsetY;
+	float top = playerPos.y - offsetY;
+
+	int cellSize = m_tileSize / 8;
+
+	for (auto y = top; y < bottem; y += cellSize)
+	{
+		for (auto x = left; x < right; x += cellSize)
+		{
+			int tileX = int(x) / m_tileSize;
+			int tileY = int(y) / m_tileSize;
+
+			// Bounds check
+			if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
+				continue;
+
+			int tileId = tileY * 15 + tileX;
+
+			int localX = int(x) % m_tileSize;
+			int localY = int(y) % m_tileSize;
+
+			int cellX = localX / cellSize;
+			int cellY = localY / cellSize;
+
+			m_DigGrid[tileId].DigCells[cellY][cellX] = true;
+		}
+	}
+}

@@ -1,25 +1,29 @@
-class GameObject;
 
-class Component
+namespace dae 
 {
-private:
-	GameObject* m_pOwner{};
-	bool m_markedForDelete{ false };
+	class GameObject;
 
-public:
+	class Component
+	{
+	private:
+		GameObject* m_pOwner{};
+		bool m_markedForDelete{ false };
 
-	const virtual void Render() {}
-	virtual void Update() {}
-	void MarkForDelete() { m_markedForDelete = true; }
-	bool IsMarkedForDelete() const { return m_markedForDelete; }
+	public:
 
-	virtual ~Component() = default;
-	Component(const Component& other) = delete;
-	Component(Component&& other) = delete;
-	Component& operator=(const Component& other) = delete;
-	Component& operator=(Component&& other) = delete;
+		const virtual void Render() {}
+		virtual void Update() {}
+		void MarkForDelete() { m_markedForDelete = true; }
+		bool IsMarkedForDelete() const { return m_markedForDelete; }
 
-protected:
-	explicit Component(GameObject* owner) : m_pOwner(owner) {}
-	GameObject* GetOwner() const { return m_pOwner; }
-};
+		virtual ~Component() = default;
+		Component(const Component& other) = delete;
+		Component(Component&& other) = delete;
+		Component& operator=(const Component& other) = delete;
+		Component& operator=(Component&& other) = delete;
+
+	protected:
+		explicit Component(GameObject* owner) : m_pOwner(owner) {}
+		GameObject* GetOwner() const { return m_pOwner; }
+	};
+}

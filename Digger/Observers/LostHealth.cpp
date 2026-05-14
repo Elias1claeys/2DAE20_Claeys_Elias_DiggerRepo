@@ -1,0 +1,20 @@
+#include "LostHealth.h"
+#include "Components/Text.h"
+#include "Event.h"
+
+namespace dae
+{
+	HealthObserver::HealthObserver(GameObject* HealthDisplay)
+		: m_pHealthDisplay(HealthDisplay)
+	{
+		m_pHealthDisplay->GetComponent<Text>()->SetText(std::to_string(m_Health));
+	}
+
+	void HealthObserver::OnNotify(GameObject*, const Event& event)
+	{
+		if (event.id == make_sdbm_hash("PlayerHit"))
+			m_Health -= 1;
+
+		m_pHealthDisplay->GetComponent<Text>()->SetText(std::to_string(m_Health));
+	}
+}

@@ -28,5 +28,4 @@ namespace dae
 
 		std::vector < std::unique_ptr<GameObject>> m_objects{};
 	};
-
 }

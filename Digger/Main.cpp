@@ -9,8 +9,7 @@
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "Scene.h"
-#include "Components.h"
-#include "Observer.h"
+#include "Level/Level.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -20,7 +19,7 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto level = std::make_unique<dae::GameObject>();
-	level->AddComponent<dae::LevelComponent>();
+	level->AddComponent<dae::Level>();
 	scene.Add(std::move(level));
 
 	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);

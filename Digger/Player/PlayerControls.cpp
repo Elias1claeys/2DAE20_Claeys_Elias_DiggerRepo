@@ -1,5 +1,5 @@
-#include "Command.h"
-#include "Components.h"
+#include "PlayerControls.h"
+#include "Player.h"
 
 namespace dae
 {
@@ -7,10 +7,9 @@ namespace dae
     // Movement
     //-----------------------------
 
-    Move::Move(PlayerComponent* actor, glm::vec3 dir)
+    Move::Move(Player* actor, glm::vec3 dir)
         : GameActorCommand(actor), m_Direction(dir)
-    {
-    }
+    {}
 
     void Move::Execute(KeyState state)
     {
@@ -40,10 +39,9 @@ namespace dae
     // Attack
     //-----------------------------
 
-    Attack::Attack(PlayerComponent* actor)
+    Attack::Attack(Player* actor)
         : GameActorCommand(actor)
-    {
-    }
+    {}
 
     void Attack::Execute(KeyState state)
     {
@@ -51,25 +49,6 @@ namespace dae
         {
         case dae::KeyState::Down:
             GetGameActor()->DoDamage();
-            break;
-        }
-    }
-
-	//-----------------------------
-	//	NextLevel
-	//-----------------------------
-
-    NextLevel::NextLevel(LevelComponent* actor)
-        : m_Actor(actor)
-    {
-    }
-
-    void NextLevel::Execute(KeyState state)
-    {
-        switch (state)
-        {
-        case dae::KeyState::Down:
-            m_Actor->NextLevel();
             break;
         }
     }

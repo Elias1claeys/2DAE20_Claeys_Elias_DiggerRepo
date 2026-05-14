@@ -13,23 +13,50 @@ else()
   set(TARGET_PARAM WIN32)
 endif()
 
-# list source files here
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
+#Minigin files
+add_library(Minigin STATIC
   Minigin/Font.cpp
   Minigin/InputManager.cpp
-  Minigin/Main.cpp
   Minigin/Minigin.cpp
   Minigin/Renderer.cpp
   Minigin/ResourceManager.cpp
   Minigin/Scene.cpp
   Minigin/SceneManager.cpp
   Minigin/Texture2D.cpp
-  Minigin/Components.cpp 
-  Minigin/Command.cpp
   Minigin/GameObject.cpp  
   Minigin/ControllerInput.cpp 
   Minigin/Subject.cpp 
-  Minigin/Observer.cpp)
+ 
+  Minigin/Components/Transform.cpp
+  Minigin/Components/RenderTexture.cpp
+  Minigin/Components/Text.cpp
+  Minigin/Components/FPS.cpp
+  Minigin/Components/Rotator.cpp
+)
+
+target_include_directories(Minigin PUBLIC
+  ${CMAKE_SOURCE_DIR}
+)
+
+#Digger files
+add_executable(${TARGET_NAME} ${TARGET_PARAM}
+  Digger/Main.cpp
+  Digger/Level/Level.cpp
+  Digger/Player/Player.cpp
+  Digger/Player/PlayerControls.cpp
+  Digger/Bag.cpp
+  Digger/Level/LevelControls.cpp
+  Digger/Emerald.cpp
+  Digger/Hole.cpp
+
+  Digger/Observers/Digged.cpp
+  Digger/Observers/LostHealth.cpp 
+  Digger/Observers/Scored.cpp
+)
+
+target_link_libraries(${TARGET_NAME} PUBLIC
+  Minigin
+)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -127,7 +154,8 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_widgets.cpp
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp)
+  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+)
 
 target_include_directories(imgui PUBLIC 
 ${imgui_SOURCE_DIR} 
@@ -158,7 +186,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(imgui_plot)
 
 
-target_link_libraries("${TARGET_NAME}" PUBLIC
+target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
   glm::glm

@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Components/Transform.h"
 
 namespace dae
 {
@@ -82,17 +83,17 @@ namespace dae
 
 	void GameObject::UpdateTransForm(GameObject* child, bool keepWorldPosition)
 	{
-		if (!this->HasComponent<TransformComponent>())
-			this->AddComponent<TransformComponent>();
+		if (!this->HasComponent<Transform>())
+			this->AddComponent<Transform>();
 
-		TransformComponent* transform = this->GetComponent<TransformComponent>();
+		Transform* transform = this->GetComponent<Transform>();
 
 		if (child == nullptr)
 			transform->SetLocalPosition(transform->GetWorldPosition());
 		else
 		{
 			if (keepWorldPosition)
-				transform->SetLocalPosition(transform->GetWorldPosition() - child->GetComponent<TransformComponent>()->GetWorldPosition());
+				transform->SetLocalPosition(transform->GetWorldPosition() - child->GetComponent<Transform>()->GetWorldPosition());
 			transform->SetPositionDirty();
 		}
 	}
