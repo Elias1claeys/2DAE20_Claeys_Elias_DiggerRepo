@@ -1,6 +1,6 @@
 #include "RenderTexture.h"
 #include "Transform.h"
-#include "Minigin/ResourceManager.h"
+#include "Resources/ResourceManager.h"
 
 dae::RenderTexture::RenderTexture(GameObject* owner)
 	: Component(owner)

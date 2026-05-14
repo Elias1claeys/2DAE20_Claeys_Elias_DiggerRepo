@@ -1,6 +1,6 @@
 #pragma once
-#include "Minigin/GameObject.h"
-#include "Minigin/Texture2D.h"
+#include "Core/GameObject.h"
+#include "Rendering/Texture2D.h"
 
 namespace dae
 {

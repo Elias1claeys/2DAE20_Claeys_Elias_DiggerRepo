@@ -5,10 +5,10 @@
 #include <vld.h>
 #endif
 
-#include "Minigin.h"
-#include "SceneManager.h"
-#include "ResourceManager.h"
-#include "Scene.h"
+#include "Core/Minigin.h"
+#include "Core/SceneManager.h"
+#include "Resources/ResourceManager.h"
+#include "Core/Scene.h"
 #include "Level/Level.h"
 
 #include <filesystem>
@@ -21,19 +21,6 @@ static void load()
 	auto level = std::make_unique<dae::GameObject>();
 	level->AddComponent<dae::Level>();
 	scene.Add(std::move(level));
-
-	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	//auto scoreDisplay = std::make_unique<dae::GameObject>();
-	//scoreDisplay->AddComponent<dae::TextComponent>("5", font);
-	//auto healthObserver = std::make_unique<dae::ScoreObserver>(scoreDisplay.get());
-	//scene.Add(std::move(scoreDisplay));
-	//
-	//auto player = std::make_unique<dae::GameObject>();
-	//player->AddComponent<dae::PlayerComponent>(dae::PlayerComponent::InputType::keyBoard, 200.f);
-	//player->GetComponent<dae::TransformComponent>()->SetLocalPosition({ 100, 300, 100 });
-	//player->GetComponent<dae::PlayerComponent>()->AddObserver(std::move(healthObserver));
-	//scene.Add(std::move(player));
-
 }
 
 int main(int, char*[]) {

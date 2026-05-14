@@ -1,7 +1,7 @@
 #pragma once
-#include "Singleton.h"
+#include "Utils/Singleton.h"
 #include "ControllerInput.h"
-#include "BaseCommand.h"
+#include "Input/Command.h"
 
 namespace dae
 {

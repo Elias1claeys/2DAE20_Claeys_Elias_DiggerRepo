@@ -1,5 +1,5 @@
-#include "GameObject.h"
-#include "BaseObserver.h"
+#include "Core/GameObject.h"
+#include "Event/Observer.h"
 
 
 namespace dae

@@ -1,6 +1,6 @@
 #include "LostHealth.h"
 #include "Components/Text.h"
-#include "Event.h"
+#include "Event/Event.h"
 
 namespace dae
 {

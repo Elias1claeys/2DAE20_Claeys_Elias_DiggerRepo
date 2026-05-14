@@ -1,7 +1,7 @@
 #include "FPS.h"
 #include "Text.h"
-#include "Minigin/ResourceManager.h"
-#include "Minigin/DeltaTime.h"
+#include "Resources/ResourceManager.h"
+#include "Core/DeltaTime.h"
 
 dae::FPSComponent::FPSComponent(GameObject* owner)
 	: Component(owner)

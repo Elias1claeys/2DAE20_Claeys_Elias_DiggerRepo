@@ -1,6 +1,6 @@
 #include "Rotator.h"
 #include "Transform.h"
-#include "Minigin/DeltaTime.h"
+#include "Core/DeltaTime.h"
 
 dae::Rotator::Rotator(GameObject* owner, float rotationSpeed)
 	: Component(owner)

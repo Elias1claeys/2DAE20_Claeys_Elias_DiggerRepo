@@ -2,7 +2,7 @@
 #include <vector>
 #include <memory>
 #include "Event.h"
-#include "BaseObserver.h"
+#include "Event/Observer.h"
 
 namespace dae
 {

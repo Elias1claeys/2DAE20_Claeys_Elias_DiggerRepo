@@ -1,5 +1,5 @@
 #include "Scored.h"
-#include "Event.h"
+#include "Event/Event.h"
 #include "Components/Text.h"
 
 namespace dae

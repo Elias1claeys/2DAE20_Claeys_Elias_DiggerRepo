@@ -1,4 +1,4 @@
-#include "GameObject.h"
+#include "Core/GameObject.h"
 #include <array>
 #include <glm/glm.hpp>
 

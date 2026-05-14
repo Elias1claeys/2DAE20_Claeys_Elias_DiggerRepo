@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "GameObject.h"
+#include "Core/GameObject.h"
 
 namespace dae
 {

@@ -1,16 +1,16 @@
 #include "Level.h"
 #include "LevelControls.h"
-#include "InputManager.h"
-#include "SceneManager.h"
+#include "Input/InputManager.h"
+#include "Core/SceneManager.h"
 #include <fstream>
 
 #include "Components/RenderTexture.h"
 #include "Components/Transform.h"
-#include "Digger/Hole.h"
-#include "Digger/Bag.h"
-#include "Digger/Emerald.h"
-#include "Digger/Player/Player.h"
-#include "Digger/Observers/Digged.h"
+#include "Hole/Hole.h"
+#include "Bag/Bag.h"
+#include "Emerald/Emerald.h"
+#include "Player/Player.h"
+#include "Observers/Digged.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner)

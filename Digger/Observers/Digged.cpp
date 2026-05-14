@@ -1,8 +1,8 @@
 #include "Digged.h"
 #include "Components/Transform.h"
 #include "Components/RenderTexture.h"
-#include "Digger/Hole.h"
-#include "Event.h"
+#include "Hole/Hole.h"
+#include "Event/Event.h"
 
 namespace dae
 {

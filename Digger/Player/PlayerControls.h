@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseCommand.h"
+#include "Input/Command.h"
 
 namespace dae
 {

@@ -12,10 +12,10 @@
 //#include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "Minigin.h"
-#include "InputManager.h"
+#include "Input/InputManager.h"
 #include "SceneManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
+#include "Rendering/Renderer.h"
+#include "Resources/ResourceManager.h"
 #include "DeltaTime.h"
 
 SDL_Window* g_window{};

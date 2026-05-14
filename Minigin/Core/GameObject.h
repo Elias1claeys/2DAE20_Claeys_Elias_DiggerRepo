@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
-#include "BaseComponent.h"
-#include "Renderer.h"
+#include "Components/Component.h"
+#include "Rendering/Renderer.h"
 
 namespace dae
 {

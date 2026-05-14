@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "PlayerControls.h"
-#include "InputManager.h"
-#include "DeltaTime.h"
+#include "Input/InputManager.h"
+#include "Core/DeltaTime.h"
 #include "Components/RenderTexture.h"
 
 dae::Player::Player(GameObject* Owner, InputType input, float speed)

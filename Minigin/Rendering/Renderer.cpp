@@ -2,7 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include "Renderer.h"
-#include "SceneManager.h"
+#include "Core/SceneManager.h"
 #include "Texture2D.h"
 
 //ImGui

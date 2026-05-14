@@ -1,4 +1,4 @@
-#include "Minigin/GameObject.h"
+#include "Core/GameObject.h"
 #include <glm/glm.hpp>
 
 namespace dae

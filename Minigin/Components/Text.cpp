@@ -1,6 +1,6 @@
 #include "Text.h"
 #include "RenderTexture.h"
-#include "Minigin/Font.h"
+#include "Rendering/Font.h"
 #include <SDL3_ttf/SDL_ttf.h>
 
 dae::Text::Text(GameObject* owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)

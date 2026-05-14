@@ -15,43 +15,45 @@ endif()
 
 #Minigin files
 add_library(Minigin STATIC
-  Minigin/Font.cpp
-  Minigin/InputManager.cpp
-  Minigin/Minigin.cpp
-  Minigin/Renderer.cpp
-  Minigin/ResourceManager.cpp
-  Minigin/Scene.cpp
-  Minigin/SceneManager.cpp
-  Minigin/Texture2D.cpp
-  Minigin/GameObject.cpp  
-  Minigin/ControllerInput.cpp 
-  Minigin/Subject.cpp 
- 
+  Minigin/Core/Minigin.cpp
+  Minigin/Core/GameObject.cpp
+  Minigin/Core/Scene.cpp
+  Minigin/Core/SceneManager.cpp
   Minigin/Components/Transform.cpp
   Minigin/Components/RenderTexture.cpp
   Minigin/Components/Text.cpp
   Minigin/Components/FPS.cpp
   Minigin/Components/Rotator.cpp
+  Minigin/Event/Subject.cpp
+  Minigin/Input/InputManager.cpp
+  Minigin/Input/ControllerInput.cpp 
+  Minigin/Rendering/Renderer.cpp
+  Minigin/Rendering/Font.cpp
+  Minigin/Rendering/Texture2D.cpp
+  Minigin/Resources/ResourceManager.cpp
 )
 
 target_include_directories(Minigin PUBLIC
-  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/Minigin
 )
 
 #Digger files
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Main.cpp
+  Digger/Bag/Bag.cpp
+  Digger/Emerald/Emerald.cpp
+  Digger/Hole/Hole.cpp
   Digger/Level/Level.cpp
+  Digger/Level/LevelControls.cpp
   Digger/Player/Player.cpp
   Digger/Player/PlayerControls.cpp
-  Digger/Bag.cpp
-  Digger/Level/LevelControls.cpp
-  Digger/Emerald.cpp
-  Digger/Hole.cpp
-
   Digger/Observers/Digged.cpp
   Digger/Observers/LostHealth.cpp 
   Digger/Observers/Scored.cpp
+)
+
+target_include_directories(${TARGET_NAME} PUBLIC
+  ${CMAKE_SOURCE_DIR}/Digger
 )
 
 target_link_libraries(${TARGET_NAME} PUBLIC
