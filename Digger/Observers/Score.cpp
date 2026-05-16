@@ -2,6 +2,8 @@
 #include "Event/Event.h"
 #include "Components/Text.h"
 #include "GameEvents.h"
+#include "Emerald/Emerald.h"
+#include "Collider/Collider.h"
 
 namespace dae
 {
@@ -11,7 +13,7 @@ namespace dae
 		m_pScoreDisplay->GetComponent<Text>()->SetText(std::to_string(m_Score));
 	}
 
-	void Score::OnNotify(GameObject* , const Event& event)
+	void Score::OnNotify(GameObject* gameobject, const Event& event)
 	{
 		if (event.id == ENEMY_KILLED)
 		{
@@ -20,6 +22,9 @@ namespace dae
 		else if (event.id == EMERALD_COLLECTED)
 		{
 			m_TotalEnemarlsCollected++;
+
+			event.args[0].go->GetComponent<Emerald>()->Collect();
+			gameobject->GetComponent<Collider>()->RemoveTrigger(event.args[0].i);
 
 			if (m_TotalEnemarlsCollected == 8)
 			{

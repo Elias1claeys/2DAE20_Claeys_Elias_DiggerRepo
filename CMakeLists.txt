@@ -178,6 +178,7 @@ target_link_libraries(Minigin PUBLIC
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Main.cpp
   Digger/Bag/Bag.cpp
+  Digger/Collider/Collider.cpp
   Digger/Emerald/Emerald.cpp
   Digger/Hole/Hole.cpp
   Digger/Level/Level.cpp
@@ -186,7 +187,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Player/PlayerControls.cpp
   Digger/Observers/Digged.cpp
   Digger/Observers/LostHealth.cpp 
-  "Digger/Observers/Score.cpp"
+  Digger/Observers/Score.cpp
 )
 
 target_include_directories(${TARGET_NAME} PUBLIC

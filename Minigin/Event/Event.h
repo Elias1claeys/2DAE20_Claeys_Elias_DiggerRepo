@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "Core/GameObject.h"
 
 
 namespace dae
@@ -32,6 +33,7 @@ namespace dae
 		float f;
 		glm::vec3 v3;
 		glm::vec2 v2;
+		GameObject* go;
 	};
 
 
