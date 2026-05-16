@@ -1,5 +1,5 @@
 #include "Text.h"
-#include "RenderTexture.h"
+#include "Texture.h"
 #include "Rendering/Font.h"
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -11,9 +11,9 @@ dae::Text::Text(GameObject* owner, const std::string& text, std::shared_ptr<Font
 	, m_font(std::move(font))
 	, m_textTexture(nullptr)
 {
-	if (!owner->HasComponent<RenderTexture>())
+	if (!owner->HasComponent<Texture>())
 	{
-		owner->AddComponent<RenderTexture>();
+		owner->AddComponent<Texture>();
 	}
 }
 
@@ -32,7 +32,7 @@ void dae::Text::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		GetOwner()->GetComponent<RenderTexture>()->SetTexture(texture);
+		GetOwner()->GetComponent<Texture>()->SetTexture(texture);
 		m_needsUpdate = false;
 	}
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 
 
 namespace dae
@@ -25,7 +26,15 @@ namespace dae
 		return sdbm_hash<N - 1>::calculate(text);
 	};
 
-	struct EventArg {};
+	struct EventArg 
+	{
+		int i;
+		float f;
+		glm::vec3 v3;
+		glm::vec2 v2;
+	};
+
+
 	using EventId = unsigned int;
 
 	struct Event {

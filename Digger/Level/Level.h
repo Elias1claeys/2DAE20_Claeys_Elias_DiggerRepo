@@ -9,7 +9,7 @@ namespace dae
 	class Level : public Component
 	{
 	private:
-		std::vector<GameObject*> m_LevelObjects;
+		std::vector<std::unique_ptr<GameObject>> m_LevelObjects;
 		Scene* m_LevelScene{};
 		int m_CurrentLevel{ 1 };
 

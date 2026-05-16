@@ -4,18 +4,18 @@
 
 namespace dae
 {
-	class DigObserver : public Observer
+	class Dig : public Observer
 	{
 	private:
 		GameObject* m_pDigGround{ nullptr };
 	public:
 
-		DigObserver(GameObject* digGround);
-		virtual ~DigObserver() = default;
-		DigObserver(const DigObserver& other) = delete;
-		DigObserver(DigObserver&& other) = delete;
-		DigObserver& operator=(const DigObserver& other) = delete;
-		DigObserver& operator=(DigObserver&& other) = delete;
+		Dig(GameObject* digGround);
+		virtual ~Dig() = default;
+		Dig(const Dig& other) = delete;
+		Dig(Dig&& other) = delete;
+		Dig& operator=(const Dig& other) = delete;
+		Dig& operator=(Dig&& other) = delete;
 
 		void OnNotify(GameObject* gameObject, const Event& event) override;
 	};

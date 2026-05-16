@@ -22,9 +22,9 @@ namespace dae
 		void Render() const;
 		void Destroy();
 
-		void RenderTexture(const Texture2D& texture, float x, float y) const;
-		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
-		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height, float angle) const;
+		void Texture(const Texture2D& texture, float x, float y) const;
+		void Texture(const Texture2D& texture, float x, float y, float width, float height) const;
+		void Texture(const Texture2D& texture, float x, float y, float width, float height, float angle) const;
 
 		void DrawRect(const SDL_Color& color, SDL_FRect rect) const;
 		void FillRect(const SDL_Color& color, SDL_FRect rect) const;

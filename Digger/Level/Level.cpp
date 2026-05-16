@@ -4,13 +4,16 @@
 #include "Core/SceneManager.h"
 #include <fstream>
 
-#include "Components/RenderTexture.h"
+#include "Components/Texture.h"
 #include "Components/Transform.h"
+#include "Components/Text.h"
 #include "Hole/Hole.h"
 #include "Bag/Bag.h"
 #include "Emerald/Emerald.h"
 #include "Player/Player.h"
 #include "Observers/Digged.h"
+#include "Observers/Score.h"
+#include "Resources/ResourceManager.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner)
@@ -49,7 +52,7 @@ void dae::Level::CreateLevel(int level)
 		{
 			auto BackGround = std::make_unique<GameObject>();
 
-			BackGround->AddComponent<RenderTexture>()->SetTexture(levelBack);;
+			BackGround->AddComponent<Texture>()->SetTexture(levelBack);;
 			BackGround->GetComponent<Transform>()->SetLocalPosition(x * tileSize, tileSize + y * tileSize);
 
 			m_LevelScene->Add(std::move(BackGround));
@@ -72,6 +75,14 @@ void dae::Level::CreateLevel(int level)
 		{
 			lines.push_back(line);
 		}
+
+		auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+		auto scoreText = std::make_unique<GameObject>();
+		scoreText->AddComponent<Text>("0", font);
+		scoreText->GetComponent<Transform>()->SetLocalPosition(10, 10);
+
+		std::unique_ptr<Score> scoreObserver = std::make_unique<Score>(scoreText.get());
+		m_LevelScene->Add(std::move(scoreText));
 
 		for (int y = 0; y < lines.size(); y++)
 		{
@@ -129,6 +140,7 @@ void dae::Level::CreateLevel(int level)
 
 				case 'C':
 					obj->AddComponent<dae::Emerald>();
+					obj->GetComponent<dae::Emerald>()->AddObserver(std::move(scoreObserver));
 					obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 					levelObjects.push_back(std::move(obj));
 					break;
@@ -137,11 +149,12 @@ void dae::Level::CreateLevel(int level)
 		}
 	}
 
+	
+	std::unique_ptr<Dig> digObserver = std::make_unique<Dig>(digGround.get());
 
-	std::unique_ptr<DigObserver> digObserver = std::make_unique<DigObserver>(digGround.get());
 	auto player = std::make_unique<GameObject>();
 	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
-	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 48, 112, 0 });
+	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 	player->GetComponent<Player>()->AddObserver(std::move(digObserver));
 
 	m_LevelScene->Add(std::move(digGround));
@@ -152,6 +165,7 @@ void dae::Level::CreateLevel(int level)
 	}
 
 	m_LevelScene->Add(std::move(player));
+	
 }
 
 void dae::Level::NextLevel()

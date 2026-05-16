@@ -144,7 +144,7 @@ add_library(Minigin STATIC
   Minigin/Core/Scene.cpp
   Minigin/Core/SceneManager.cpp
   Minigin/Components/Transform.cpp
-  Minigin/Components/RenderTexture.cpp
+  "Minigin/Components/Texture.cpp"
   Minigin/Components/Text.cpp
   Minigin/Components/FPS.cpp
   Minigin/Components/Rotator.cpp
@@ -186,7 +186,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Player/PlayerControls.cpp
   Digger/Observers/Digged.cpp
   Digger/Observers/LostHealth.cpp 
-  Digger/Observers/Scored.cpp
+  "Digger/Observers/Score.cpp"
 )
 
 target_include_directories(${TARGET_NAME} PUBLIC

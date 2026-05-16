@@ -1,23 +1,21 @@
 #include "Digged.h"
 #include "Components/Transform.h"
-#include "Components/RenderTexture.h"
+#include "Components/Texture.h"
 #include "Hole/Hole.h"
 #include "Event/Event.h"
+#include "GameEvents.h"
 
 namespace dae
 {
-	DigObserver::DigObserver(GameObject* digGround)
+	Dig::Dig(GameObject* digGround)
 		:m_pDigGround{ digGround }
 	{}
 
-	void DigObserver::OnNotify(GameObject* gameObject, const Event& event)
+	void Dig::OnNotify(GameObject*, const Event& event)
 	{
-		if (event.id == make_sdbm_hash("PlayerMoved"))
+		if (event.id == PLAYER_MOVED)
 		{
-			glm::vec3 playerPos = gameObject->GetComponent<Transform>()->GetWorldPosition();
-			glm::vec2 playerSize = gameObject->GetComponent<RenderTexture>()->GetSize();
-
-			m_pDigGround->GetComponent<Hole>()->DigTile(playerPos, playerSize);
+			m_pDigGround->GetComponent<Hole>()->DigTile(event.args[0].v3, event.args[1].v2);
 		}
 	}
 }

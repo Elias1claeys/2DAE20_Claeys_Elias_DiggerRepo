@@ -48,7 +48,6 @@ namespace dae
         switch (state)
         {
         case dae::KeyState::Down:
-            GetGameActor()->DoDamage();
             break;
         }
     }

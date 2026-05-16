@@ -2,17 +2,18 @@
 #include "PlayerControls.h"
 #include "Input/InputManager.h"
 #include "Core/DeltaTime.h"
-#include "Components/RenderTexture.h"
+#include "Components/Texture.h"
+#include "Observers/GameEvents.h"
 
 dae::Player::Player(GameObject* Owner, InputType input, float speed)
 	:Component(Owner),
 	m_Speed(speed)
 {
-	if (!GetOwner()->HasComponent<RenderTexture>())
+	if (!GetOwner()->HasComponent<Texture>())
 	{
-		GetOwner()->AddComponent<RenderTexture>();
-		GetOwner()->GetComponent<RenderTexture>()->SetTexture("media/Digger/dig1.png");
-		GetOwner()->GetComponent<RenderTexture>()->SetSize({ 32, 32 });
+		GetOwner()->AddComponent<Texture>();
+		GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig1.png");
+		GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
 	}
 
 	m_Transform = GetOwner()->GetComponent<Transform>();
@@ -56,8 +57,11 @@ void dae::Player::Update()
 			return;
 		}
 
-		EventId PLAYER_MOVED = make_sdbm_hash("PlayerMoved");
-		Notify(Event{ PLAYER_MOVED }, GetOwner());
+		Event e{ PLAYER_MOVED };
+		e.nbArgs = 2;
+		e.args[0].v3 = m_Transform->GetWorldPosition();
+		e.args[1].v2 = GetOwner()->GetComponent<Texture>()->GetSize();
+		Notify(e, GetOwner());
 
 		pos.x += m_MoveDirection.x * m_Speed * Time::GetInstance().GetDeltaTime();
 		pos.y += m_MoveDirection.y * m_Speed * Time::GetInstance().GetDeltaTime();
@@ -69,13 +73,4 @@ void dae::Player::Update()
 void dae::Player::SetDirection(glm::vec3 dir)
 {
 	m_MoveDirection = dir;
-
-
-}
-
-void dae::Player::DoDamage()
-{
-	EventId PLAYER_SCORED = make_sdbm_hash("PlayerScored");
-
-	Notify(Event{ PLAYER_SCORED }, GetOwner());
 }

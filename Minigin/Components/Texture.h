@@ -4,7 +4,7 @@
 
 namespace dae
 {
-	class RenderTexture : public Component
+	class Texture : public Component
 	{
 	private:
 		std::shared_ptr<Texture2D> m_texture{};
@@ -19,11 +19,11 @@ namespace dae
 		void SetSize(const glm::vec2& size) { m_size = size; }
 		glm::vec2 GetSize();
 
-		RenderTexture(GameObject* owner);
-		virtual ~RenderTexture() = default;
-		RenderTexture(const RenderTexture& other) = delete;
-		RenderTexture(RenderTexture&& other) = delete;
-		RenderTexture& operator=(const RenderTexture& other) = delete;
-		RenderTexture& operator=(RenderTexture&& other) = delete;
+		Texture(GameObject* owner);
+		virtual ~Texture() = default;
+		Texture(const Texture& other) = delete;
+		Texture(Texture&& other) = delete;
+		Texture& operator=(const Texture& other) = delete;
+		Texture& operator=(Texture&& other) = delete;
 	};
 }

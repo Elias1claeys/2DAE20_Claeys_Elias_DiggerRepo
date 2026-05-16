@@ -1,8 +1,8 @@
-#include "RenderTexture.h"
+#include "Texture.h"
 #include "Transform.h"
 #include "Resources/ResourceManager.h"
 
-dae::RenderTexture::RenderTexture(GameObject* owner)
+dae::Texture::Texture(GameObject* owner)
 	: Component(owner)
 {
 	if (!owner->HasComponent<Transform>())
@@ -11,28 +11,28 @@ dae::RenderTexture::RenderTexture(GameObject* owner)
 	}
 }
 
-const void dae::RenderTexture::Render()
+const void dae::Texture::Render()
 {
 	if (m_texture != nullptr)
 	{
 		const auto& pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
-		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
+		Renderer::GetInstance().Texture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
 	}
 }
 
-void dae::RenderTexture::SetTexture(const std::string& filename)
+void dae::Texture::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
 	m_size = m_texture->GetSize();
 }
 
-void dae::RenderTexture::SetTexture(SDL_Texture* texture)
+void dae::Texture::SetTexture(SDL_Texture* texture)
 {
 	m_texture = std::make_shared<Texture2D>(texture);
 	m_size = m_texture->GetSize();
 }
 
-glm::vec2 dae::RenderTexture::GetSize()
+glm::vec2 dae::Texture::GetSize()
 {
 	return m_texture->GetSize();
 }

@@ -3,7 +3,7 @@
 
 namespace dae
 {
-	class HealthObserver : public Observer
+	class Health : public Observer
 	{
 	private:
 		int m_Health{ 5 };
@@ -11,12 +11,12 @@ namespace dae
 
 	public:
 
-		HealthObserver(GameObject* HealthDisplay);
-		virtual ~HealthObserver() = default;
-		HealthObserver(const HealthObserver& other) = delete;
-		HealthObserver(HealthObserver&& other) = delete;
-		HealthObserver& operator=(const HealthObserver& other) = delete;
-		HealthObserver& operator=(HealthObserver&& other) = delete;
+		Health(GameObject* HealthDisplay);
+		virtual ~Health() = default;
+		Health(const Health& other) = delete;
+		Health(Health&& other) = delete;
+		Health& operator=(const Health& other) = delete;
+		Health& operator=(Health&& other) = delete;
 
 		void OnNotify(GameObject* gameObject, const Event& event) override;
 	};

@@ -19,8 +19,6 @@ namespace dae
 			controller
 		};
 
-		void DoDamage();
-
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 

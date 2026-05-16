@@ -150,8 +150,8 @@ void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 	float offsetX = (float)m_tileSize / 2;
 	float offsetY = (float)m_tileSize + (float)m_tileSize / 2;
 
-	playerSize.x /= 2;
-	playerSize.y /= 2;
+	playerSize.x /= 1.5;
+	playerSize.y /= 1.5;
 
 	float left = playerPos.x - offsetX;
 	float right = playerPos.x + playerSize.x - offsetX;

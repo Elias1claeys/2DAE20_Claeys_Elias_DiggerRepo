@@ -1,8 +1,9 @@
 #include "Core/GameObject.h"
+#include "Event/Subject.h"
 
 namespace dae
 {
-	class Emerald : public Component
+	class Emerald : public Component, public Subject
 	{
 	private:
 		bool m_IsCollected{ false };
@@ -15,5 +16,7 @@ namespace dae
 		Emerald(Emerald&& other) = delete;
 		Emerald& operator=(const Emerald& other) = delete;
 		Emerald& operator=(Emerald&& other) = delete;
+
+		void Collect();
 	};
 }
