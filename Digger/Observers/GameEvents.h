@@ -1,4 +1,5 @@
 #include "Event/Event.h"
+#include "Audio/SoundSystem.h"
 
 namespace dae {
 	constexpr EventId PLAYER_MOVED = make_sdbm_hash("PlayerMoved");

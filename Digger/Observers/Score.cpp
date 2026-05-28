@@ -4,7 +4,6 @@
 #include "GameEvents.h"
 #include "Emerald/Emerald.h"
 #include "Collider/Collider.h"
-#include "Audio/AudioEvents.h"
 #include "Audio/SoundSystem.h"
 
 namespace dae
@@ -23,19 +22,13 @@ namespace dae
 		}
 		else if (event.id == EMERALD_COLLECTED)
 		{
-			//Play emerald sound
-			Event soundEvent{ COLLECT_SOUND };
-			soundEvent.args[0].i = m_TotalEnemarlsCollected;
-			dae::ServiceLocator::GetAudio().Play(soundEvent, 1.f);
-
 			m_TotalEnemarlsCollected++;
 
 			event.args[0].go->GetComponent<Emerald>()->Collect();
 
-			if (m_TotalEnemarlsCollected == 8)
+			if (event.args[0].i == 8)
 			{
 				m_Score += 250;
-				m_TotalEnemarlsCollected = 0;
 			}
 			else
 			{

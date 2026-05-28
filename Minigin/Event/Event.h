@@ -29,11 +29,11 @@ namespace dae
 
 	struct EventArg 
 	{
-		int i;
-		float f;
-		glm::vec3 v3;
-		glm::vec2 v2;
-		GameObject* go;
+		int i{};
+		float f{};
+		glm::vec3 v3{};
+		glm::vec2 v2{};
+		GameObject* go{};
 	};
 
 

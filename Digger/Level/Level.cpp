@@ -16,6 +16,7 @@
 #include "Observers/Score.h"
 #include "Resources/ResourceManager.h"
 #include "Observers/GameEvents.h"
+#include "Observers/SoundObserver.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner)
@@ -81,8 +82,11 @@ void dae::Level::CreateLevel(int level)
 	scoreText->AddComponent<Text>("0", font);
 	scoreText->GetComponent<Transform>()->SetLocalPosition(10, 10);
 
+	
 	std::unique_ptr<Score> scoreObserver = std::make_unique<Score>(scoreText.get());
+	std::unique_ptr<SoundObserver> soundObserver = std::make_unique<SoundObserver>();
 	player->GetComponent<Collider>()->AddObserver(std::move(scoreObserver));
+	player->GetComponent<Collider>()->AddObserver(std::move(soundObserver));
 	
 	// Load level file
 	if (file.is_open())

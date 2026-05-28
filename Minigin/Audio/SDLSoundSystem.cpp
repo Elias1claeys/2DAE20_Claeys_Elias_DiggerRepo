@@ -1,5 +1,4 @@
 #include "SDLSoundSystem.h"
-#include "AudioEvents.h"
 #include <SDL3/SDL.h>
 
 namespace dae
@@ -29,17 +28,23 @@ namespace dae
 		m_SoundCache.clear();
 	}
 
-	void SDLSoundSystem::Play(Event SoundID, float volume)
+	void SDLSoundSystem::Play(SoundId SoundID, float volume)
 	{
-		SoundRequest request{ GetSoundFilePath(SoundID), volume };
-
-		if (request.filePath.empty())
+		auto it = m_SoundPaths.find(SoundID);
+		if (it == m_SoundPaths.end())
 			return;
+
+		SoundRequest request{ it->second, volume };
 		{
 			std::lock_guard lock(m_Mutex);
 			m_RequestQueue.push(request);
 		}
 		m_CondVar.notify_one();
+	}
+
+	void SDLSoundSystem::RegisterSound(SoundId soundID, const std::string& filePath)
+	{
+		m_SoundPaths.emplace(soundID, filePath);
 	}
 
 	void SDLSoundSystem::AudioThread()
@@ -75,21 +80,13 @@ namespace dae
 		{
 			MIX_Audio* audio = MIX_LoadAudio(m_Mixer, request.filePath.c_str(), false);
 
+			if (!audio)
+				return;
+
 			it = m_SoundCache.emplace(request.filePath, audio).first;
 		}
 
 		MIX_SetMixerGain(m_Mixer, request.volume);
 		MIX_PlayAudio(m_Mixer, it->second);
-	}
-
-	std::string SDLSoundSystem::GetSoundFilePath(Event SoundID) const
-	{
-		switch (SoundID.id)
-		{
-		case COLLECT_SOUND:
-			return "Data/Audio/emerald" + std::to_string(SoundID.args->i) + ".wav";
-		default:
-			return "";
-		}
 	}
 }

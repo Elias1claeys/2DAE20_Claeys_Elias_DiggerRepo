@@ -6,17 +6,20 @@
 
 namespace dae
 {
+	using SoundId = unsigned short;
 	class SoundSystem
 	{
 	public:
 		virtual ~SoundSystem() = default;
-		virtual void Play(Event SoundID, float volume) = 0;
+		virtual void Play(SoundId SoundID, float volume) = 0;
+		virtual void RegisterSound(SoundId soundID, const std::string& filePath) = 0;
 	};
 
 	class NullSoundSystem final : public SoundSystem
 	{
 	public:
-		void Play(Event, float) override {};
+		void Play(SoundId, float) override {};
+		void RegisterSound(SoundId, const std::string&) override {};
 	};
 
 	class ServiceLocator final

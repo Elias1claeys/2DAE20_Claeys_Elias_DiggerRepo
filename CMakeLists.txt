@@ -216,6 +216,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Observers/Digged.cpp
   Digger/Observers/LostHealth.cpp 
   Digger/Observers/Score.cpp
+  Digger/Observers/SoundObserver.cpp
 )
 
 target_include_directories(${TARGET_NAME} PUBLIC

@@ -19,7 +19,8 @@ namespace dae
 		SDLSoundSystem& operator=(const SDLSoundSystem& other) = delete;
 		SDLSoundSystem& operator=(SDLSoundSystem&& other) = delete;
 
-		void Play(Event SoundID, float volume) override;
+		void Play(SoundId soundID, float volume) override;
+		void RegisterSound(SoundId soundID, const std::string& filePath) override;
 
 	private:
 
@@ -31,18 +32,16 @@ namespace dae
 
 		void AudioThread();
 		void ProcessRequest(const SoundRequest& request);
-		std::string GetSoundFilePath(Event soundID) const;
 
 		std::thread m_AudioThread;
 		std::mutex m_Mutex;
 		std::condition_variable m_CondVar;
 		std::queue<SoundRequest> m_RequestQueue;
+		std::unordered_map<SoundId, std::string> m_SoundPaths;
 		std::unordered_map<std::string, MIX_Audio*> m_SoundCache;
 		bool m_Running{ true };
 
-		// SDL3_mixer types
-		//std::unordered_map<std::string, MIX_Audio*> m_SoundCache;
+
 		MIX_Mixer* m_Mixer{ nullptr };
-		//bool m_Running{ true };
 	};
 }
