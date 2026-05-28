@@ -17,8 +17,8 @@ namespace dae
 			Event event;
 		};
 
+		glm::vec2 m_ColliderSize{ 0, 0 };
 		std::vector<Trigger> m_Triggers{};
-		std::vector<int> m_TriggersToRemove{};
 
 		bool Overlaps(Trigger trigger);
 
@@ -31,7 +31,6 @@ namespace dae
 		Collider& operator=(Collider&& other) = delete;
 
 		void AddTrigger(const glm::vec3& position, const glm::vec2& size, const Event& event);
-		void RemoveTrigger(int index);
 		void Update() override;
 	};
 }

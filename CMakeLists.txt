@@ -90,6 +90,31 @@ if(NOT SDL3_ttf_FOUND)
   endif()
 endif()
 
+#SDL3_mixer
+find_package(SDL3_mixer CONFIG QUIET)
+if(NOT SDL3_mixer_FOUND)
+  if (WIN32)
+    FetchContent_Declare(
+      SDL3_mixer
+      URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-devel-3.2.2-VC.zip
+      DOWNLOAD_NO_PROGRESS ON
+      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
+    )
+    FetchContent_MakeAvailable(SDL3_mixer)
+    list(PREPEND CMAKE_PREFIX_PATH "${sdl3_mixer_SOURCE_DIR}")
+    find_package(SDL3_mixer CONFIG REQUIRED)
+  else()
+    FetchContent_Declare(
+      SDL3_mixer
+      GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+      GIT_TAG release-3.2.2
+      GIT_SHALLOW TRUE
+      GIT_PROGRESS TRUE
+    )
+    FetchContent_MakeAvailable(SDL3_mixer)
+  endif()
+endif()
+
 # VLD
 if (WIN32)
   find_package(VLD CONFIG)
@@ -144,7 +169,7 @@ add_library(Minigin STATIC
   Minigin/Core/Scene.cpp
   Minigin/Core/SceneManager.cpp
   Minigin/Components/Transform.cpp
-  "Minigin/Components/Texture.cpp"
+  Minigin/Components/Texture.cpp
   Minigin/Components/Text.cpp
   Minigin/Components/FPS.cpp
   Minigin/Components/Rotator.cpp
@@ -155,6 +180,8 @@ add_library(Minigin STATIC
   Minigin/Rendering/Font.cpp
   Minigin/Rendering/Texture2D.cpp
   Minigin/Resources/ResourceManager.cpp
+  Minigin/Audio/SoundSystem.cpp
+  Minigin/Audio/SDLSoundSystem.cpp
 )
 
 target_include_directories(Minigin PUBLIC
@@ -166,6 +193,7 @@ target_include_directories(Minigin PUBLIC
 target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
+  SDL3_mixer::SDL3_mixer
   glm::glm
   imgui
   ${VLD_LIBRARIES}
@@ -249,6 +277,7 @@ elseif(WIN32)
   set(SDL_RUNTIME_DLLS
     SDL3::SDL3
     SDL3_ttf::SDL3_ttf
+    SDL3_mixer::SDL3_mixer
   )
 
   foreach(dllTarget IN LISTS SDL_RUNTIME_DLLS)

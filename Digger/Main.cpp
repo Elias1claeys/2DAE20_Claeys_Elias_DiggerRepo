@@ -10,12 +10,16 @@
 #include "Resources/ResourceManager.h"
 #include "Core/Scene.h"
 #include "Level/Level.h"
+#include "Audio/SoundSystem.h"
+#include "Audio/SDLSoundSystem.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
 static void load()
 {
+	dae::ServiceLocator::RegisterAudio(std::make_unique<dae::SDLSoundSystem>());
+
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto level = std::make_unique<dae::GameObject>();

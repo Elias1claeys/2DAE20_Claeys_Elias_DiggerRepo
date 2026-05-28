@@ -1,0 +1,95 @@
+#include "SDLSoundSystem.h"
+#include "AudioEvents.h"
+#include <SDL3/SDL.h>
+
+namespace dae
+{
+	SDLSoundSystem::SDLSoundSystem()
+	{
+		MIX_Init();
+
+		m_Mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+
+		m_AudioThread = std::thread(&SDLSoundSystem::AudioThread, this);
+	}
+
+	SDLSoundSystem::~SDLSoundSystem()
+	{
+		{
+			std::lock_guard lock(m_Mutex);
+			m_Running = false;
+		}
+		
+		m_CondVar.notify_one();
+		m_AudioThread.join();
+		
+		for (auto& [path, audio] : m_SoundCache)
+			MIX_DestroyAudio(audio);
+		
+		m_SoundCache.clear();
+	}
+
+	void SDLSoundSystem::Play(Event SoundID, float volume)
+	{
+		SoundRequest request{ GetSoundFilePath(SoundID), volume };
+
+		if (request.filePath.empty())
+			return;
+		{
+			std::lock_guard lock(m_Mutex);
+			m_RequestQueue.push(request);
+		}
+		m_CondVar.notify_one();
+	}
+
+	void SDLSoundSystem::AudioThread()
+	{
+		while (true)
+		{
+			std::unique_lock lock(m_Mutex);
+			m_CondVar.wait(lock, [this] 
+			{ 
+				return !m_RequestQueue.empty() || !m_Running; 
+			});
+
+			if (!m_Running && m_RequestQueue.empty())
+				break;
+
+			std::queue<SoundRequest> localQueue;
+			std::swap(localQueue, m_RequestQueue);
+			lock.unlock();
+
+			while (!localQueue.empty())
+			{
+				const auto& request = localQueue.front();
+				ProcessRequest(request);
+				localQueue.pop();
+			}
+		}
+	}
+
+	void SDLSoundSystem::ProcessRequest(const SoundRequest& request)
+	{
+		auto it = m_SoundCache.find(request.filePath);
+		if (it == m_SoundCache.end())
+		{
+			MIX_Audio* audio = MIX_LoadAudio(m_Mixer, request.filePath.c_str(), false);
+
+			it = m_SoundCache.emplace(request.filePath, audio).first;
+		}
+
+		MIX_SetMixerGain(m_Mixer, request.volume);
+		MIX_PlayAudio(m_Mixer, it->second);
+	}
+
+	std::string SDLSoundSystem::GetSoundFilePath(Event SoundID) const
+	{
+		switch (SoundID.id)
+		{
+		case COLLECT_SOUND:
+			return "Data/Audio/emerald" + std::to_string(SoundID.args->i) + ".wav";
+		default:
+			return "";
+		}
+	}
+}

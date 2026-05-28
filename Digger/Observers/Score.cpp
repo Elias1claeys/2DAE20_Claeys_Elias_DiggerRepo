@@ -4,6 +4,8 @@
 #include "GameEvents.h"
 #include "Emerald/Emerald.h"
 #include "Collider/Collider.h"
+#include "Audio/AudioEvents.h"
+#include "Audio/SoundSystem.h"
 
 namespace dae
 {
@@ -13,7 +15,7 @@ namespace dae
 		m_pScoreDisplay->GetComponent<Text>()->SetText(std::to_string(m_Score));
 	}
 
-	void Score::OnNotify(GameObject* gameobject, const Event& event)
+	void Score::OnNotify(GameObject*, const Event& event)
 	{
 		if (event.id == ENEMY_KILLED)
 		{
@@ -21,10 +23,14 @@ namespace dae
 		}
 		else if (event.id == EMERALD_COLLECTED)
 		{
+			//Play emerald sound
+			Event soundEvent{ COLLECT_SOUND };
+			soundEvent.args[0].i = m_TotalEnemarlsCollected;
+			dae::ServiceLocator::GetAudio().Play(soundEvent, 1.f);
+
 			m_TotalEnemarlsCollected++;
 
 			event.args[0].go->GetComponent<Emerald>()->Collect();
-			gameobject->GetComponent<Collider>()->RemoveTrigger(event.args[0].i);
 
 			if (m_TotalEnemarlsCollected == 8)
 			{

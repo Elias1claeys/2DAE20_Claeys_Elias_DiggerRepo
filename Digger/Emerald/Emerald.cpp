@@ -15,5 +15,4 @@ void dae::Emerald::Collect()
 
 	m_IsCollected = true;
 	GetOwner()->GetComponent<Texture>()->SetTexture("media/Emerald/emeraldEmpty.png");
-	Notify(Event{ EMERALD_COLLECTED }, GetOwner());
 }
