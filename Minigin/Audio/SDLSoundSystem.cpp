@@ -1,13 +1,23 @@
 #include "SDLSoundSystem.h"
 #include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
 
 namespace dae
 {
+	class SDLSoundSystem::Impl
+	{
+	public:
+		std::unordered_map<std::string, MIX_Audio*> m_SoundCache;
+		MIX_Mixer* m_Mixer{ nullptr };
+	};
+
 	SDLSoundSystem::SDLSoundSystem()
 	{
+		m_pImpl = std::make_unique<Impl>();
+
 		MIX_Init();
 
-		m_Mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+		m_pImpl->m_Mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
 
 		m_AudioThread = std::thread(&SDLSoundSystem::AudioThread, this);
 	}
@@ -22,10 +32,10 @@ namespace dae
 		m_CondVar.notify_one();
 		m_AudioThread.join();
 		
-		for (auto& [path, audio] : m_SoundCache)
+		for (auto& [path, audio] : m_pImpl->m_SoundCache)
 			MIX_DestroyAudio(audio);
 		
-		m_SoundCache.clear();
+		m_pImpl->m_SoundCache.clear();
 	}
 
 	void SDLSoundSystem::Play(SoundId SoundID, float volume)
@@ -75,18 +85,18 @@ namespace dae
 
 	void SDLSoundSystem::ProcessRequest(const SoundRequest& request)
 	{
-		auto it = m_SoundCache.find(request.filePath);
-		if (it == m_SoundCache.end())
+		auto it = m_pImpl->m_SoundCache.find(request.filePath);
+		if (it == m_pImpl->m_SoundCache.end())
 		{
-			MIX_Audio* audio = MIX_LoadAudio(m_Mixer, request.filePath.c_str(), false);
+			MIX_Audio* audio = MIX_LoadAudio(m_pImpl->m_Mixer, request.filePath.c_str(), false);
 
 			if (!audio)
 				return;
 
-			it = m_SoundCache.emplace(request.filePath, audio).first;
+			it = m_pImpl->m_SoundCache.emplace(request.filePath, audio).first;
 		}
 
-		MIX_SetMixerGain(m_Mixer, request.volume);
-		MIX_PlayAudio(m_Mixer, it->second);
+		MIX_SetMixerGain(m_pImpl->m_Mixer, request.volume);
+		MIX_PlayAudio(m_pImpl->m_Mixer, it->second);
 	}
 }

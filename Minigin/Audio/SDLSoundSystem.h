@@ -4,7 +4,7 @@
 #include <mutex>
 #include <queue>
 #include <unordered_map>
-#include <SDL3_mixer/SDL_mixer.h>
+
 
 namespace dae
 {
@@ -38,10 +38,9 @@ namespace dae
 		std::condition_variable m_CondVar;
 		std::queue<SoundRequest> m_RequestQueue;
 		std::unordered_map<SoundId, std::string> m_SoundPaths;
-		std::unordered_map<std::string, MIX_Audio*> m_SoundCache;
 		bool m_Running{ true };
 
-
-		MIX_Mixer* m_Mixer{ nullptr };
+		class Impl;
+		std::unique_ptr<Impl> m_pImpl;
 	};
 }

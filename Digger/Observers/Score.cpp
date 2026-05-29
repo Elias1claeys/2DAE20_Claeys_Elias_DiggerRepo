@@ -26,9 +26,10 @@ namespace dae
 
 			event.args[0].go->GetComponent<Emerald>()->Collect();
 
-			if (event.args[0].i == 8)
+			if (m_TotalEnemarlsCollected == 8)
 			{
 				m_Score += 250;
+				m_TotalEnemarlsCollected = 0;
 			}
 			else
 			{

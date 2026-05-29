@@ -18,7 +18,11 @@ namespace dae
 		switch (event.id)
 		{
 		case EMERALD_COLLECTED:
-			m_pAudio->Play(static_cast<dae::SoundId>(CollectSound::COLLECT_SOUND_1 + event.args[0].i), 1.f);
+			m_pAudio->Play(static_cast<dae::SoundId>(CollectSound::COLLECT_SOUND_1 + m_EmeraldsCollected), 1.f);
+			m_EmeraldsCollected++;
+
+			if (m_EmeraldsCollected == 8)
+				m_EmeraldsCollected = 0;
 			break;
 		}
 	}
