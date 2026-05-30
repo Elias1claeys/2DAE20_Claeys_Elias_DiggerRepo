@@ -65,7 +65,8 @@ void dae::Level::CreateLevel(int level)
 	auto digGround = std::make_unique<GameObject>();
 	digGround->AddComponent<dae::Hole>(64);
 
-	std::vector<std::unique_ptr<GameObject>> levelObjects;
+	std::vector<std::unique_ptr<GameObject>> emeralds;
+	std::vector<std::unique_ptr<GameObject>> bags;
 
 	//Adding the player(s)
 	std::unique_ptr<Dig> digObserver = std::make_unique<Dig>(digGround.get());
@@ -126,7 +127,7 @@ void dae::Level::CreateLevel(int level)
 				case 'B':
 					obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
 					obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
-					levelObjects.push_back(std::move(obj));
+					bags.push_back(std::move(obj));
 					break;
 
 				case 'H':
@@ -163,7 +164,7 @@ void dae::Level::CreateLevel(int level)
 					e.args[0].go = obj.get();
 
 					player->GetComponent<Collider>()->AddTrigger(obj->GetComponent<Transform>()->GetWorldPosition(), glm::vec2{ tileSize, tileSize }, e);
-					levelObjects.push_back(std::move(obj));
+					emeralds.push_back(std::move(obj));
 					break;
 				}
 			}
@@ -172,9 +173,13 @@ void dae::Level::CreateLevel(int level)
 
 	m_LevelScene->Add(std::move(digGround));
 
-	for (auto& obj : levelObjects)
+	for (auto& emerald : emeralds)
 	{
-		m_LevelScene->Add(std::move(obj));
+		m_LevelScene->Add(std::move(emerald));
+	}
+	for (auto& bag : bags)
+	{
+		m_LevelScene->Add(std::move(bag));
 	}
 
 	m_LevelScene->Add(std::move(player));
