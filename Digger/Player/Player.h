@@ -11,6 +11,7 @@ namespace dae
 		float m_Speed{};
 		glm::vec3 m_MoveDirection{};
 		Transform* m_Transform{};
+		bool m_Flipped{ false };
 
 	public:
 		enum InputType

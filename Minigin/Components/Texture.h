@@ -10,6 +10,7 @@ namespace dae
 		std::shared_ptr<Texture2D> m_texture{};
 		float m_rotationAngle{ 0.f };
 		glm::vec2 m_size{ 0, 0 };
+		SDL_FlipMode m_FlipMode{SDL_FLIP_NONE};
 
 	public:
 		const void Render() override;
@@ -17,6 +18,8 @@ namespace dae
 		void SetTexture(SDL_Texture* texture);
 		void SetRotation(float angle) { m_rotationAngle = angle; }
 		void SetSize(const glm::vec2& size) { m_size = size; }
+		void FlipTexture();
+
 		glm::vec2 GetSize();
 
 		Texture(GameObject* owner);

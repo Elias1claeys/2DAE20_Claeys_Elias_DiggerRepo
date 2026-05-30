@@ -98,19 +98,19 @@ void dae::Renderer::Texture(const Texture2D& texture, const float x, const float
 	SDL_RenderTexture(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
-void dae::Renderer::Texture(const Texture2D& texture, const float x, const float y, const float width, const float height, const float angle) const
+void dae::Renderer::Texture(const Texture2D& texture, const glm::vec3 pos, const glm::vec2 size, const float angle, const SDL_FlipMode flip) const
 {
 	SDL_FRect dst{};
-	dst.x = x;
-	dst.y = y;
-	dst.w = width;
-	dst.h = height;
+	dst.x = pos.x;
+	dst.y = pos.y;
+	dst.w = size.x;
+	dst.h = size.y;
 
 	SDL_FPoint center{};
-	center.x = width / 2.0f;
-	center.y = height / 2.0f;
+	center.x = size.x / 2.0f;
+	center.y = size.y / 2.0f;
 
-	SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst, angle, &center, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst, angle, &center, flip);
 }
 
 void dae::Renderer::DrawRect(const SDL_Color& color, SDL_FRect rect) const

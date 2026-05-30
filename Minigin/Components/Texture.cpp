@@ -15,8 +15,8 @@ const void dae::Texture::Render()
 {
 	if (m_texture != nullptr)
 	{
-		const auto& pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
-		Renderer::GetInstance().Texture(*m_texture, pos.x, pos.y, m_size.x, m_size.y, m_rotationAngle);
+		auto pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		Renderer::GetInstance().Texture(*m_texture, pos, m_size, m_rotationAngle, m_FlipMode);
 	}
 }
 
@@ -30,6 +30,18 @@ void dae::Texture::SetTexture(SDL_Texture* texture)
 {
 	m_texture = std::make_shared<Texture2D>(texture);
 	m_size = m_texture->GetSize();
+}
+
+void dae::Texture::FlipTexture()
+{
+	if (m_FlipMode == SDL_FLIP_NONE)
+	{
+		m_FlipMode = SDL_FLIP_HORIZONTAL;
+	}
+	else
+	{
+		m_FlipMode = SDL_FLIP_NONE;
+	}
 }
 
 glm::vec2 dae::Texture::GetSize()

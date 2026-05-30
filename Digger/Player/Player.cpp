@@ -14,6 +14,7 @@ dae::Player::Player(GameObject* Owner, InputType input, float speed)
 		GetOwner()->AddComponent<Texture>();
 		GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig1.png");
 		GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
+		GetOwner()->GetComponent<Texture>()->FlipTexture();
 	}
 
 	m_Transform = GetOwner()->GetComponent<Transform>();
@@ -49,8 +50,8 @@ void dae::Player::Update()
 	if (m_MoveDirection != glm::vec3(0, 0, 0))
 	{
 		if ((m_MoveDirection == glm::vec3(-1, 0, 0) && pos.x <= 32) ||
-			(m_MoveDirection == glm::vec3(1, 0, 0) && pos.x >= 965) ||
-			(m_MoveDirection == glm::vec3(0, 1, 0) && pos.y >= 709) ||
+			(m_MoveDirection == glm::vec3(1, 0, 0) && pos.x >= 950) ||
+			(m_MoveDirection == glm::vec3(0, 1, 0) && pos.y >= 685) ||
 			(m_MoveDirection == glm::vec3(0, -1, 0) && pos.y <= 96))
 		{
 			m_MoveDirection = glm::vec3(0, 0, 0);
@@ -73,4 +74,24 @@ void dae::Player::Update()
 void dae::Player::SetDirection(glm::vec3 dir)
 {
 	m_MoveDirection = dir;
+
+	if (dir == glm::vec3{-1,  0, 0 } && !m_Flipped ||
+		dir == glm::vec3{ 1,  0, 0 } &&  m_Flipped ||
+		dir == glm::vec3{ 0,  1, 0 } &&  m_Flipped ||
+		dir == glm::vec3{ 0, -1, 0 } && !m_Flipped)
+	{
+		
+		GetOwner()->GetComponent<Texture>()->FlipTexture();
+		m_Flipped = !m_Flipped;
+	}
+
+	if(dir == glm::vec3{0, -1, 0} ||
+	   dir == glm::vec3{0, 1, 0})
+	{
+		GetOwner()->GetComponent<Texture>()->SetRotation(90);
+	}
+	else if(dir != glm::vec3{0, 0, 0})
+	{
+		GetOwner()->GetComponent<Texture>()->SetRotation(0);
+	}
 }

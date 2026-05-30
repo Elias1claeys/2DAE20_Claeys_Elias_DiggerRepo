@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL3/SDL.h>
+#include <glm/glm.hpp>
 #include "Utils/Singleton.h"
 
 
@@ -24,9 +25,9 @@ namespace dae
 
 		void Texture(const Texture2D& texture, float x, float y) const;
 		void Texture(const Texture2D& texture, float x, float y, float width, float height) const;
-		void Texture(const Texture2D& texture, float x, float y, float width, float height, float angle) const;
+		void Texture(const Texture2D& texture, glm::vec3 pos, glm::vec2 size, float angle, SDL_FlipMode flip) const;
 
-		void DrawRect(const SDL_Color& color, SDL_FRect rect) const;
+		void DrawRect(const SDL_Color& color, SDL_FRect rect) const; 
 		void FillRect(const SDL_Color& color, SDL_FRect rect) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
