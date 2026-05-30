@@ -124,7 +124,7 @@ void dae::Level::CreateLevel(int level)
 					break;
 
 				case 'B':
-					obj->AddComponent<dae::Bag>();
+					obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
 					obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 					levelObjects.push_back(std::move(obj));
 					break;

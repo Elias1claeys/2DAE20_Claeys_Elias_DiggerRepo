@@ -34,6 +34,11 @@ const void dae::Hole::Render()
 {
 	//DrawAllDigTiles();
 	FillAllDigTiles();
+
+	for (auto rect : m_DebugRects)
+	{
+		Renderer::GetInstance().DrawRect({ 0, 255, 0, 255 }, rect);
+	}
 }
 
 void dae::Hole::DrawAllDigTiles()
@@ -182,4 +187,41 @@ void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 			m_DigGrid[tileId].DigCells[cellY][cellX] = true;
 		}
 	}
+}
+
+bool dae::Hole::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize)
+{
+	int cellSize = m_tileSize / 8;
+
+	float checkY = bagPos.y - (m_tileSize / 2.f) - cellSize;
+
+	float left = bagPos.x - (bagSize.x / 2) + cellSize;
+	float right = bagPos.x + (bagSize.x / 2);
+
+	for (auto x = left; x < right; x += cellSize)
+	{
+		int tileX = int(x) / m_tileSize;
+		int tileY = int(checkY) / m_tileSize;
+
+		if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
+			continue;
+
+		int tileId = tileY * 15 + tileX;
+
+		int localX = int(x) % m_tileSize;
+		int localY = int(checkY) % m_tileSize;
+
+		int cellX = localX / cellSize;
+		int cellY = localY / cellSize;
+
+		cellX = std::clamp(cellX, 0, 7);
+		cellY = std::clamp(cellY, 0, 7);
+
+		if (!m_DigGrid[tileId].DigCells[cellY][cellX])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

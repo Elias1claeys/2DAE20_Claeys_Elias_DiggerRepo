@@ -206,6 +206,9 @@ target_link_libraries(Minigin PUBLIC
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Main.cpp
   Digger/Bag/Bag.cpp
+  Digger/Bag/StandardState.cpp
+  Digger/Bag/WiggleState.cpp
+  Digger/Bag/FallState.cpp
   Digger/Collider/Collider.cpp
   Digger/Emerald/Emerald.cpp
   Digger/Hole/Hole.cpp
@@ -217,6 +220,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Observers/LostHealth.cpp 
   Digger/Observers/Score.cpp
   Digger/Observers/SoundObserver.cpp
+  
 )
 
 target_include_directories(${TARGET_NAME} PUBLIC

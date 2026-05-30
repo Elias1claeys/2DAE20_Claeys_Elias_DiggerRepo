@@ -8,6 +8,9 @@ namespace dae
 	{
 	private:
 
+		//for testing in the grid
+		std::vector<SDL_FRect> m_DebugRects;
+
 		struct Tile
 		{
 			int StartTilex;
@@ -75,6 +78,7 @@ namespace dae
 		const void Render() override;
 		void FillDigShape(int tileId, char shape, int rotationTimes);
 		void DigTile(glm::vec3 playerPos, glm::vec2 playerSize);
+		bool BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize);
 
 		Hole(GameObject* owner, int tileSize);
 		virtual ~Hole() = default;
