@@ -21,6 +21,11 @@ void dae::Bag::Update()
 		m_CurrentState = std::move(newState);
 }
 
+void dae::Bag::CollideWithActor(glm::vec3 dir, Player* player)
+{
+	m_CurrentState->CollideWithActor(dir, player);
+}
+
 bool dae::Bag::IsDugOut()
 {
 	glm::vec3 pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();

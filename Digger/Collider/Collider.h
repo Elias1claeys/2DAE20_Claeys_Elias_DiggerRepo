@@ -15,6 +15,8 @@ namespace dae
 			glm::vec3 position;
 			glm::vec2 size;
 			Event event;
+			bool persistent{ false };
+			bool markedForDelete{ false };
 		};
 
 		glm::vec2 m_ColliderSize{ 0, 0 };
@@ -30,7 +32,9 @@ namespace dae
 		Collider& operator=(const Collider& other) = delete;
 		Collider& operator=(Collider&& other) = delete;
 
-		void AddTrigger(const glm::vec3& position, const glm::vec2& size, const Event& event);
+		void AddTrigger(glm::vec3 position, glm::vec2 size, Event event);
+		void AddTrigger(glm::vec3 position, glm::vec2 size, Event event, bool persistent);
 		void Update() override;
+		const void Render() override;
 	};
 }

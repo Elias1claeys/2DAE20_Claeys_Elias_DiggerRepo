@@ -204,7 +204,7 @@ target_link_libraries(Minigin PUBLIC
 # ============================================================
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  Digger/Main.cpp
+  "Digger/Main.cpp"
   Digger/Bag/Bag.cpp
   Digger/Bag/StandardState.cpp
   Digger/Bag/WiggleState.cpp
@@ -216,7 +216,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Level/LevelControls.cpp
   Digger/Player/Player.cpp
   Digger/Player/PlayerControls.cpp
-  Digger/Observers/Digged.cpp
+  "Digger/Observers/Collision.cpp"
   Digger/Observers/LostHealth.cpp 
   Digger/Observers/Score.cpp
   Digger/Observers/SoundObserver.cpp

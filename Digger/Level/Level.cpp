@@ -12,7 +12,7 @@
 #include "Emerald/Emerald.h"
 #include "Player/Player.h"
 #include "Collider/Collider.h"
-#include "Observers/Digged.h"
+#include "Observers/Collision.h"
 #include "Observers/Score.h"
 #include "Resources/ResourceManager.h"
 #include "Observers/GameEvents.h"
@@ -69,13 +69,13 @@ void dae::Level::CreateLevel(int level)
 	std::vector<std::unique_ptr<GameObject>> bags;
 
 	//Adding the player(s)
-	std::unique_ptr<Dig> digObserver = std::make_unique<Dig>(digGround.get());
-
 	auto player = std::make_unique<GameObject>();
 	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
 	player->AddComponent<Collider>();
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
-	player->GetComponent<Player>()->AddObserver(std::move(digObserver));
+
+	std::unique_ptr<Collision> collisionObserver = std::make_unique<Collision>(digGround->GetComponent<Hole>(), player->GetComponent<Player>());
+	player->GetComponent<Player>()->AddObserver(std::move(collisionObserver));
 
 	//Adding the score text
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -120,52 +120,75 @@ void dae::Level::CreateLevel(int level)
 
 				switch (lines[y][x])
 				{
-				case 'S':
-					digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'S', 0);
-					break;
+					case 'S':
+					{
+						digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'S', 0);
+						break;
+					}
+					case 'B':
+					{
+						obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
+						obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 
-				case 'B':
-					obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
-					obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
-					bags.push_back(std::move(obj));
-					break;
+						Event bagEvent{ BAG_COLLISION };
+						bagEvent.nbArgs = 1;
+						bagEvent.args[0].go = obj.get();
 
-				case 'H':
-					digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'H', 1);
-					break;
+						player->GetComponent<Collider>()->AddTrigger(obj->GetComponent<Transform>()->GetWorldPosition(), glm::vec2{ tileSize, tileSize }, bagEvent, true);
+						bags.push_back(std::move(obj));
+						break;
+					}
 
-				case 'V':
-					digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'V', 0);
-					break;
+					case 'H':
+					{
+						digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'H', 1);
+						break;
+					}
+					case 'V':
+					{
+						digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'V', 0);
+						break;
+					}
+					case'L':
+					{
+						if (right && down)        rotation = 1;
+						else if (down && left)    rotation = 2;
+						else if (left && up)      rotation = 3;
 
-				case'L':
-					if (right && down)        rotation = 1;
-					else if (down && left)    rotation = 2;
-					else if (left && up)      rotation = 3;
+						digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'L', rotation);
 
-					digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'L', rotation);
+						break;
+					}
+					case 'T':
+					{
+						if (up && left && down)        rotation = 1;
+						else if (right && up && left)  rotation = 2;
+						else if (down && right && up)  rotation = 3;
 
-					break;
+						digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'T', rotation);
+						break;
+					}
+					case 'C':
+					{
+						obj->AddComponent<dae::Emerald>();
+						obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
 
-				case 'T':
-					if (up && left && down)        rotation = 1;
-					else if (right && up && left)  rotation = 2;
-					else if (down && right && up)  rotation = 3;
+						Event emeraldEvent{ EMERALD_COLLECTED };
+						emeraldEvent.nbArgs = 1;
+						emeraldEvent.args[0].go = obj.get();
 
-					digGround->GetComponent<dae::Hole>()->FillDigShape(index, 'T', rotation);
-					break;
+						glm::vec2 size = obj->GetComponent<dae::Texture>()->GetSize();
+						size.x /= 2;
+						size.y /= 2;
 
-				case 'C':
-					obj->AddComponent<dae::Emerald>();
-					obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+						glm::vec3 pos = obj->GetComponent<Transform>()->GetWorldPosition();
+						pos.x += (size.x / 2);
+						pos.y += (size.y / 2);
 
-					Event e{ EMERALD_COLLECTED };
-					e.nbArgs = 1;
-					e.args[0].go = obj.get();
-
-					player->GetComponent<Collider>()->AddTrigger(obj->GetComponent<Transform>()->GetWorldPosition(), glm::vec2{ tileSize, tileSize }, e);
-					emeralds.push_back(std::move(obj));
-					break;
+						player->GetComponent<Collider>()->AddTrigger(pos, size, emeraldEvent);
+						emeralds.push_back(std::move(obj));
+						break;
+					}	
 				}
 			}
 		}

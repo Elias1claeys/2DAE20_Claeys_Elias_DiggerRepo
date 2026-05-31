@@ -49,7 +49,7 @@ void dae::Player::Update()
 
 	if (m_MoveDirection != glm::vec3(0, 0, 0))
 	{
-		if ((m_MoveDirection == glm::vec3(-1, 0, 0) && pos.x <= 32) ||
+		if ((m_MoveDirection == glm::vec3(-1, 0, 0) && pos.x <= 30) ||
 			(m_MoveDirection == glm::vec3(1, 0, 0) && pos.x >= 950) ||
 			(m_MoveDirection == glm::vec3(0, 1, 0) && pos.y >= 685) ||
 			(m_MoveDirection == glm::vec3(0, -1, 0) && pos.y <= 96))

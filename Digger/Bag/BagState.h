@@ -1,3 +1,5 @@
+#include "Player/player.h"
+
 namespace dae
 {
 	class Bag;
@@ -13,8 +15,11 @@ namespace dae
 		BagState& operator=(BagState&& other) = delete;
 
 		virtual std::unique_ptr<BagState> Update(float deltaTime) = 0;
+		virtual void CollideWithActor(glm::vec3 dir, Player* player) = 0;
 
 	protected:
 		Bag* m_pBag;
+		float m_Speed = 100.f;
+		glm::vec3 m_BagDir = { 0, 0, 0 };
 	};
 }

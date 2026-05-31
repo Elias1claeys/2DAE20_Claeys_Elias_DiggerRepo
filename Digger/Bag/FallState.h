@@ -14,8 +14,6 @@ namespace dae
 		FallState& operator=(FallState&& other) = delete;
 
 		std::unique_ptr<BagState> Update(float deltaTime) override;
-
-	private:
-		float m_Speed = 200.f;
+		void CollideWithActor(glm::vec3 dir, Player* player) override;
 	};
 }

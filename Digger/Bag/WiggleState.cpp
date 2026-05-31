@@ -37,4 +37,9 @@ namespace dae
 
 		return nullptr;
 	}
+
+	void WiggleState::CollideWithActor(glm::vec3, Player* player)
+	{
+		player->SetDirection(glm::vec3(0, 0, 0));
+	}
 }

@@ -7,4 +7,5 @@ namespace dae {
 	constexpr EventId ENEMY_KILLED = make_sdbm_hash("KilledEnemy");
 	constexpr EventId EMERALD_COLLECTED = make_sdbm_hash("EmeraldCollected");
 	constexpr EventId GOLD_COLLECTED = make_sdbm_hash("GoldCollected");
+	constexpr EventId BAG_COLLISION = make_sdbm_hash("BagCollision");
 }

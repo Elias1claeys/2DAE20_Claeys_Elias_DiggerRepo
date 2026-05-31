@@ -13,7 +13,7 @@ namespace dae
 		StandardState& operator=(const StandardState& other) = delete;
 		StandardState& operator=(StandardState&& other) = delete;
 
-
+		void CollideWithActor(glm::vec3 dir, Player* player) override;
 		std::unique_ptr<BagState> Update(float deltaTime) override;
 	};
 }

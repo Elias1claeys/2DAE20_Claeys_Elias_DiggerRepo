@@ -12,23 +12,45 @@ namespace dae
 		m_ColliderSize.y /= 2;
 	}
 
-	void Collider::AddTrigger(const glm::vec3& position, const glm::vec2& size, const Event& event)
+	void Collider::AddTrigger(glm::vec3 position, glm::vec2 size, Event event)
 	{
-		m_Triggers.emplace_back( position, size, event );
+		m_Triggers.emplace_back( position, size, event);
+	}
+
+	void Collider::AddTrigger(glm::vec3 position, glm::vec2 size, Event event, bool persistent)
+	{
+		m_Triggers.emplace_back(position, size, event, persistent);
 	}
 
 	void Collider::Update()
 	{
-		int index = 0;
-
 		for (auto& trigger : m_Triggers)
 		{
 			if (Overlaps(trigger))
 			{
 				Notify(trigger.event, GetOwner());
-				trigger.position = glm::vec3{ -500, -500, 0 };
+				if (!trigger.persistent)
+					trigger.markedForDelete = true;
 			}
-			index++;
+		}
+
+		std::erase_if(m_Triggers, [](const Trigger& t)
+		{
+			return t.markedForDelete;
+		});
+	}
+
+	const void Collider::Render()
+	{
+		for (auto& trigger : m_Triggers)
+		{
+			SDL_FRect rect{};
+			rect.x = (float)trigger.position.x;
+			rect.y = (float)trigger.position.y;
+			rect.w = (float)trigger.size.x;
+			rect.h = (float)trigger.size.y;
+
+			Renderer::GetInstance().DrawRect({1, 0, 0, 0}, rect);
 		}
 	}
 
