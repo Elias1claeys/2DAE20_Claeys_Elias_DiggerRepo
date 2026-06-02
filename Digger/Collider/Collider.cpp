@@ -42,7 +42,7 @@ namespace dae
 		rect.w = m_ColliderSize.x;
 		rect.h = m_ColliderSize.y;
 
-		Renderer::GetInstance().DrawRect({ 1, 0, 0, 0 }, rect);
+		Renderer::GetInstance().DrawRect({255, 0, 255, 255}, rect);
 
 		for (auto& trigger: m_Triggers)
 		{
@@ -51,7 +51,7 @@ namespace dae
 			rect.y = triggerPos.y + trigger.offset.y;
 			rect.w = trigger.size.x;
 			rect.h = trigger.size.y;
-			Renderer::GetInstance().DrawRect({ 1, 0, 0, 0 }, rect);
+			Renderer::GetInstance().DrawRect({ 255, 0, 0, 255 }, rect);
 		}
 	}
 

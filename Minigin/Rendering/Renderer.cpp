@@ -115,13 +115,13 @@ void dae::Renderer::Texture(const Texture2D& texture, const glm::vec3 pos, const
 
 void dae::Renderer::DrawRect(const SDL_Color& color, SDL_FRect rect) const
 {
-	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	SDL_SetRenderDrawColor(GetSDLRenderer(), color.r, color.g, color.b, color.a);
 	SDL_RenderRect(GetSDLRenderer(), &rect);
 }
 
 void dae::Renderer::FillRect(const SDL_Color& color, SDL_FRect rect) const
 {
-	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	SDL_SetRenderDrawColor(GetSDLRenderer(), color.r, color.g, color.b, color.a);
 	SDL_RenderFillRect(GetSDLRenderer(), &rect);
 }
 

@@ -46,5 +46,5 @@ void dae::Texture::FlipTexture()
 
 glm::vec2 dae::Texture::GetSize()
 {
-	return m_texture->GetSize();
+	return m_size;
 }

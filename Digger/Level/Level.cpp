@@ -74,7 +74,7 @@ void dae::Level::CreateLevel(int level)
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 
 	std::unique_ptr<Collision> collisionObserver = std::make_unique<Collision>(digGround->GetComponent<Hole>(), player->GetComponent<Player>());
-	//player->GetComponent<Player>()->AddObserver(collisionObserver.get());
+	player->GetComponent<Player>()->AddObserver(collisionObserver.get());
 
 	//Adding the score text
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -119,7 +119,7 @@ void dae::Level::CreateLevel(int level)
 				playerSize.x /= 2;
 				playerSize.y /= 2;
 
-				glm::vec3 playerOffset = { playerSize.x / 4, playerSize.y / 4, 0 };
+				glm::vec3 playerOffset = { playerSize.x / 2, playerSize.y / 2, 0 };
 
 				switch (lines[y][x])
 				{
@@ -132,12 +132,16 @@ void dae::Level::CreateLevel(int level)
 					{
 						obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
 						obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+						auto size = obj->GetComponent<dae::Texture>()->GetSize();
 
 						Event bagEvent{ BAG_COLLISION };
 						bagEvent.nbArgs = 1;
 						bagEvent.args[0].go = obj.get();
 
-						//player->GetComponent<Collider>()->AddTrigger(obj->GetComponent<Transform>()->GetWorldPosition(), glm::vec2{ tileSize, tileSize }, bagEvent, true);
+						obj->AddComponent<Collider>(glm::vec3{0, 0, 0}, size);
+						obj->GetComponent<Collider>()->AddObserver(collisionObserver.get());
+						obj->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true });
+
 						bags.push_back(std::move(obj));
 						break;
 					}
@@ -189,7 +193,7 @@ void dae::Level::CreateLevel(int level)
 						obj->AddComponent<Collider>(offset, size);
 						obj->GetComponent<Collider>()->AddObserver(scoreObserver.get());
 						obj->GetComponent<Collider>()->AddObserver(soundObserver.get());
-						obj->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), emeraldEvent, playerSize, playerOffset });
+						obj->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), emeraldEvent, playerSize, playerOffset});
 
 						emeralds.push_back(std::move(obj));
 						break;
@@ -212,6 +216,7 @@ void dae::Level::CreateLevel(int level)
 
 	m_Observers.push_back(std::move(scoreObserver));
 	m_Observers.push_back(std::move(soundObserver));
+	m_Observers.push_back(std::move(collisionObserver));
 
 	m_LevelScene->Add(std::move(player));
 	m_LevelScene->Add(std::move(scoreText));

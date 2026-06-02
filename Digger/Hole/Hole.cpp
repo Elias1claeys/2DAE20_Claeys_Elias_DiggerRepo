@@ -152,18 +152,14 @@ void dae::Hole::RotateShape(std::array<std::array<bool, 8>, 8>& pattern, int rot
 
 void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 {
+	int cellSize = m_tileSize / 8;
 	float offsetX = (float)m_tileSize / 2;
 	float offsetY = (float)m_tileSize + (float)m_tileSize / 2;
-
-	playerSize.x /= 1.5;
-	playerSize.y /= 1.5;
 
 	float left = playerPos.x - offsetX;
 	float right = playerPos.x + playerSize.x - offsetX;
 	float bottem = playerPos.y + playerSize.y - offsetY;
 	float top = playerPos.y - offsetY;
-
-	int cellSize = m_tileSize / 8;
 
 	for (auto y = top; y < bottem; y += cellSize)
 	{
@@ -172,7 +168,6 @@ void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 			int tileX = int(x) / m_tileSize;
 			int tileY = int(y) / m_tileSize;
 
-			// Bounds check
 			if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
 				continue;
 
