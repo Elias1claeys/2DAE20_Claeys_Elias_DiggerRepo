@@ -10,7 +10,7 @@ namespace dae
 	class Subject
 	{
 	private:
-		std::vector<std::unique_ptr<Observer>> m_Observers;
+		std::vector<Observer*> m_Observers;
 
 	protected:
 		
@@ -18,7 +18,7 @@ namespace dae
 
 	public:
 
-		void AddObserver(std::unique_ptr<Observer> observer);
-		void RemoveObserver(std::unique_ptr<Observer> observer);
+		void AddObserver(Observer* observer);
+		void RemoveObserver(Observer* observer);
 	};
 }

@@ -7,34 +7,33 @@ namespace dae
 {
 	class Collider : public Component, public Subject
 	{
-
-	private:
-
+	public:
 		struct Trigger
-		{	
-			glm::vec3 position;
-			glm::vec2 size;
+		{
+			GameObject* triggerObject;
 			Event event;
+			glm::vec2 size;
+			glm::vec3 offset;
 			bool persistent{ false };
 			bool markedForDelete{ false };
 		};
 
-		glm::vec2 m_ColliderSize{ 0, 0 };
-		std::vector<Trigger> m_Triggers{};
-
-		bool Overlaps(Trigger trigger);
-
-	public:
-		Collider(GameObject* owner);
+		Collider(GameObject* owner, glm::vec3 offset, glm::vec2 size);
 		virtual ~Collider() = default;
 		Collider(const Collider& other) = delete;
 		Collider(Collider&& other) = delete;
 		Collider& operator=(const Collider& other) = delete;
 		Collider& operator=(Collider&& other) = delete;
 
-		void AddTrigger(glm::vec3 position, glm::vec2 size, Event event);
-		void AddTrigger(glm::vec3 position, glm::vec2 size, Event event, bool persistent);
+		void AddTrigger(Trigger trigger);
 		void Update() override;
 		const void Render() override;
+
+	private:
+		glm::vec2 m_ColliderSize{};
+		glm::vec3 m_Offset{};
+		std::vector<Trigger> m_Triggers{};
+
+		bool Overlaps(Trigger trigger);
 	};
 }

@@ -4,22 +4,14 @@
 
 namespace dae
 {
-	Collider::Collider(GameObject* owner)
-		: Component(owner)
+	Collider::Collider(GameObject* owner, glm::vec3 offset, glm::vec2 size)
+		: Component(owner), m_Offset(offset), m_ColliderSize(size)
 	{
-		m_ColliderSize = GetOwner()->GetComponent<Texture>()->GetSize();
-		m_ColliderSize.x /= 2;
-		m_ColliderSize.y /= 2;
 	}
 
-	void Collider::AddTrigger(glm::vec3 position, glm::vec2 size, Event event)
+	void Collider::AddTrigger(Trigger trigger)
 	{
-		m_Triggers.emplace_back( position, size, event);
-	}
-
-	void Collider::AddTrigger(glm::vec3 position, glm::vec2 size, Event event, bool persistent)
-	{
-		m_Triggers.emplace_back(position, size, event, persistent);
+		m_Triggers.emplace_back(trigger);
 	}
 
 	void Collider::Update()
@@ -42,25 +34,35 @@ namespace dae
 
 	const void Collider::Render()
 	{
-		for (auto& trigger : m_Triggers)
-		{
-			SDL_FRect rect{};
-			rect.x = (float)trigger.position.x;
-			rect.y = (float)trigger.position.y;
-			rect.w = (float)trigger.size.x;
-			rect.h = (float)trigger.size.y;
+		auto pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 
-			Renderer::GetInstance().DrawRect({1, 0, 0, 0}, rect);
+		SDL_FRect rect{};
+		rect.x = pos.x + m_Offset.x;
+		rect.y = pos.y + m_Offset.y;
+		rect.w = m_ColliderSize.x;
+		rect.h = m_ColliderSize.y;
+
+		Renderer::GetInstance().DrawRect({ 1, 0, 0, 0 }, rect);
+
+		for (auto& trigger: m_Triggers)
+		{
+			auto triggerPos = trigger.triggerObject->GetComponent<Transform>()->GetWorldPosition();
+			rect.x = triggerPos.x + trigger.offset.x;
+			rect.y = triggerPos.y + trigger.offset.y;
+			rect.w = trigger.size.x;
+			rect.h = trigger.size.y;
+			Renderer::GetInstance().DrawRect({ 1, 0, 0, 0 }, rect);
 		}
 	}
 
 	bool Collider::Overlaps(Trigger trigger)
 	{
-		auto playerPos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		auto objectPos = GetOwner()->GetComponent<Transform>()->GetWorldPosition() + m_Offset;
+		auto triggerPos = trigger.triggerObject->GetComponent<Transform>()->GetWorldPosition() + trigger.offset;
 
-		return playerPos.x + m_ColliderSize.x >= trigger.position.x &&
-			   playerPos.x <= trigger.position.x + trigger.size.x &&
-			   playerPos.y + m_ColliderSize.y >= trigger.position.y &&
-			   playerPos.y <= trigger.position.y + trigger.size.y;
+		return objectPos.x + m_ColliderSize.x >= triggerPos.x &&
+			   objectPos.x <= triggerPos.x + trigger.size.x &&
+			   objectPos.y + m_ColliderSize.y >= triggerPos.y &&
+			   objectPos.y <= triggerPos.y + trigger.size.y;
 	}
 }

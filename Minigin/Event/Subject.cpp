@@ -1,12 +1,12 @@
 #include "Subject.h"
 
 
-void dae::Subject::AddObserver(std::unique_ptr<Observer> observer)
+void dae::Subject::AddObserver(Observer* observer)
 {
 	m_Observers.push_back(std::move(observer));
 }
 
-void dae::Subject::RemoveObserver(std::unique_ptr<Observer> observer)
+void dae::Subject::RemoveObserver(Observer* observer)
 {
 	m_Observers.erase(std::remove(m_Observers.begin(), m_Observers.end(), observer),
 		m_Observers.end());

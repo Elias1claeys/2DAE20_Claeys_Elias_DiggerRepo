@@ -6,10 +6,13 @@ namespace dae
 {
 	class Scene;
 
+	class Observer;
+
 	class Level : public Component
 	{
 	private:
 		std::vector<std::unique_ptr<GameObject>> m_LevelObjects;
+		std::vector<std::unique_ptr<Observer>> m_Observers;
 		Scene* m_LevelScene{};
 		int m_CurrentLevel{ 1 };
 
