@@ -28,16 +28,23 @@ namespace dae
 	{
 		glm::vec3 BagPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 
-		if (dir == glm::vec3(1, 0, 0) || dir == glm::vec3(-1, 0, 0))
+		if (dir.x != 0)
 		{
-			if (BagPos.x <= 64 || BagPos.x >= 886)
+			if (BagPos.x <= 30 || BagPos.x >= 950)
 			{
-				player->SetDirection(glm::vec3(0, 0, 0));
+				player->MoveBack(glm::vec3(m_PreviousDirection.x * 5, 0, 0));
 			}
 			else
 			{
 				m_BagDir = dir;
 			}
 		}
+		else
+		{
+			player->MoveBack(glm::vec3(m_PreviousDirection.x * 5, m_PreviousDirection.y * 5, 0));
+		}
+
+		
+		m_PreviousDirection = dir;
 	}
 }

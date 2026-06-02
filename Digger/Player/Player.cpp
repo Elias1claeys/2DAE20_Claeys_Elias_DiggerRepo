@@ -95,3 +95,11 @@ void dae::Player::SetDirection(glm::vec3 dir)
 		GetOwner()->GetComponent<Texture>()->SetRotation(0);
 	}
 }
+
+void dae::Player::MoveBack(glm::vec3 offset)
+{
+	auto pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+	pos.x -= offset.x;
+	pos.y -= offset.y;
+	GetOwner()->GetComponent<Transform>()->SetLocalPosition(pos);
+}

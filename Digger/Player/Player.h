@@ -22,6 +22,7 @@ namespace dae
 
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
+		void MoveBack(glm::vec3 offset);
 
 		void Update() override;
 

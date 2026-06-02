@@ -85,6 +85,14 @@ void dae::Level::CreateLevel(int level)
 	
 	std::unique_ptr<Score> scoreObserver = std::make_unique<Score>(scoreText.get());
 	std::unique_ptr<SoundObserver> soundObserver = std::make_unique<SoundObserver>();
+
+	auto playerSize = player->GetComponent<Texture>()->GetSize();
+	playerSize.x /= 1.5;
+	playerSize.y /= 1.5;
+
+	glm::vec3 playerOffset;
+	playerOffset.x = (player->GetComponent<Texture>()->GetSize().x - playerSize.x) / 2;
+	playerOffset.y = (player->GetComponent<Texture>()->GetSize().y - playerSize.y) / 2;
 	
 	// Load level file
 	if (file.is_open())
@@ -115,12 +123,6 @@ void dae::Level::CreateLevel(int level)
 				bool right = (x < lines[y].size() - 1) && IsHorizontal(lines[y][x + 1]);
 				int rotation = 0;
 
-				auto playerSize = player->GetComponent<Texture>()->GetSize();
-				playerSize.x /= 2;
-				playerSize.y /= 2;
-
-				glm::vec3 playerOffset = { playerSize.x / 2, playerSize.y / 2, 0 };
-
 				switch (lines[y][x])
 				{
 					case 'S':
@@ -132,13 +134,20 @@ void dae::Level::CreateLevel(int level)
 					{
 						obj->AddComponent<dae::Bag>(digGround->GetComponent<Hole>());
 						obj->GetComponent<dae::Transform>()->SetLocalPosition(Startx + x * tileSize, Starty + y * tileSize);
+
 						auto size = obj->GetComponent<dae::Texture>()->GetSize();
+						size.x /= 1.5;
+						size.y /= 1.5;
+
+						glm::vec3 offset;
+						offset.x = (obj->GetComponent<Texture>()->GetSize().x - size.x) / 2;
+						offset.y = (obj->GetComponent<Texture>()->GetSize().y - size.y) / 2;
 
 						Event bagEvent{ BAG_COLLISION };
 						bagEvent.nbArgs = 1;
 						bagEvent.args[0].go = obj.get();
 
-						obj->AddComponent<Collider>(glm::vec3{0, 0, 0}, size);
+						obj->AddComponent<Collider>(offset, size);
 						obj->GetComponent<Collider>()->AddObserver(collisionObserver.get());
 						obj->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true });
 
