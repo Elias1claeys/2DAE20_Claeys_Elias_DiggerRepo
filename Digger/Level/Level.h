@@ -11,13 +11,20 @@ namespace dae
 	class Level : public Component
 	{
 	private:
+		std::vector<std::unique_ptr<GameObject>> m_pOwnedObjects{};
+
+
 		std::vector<std::unique_ptr<GameObject>> m_LevelObjects;
 		std::vector<std::unique_ptr<Observer>> m_Observers;
 		Scene* m_LevelScene{};
 		int m_CurrentLevel{ 1 };
+		float m_TileSize{ 64.f };
 
 		bool IsHorizontal(char c);
 		bool IsVertical(char c);
+
+		void InitBackGround(int level);
+		std::unique_ptr<GameObject> CreateDigGround();
 
 	public:
 

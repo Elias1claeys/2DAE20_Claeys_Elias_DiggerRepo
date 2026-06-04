@@ -22,6 +22,11 @@ namespace dae
 			),
 			m_pComponents.end()
 		);
+
+		for (auto& child : m_pChildren)
+		{
+			child->Update();
+		}
 	}
 
 	void GameObject::Render()
@@ -29,6 +34,11 @@ namespace dae
 		for (auto& comp : m_pComponents)
 		{
 			comp->Render();
+		}
+
+		for (auto& child : m_pChildren)
+		{
+			child->Render();
 		}
 	}
 
