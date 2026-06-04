@@ -127,7 +127,7 @@ FetchContent_Declare(
   GIT_TAG v1.92.5-docking
   GIT_SHALLOW TRUE
 )
-FetchContent_MakeAvailable(imgui)
+FetchContent_Populate(imgui)
 
 add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui.cpp
