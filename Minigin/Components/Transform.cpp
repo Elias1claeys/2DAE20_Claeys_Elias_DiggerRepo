@@ -41,12 +41,18 @@ void dae::Transform::UpdateWorldPosition()
 {
 	GameObject* parent = GetOwner()->GetParent();
 
+	
+
 	if (m_PositionIsDirty)
 	{
 		if (parent == nullptr)
+		{
 			m_WorldPosition = m_LocalPosition;
+		}
 		else
+		{
 			m_WorldPosition = parent->GetComponent<Transform>()->GetWorldPosition() + m_LocalPosition;
+		}
 
 		m_PositionIsDirty = false;
 	}
