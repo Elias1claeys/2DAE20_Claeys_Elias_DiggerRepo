@@ -23,12 +23,7 @@ namespace dae
 		
 	public:
 
-		GameObject() = default;
-		~GameObject() = default;
-		GameObject(const GameObject& other) = delete;
-		GameObject(GameObject&& other) = delete;
-		GameObject& operator=(const GameObject& other) = delete;
-		GameObject& operator=(GameObject&& other) = delete;
+		virtual ~GameObject() = default;
 
 		void Update();
 		void Render();

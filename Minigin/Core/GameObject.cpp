@@ -88,10 +88,13 @@ namespace dae
 
 	void GameObject::RemoveAllChilderen()
 	{
-		while (!m_pChildren.empty())
+		// Null out parent pointers first, then clear the container to destroy children
+		for (auto& child : m_pChildren)
 		{
-			RemoveChild(m_pChildren.back().get(), false);
+			if (child)
+				child->m_pParent = nullptr;
 		}
+		m_pChildren.clear();
 	}
 
 	void GameObject::UpdateTransForm(GameObject* child, bool keepWorldPosition)

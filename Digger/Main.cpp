@@ -12,13 +12,16 @@
 #include "Level/Level.h"
 #include "Audio/SoundSystem.h"
 #include "Audio/SDLSoundSystem.h"
+#include "Dig/DigSystem.h"
+#include "Dig/Dig.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
 static void load()
 {
-	dae::ServiceLocator::RegisterAudio(std::make_unique<dae::SDLSoundSystem>());
+	dae::SoundLocator::RegisterAudio(std::make_unique<dae::SDLSoundSystem>());
+	dae::DigLocator::RegisterDig(std::make_unique<dae::Dig>(64));
 
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 

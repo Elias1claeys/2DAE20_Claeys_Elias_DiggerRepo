@@ -22,7 +22,7 @@ namespace dae
 		void RegisterSound(SoundId, const std::string&) override {};
 	};
 
-	class ServiceLocator final
+	class SoundLocator final
 	{
 	public:
 		static SoundSystem& GetAudio()

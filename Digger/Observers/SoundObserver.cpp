@@ -5,7 +5,7 @@ namespace dae
 {
 	SoundObserver::SoundObserver()
 	{
-		m_pAudio = &dae::ServiceLocator::GetAudio();
+		m_pAudio = &dae::SoundLocator::GetAudio();
 
 		for (int i = 0; i < 8; ++i)
 		{

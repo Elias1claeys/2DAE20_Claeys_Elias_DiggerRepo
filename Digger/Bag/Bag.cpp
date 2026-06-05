@@ -3,11 +3,11 @@
 #include "WiggleState.h"
 #include "Components/Texture.h"
 #include "Core/DeltaTime.h"
-#include "Hole/Hole.h"
+#include "Dig/Dig.h"
 #include "Components/Transform.h"
 
-dae::Bag::Bag(GameObject* owner, Hole* hole)
-	: Component(owner), m_pHole(hole)
+dae::Bag::Bag(GameObject* owner)
+	: Component(owner)
 {
 	GetOwner()->AddComponent<Texture>();
 	m_CurrentState = std::make_unique<StandardState>(this);
@@ -31,5 +31,6 @@ bool dae::Bag::IsDugOut()
 	glm::vec3 pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 	glm::vec2 size = GetOwner()->GetComponent<Texture>()->GetSize();
 
-	return m_pHole->BagDiggedOut(pos, size);
+	//return m_pHole->BagDiggedOut(pos, size);
+	return false;
 }

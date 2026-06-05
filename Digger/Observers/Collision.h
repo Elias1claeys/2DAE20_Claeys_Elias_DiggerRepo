@@ -4,16 +4,15 @@
 
 namespace dae
 {
-	class Hole;
+	class Dig;
 
 	class Collision : public Observer
 	{
 	private:
-		Hole* m_pDigGround{ nullptr };
 		Player* m_pPlayer{ nullptr };
 	public:
 
-		Collision(Hole* digGround, Player* player);
+		Collision(Player* player);
 		virtual ~Collision() = default;
 		Collision(const Collision& other) = delete;
 		Collision(Collision&& other) = delete;

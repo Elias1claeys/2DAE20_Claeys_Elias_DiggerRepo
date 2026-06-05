@@ -6,13 +6,13 @@
 
 namespace dae
 {
-	class Hole;
+	class Dig;
 
 	class Bag : public Component
 	{
 	public:
 
-		Bag(GameObject* owner, Hole* hole);
+		Bag(GameObject* owner);
 		virtual ~Bag() = default;
 		Bag(const Bag& other) = delete;
 		Bag(Bag&& other) = delete;
@@ -27,6 +27,5 @@ namespace dae
 
 	private:
 		std::unique_ptr<BagState> m_CurrentState;
-		Hole* m_pHole;
 	};
 }

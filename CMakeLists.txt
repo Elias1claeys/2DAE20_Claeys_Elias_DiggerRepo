@@ -137,7 +137,7 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
-)
+ )
 
 target_include_directories(imgui PUBLIC 
 ${imgui_SOURCE_DIR})
@@ -203,24 +203,24 @@ target_link_libraries(Minigin PUBLIC
 # ============================================================
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  "Digger/Main.cpp"
+  Digger/Main.cpp
   Digger/Bag/Bag.cpp
   Digger/Bag/StandardState.cpp
   Digger/Bag/WiggleState.cpp
   Digger/Bag/FallState.cpp
   Digger/Collider/Collider.cpp
   Digger/Emerald/Emerald.cpp
-  Digger/Hole/Hole.cpp
   Digger/Level/Level.cpp
   Digger/Level/LevelControls.cpp
   Digger/Player/Player.cpp
   Digger/Player/PlayerControls.cpp
-  "Digger/Observers/Collision.cpp"
+  Digger/Observers/Collision.cpp
   Digger/Observers/LostHealth.cpp 
   Digger/Observers/Score.cpp
   Digger/Observers/SoundObserver.cpp
-  
-)
+  Digger/Dig/Dig.cpp
+  Digger/Dig/DigSystem.cpp 
+  Digger/Dig/DigComponent.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
   ${CMAKE_SOURCE_DIR}/Digger

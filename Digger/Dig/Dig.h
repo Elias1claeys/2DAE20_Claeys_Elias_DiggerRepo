@@ -1,10 +1,10 @@
 #include "Core/GameObject.h"
 #include <array>
-#include <glm/glm.hpp>
+#include "DigSystem.h"
 
 namespace dae
 {
-	class Hole : public Component
+	class Dig : public DigSystem
 	{
 	private:
 
@@ -76,15 +76,15 @@ namespace dae
 	public:
 
 		const void Render() override;
-		void FillDigShape(int tileId, char shape, int rotationTimes);
-		void DigTile(glm::vec3 playerPos, glm::vec2 playerSize);
-		bool BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize);
+		void FillDigShape(int tileId, char shape, int rotationTimes) override;
+		void DigTile(glm::vec3 playerPos, glm::vec2 playerSize) override;
+		bool BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize) override;
 
-		Hole(GameObject* owner, int tileSize);
-		virtual ~Hole() = default;
-		Hole(const Hole& other) = delete;
-		Hole(Hole&& other) = delete;
-		Hole& operator=(const Hole& other) = delete;
-		Hole& operator=(Hole&& other) = delete;
+		Dig(int tileSize);
+		virtual ~Dig() = default;
+		Dig(const Dig& other) = delete;
+		Dig(Dig&& other) = delete;
+		Dig& operator=(const Dig& other) = delete;
+		Dig& operator=(Dig&& other) = delete;
 	};
 }

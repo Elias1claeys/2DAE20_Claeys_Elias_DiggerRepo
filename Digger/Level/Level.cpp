@@ -7,7 +7,7 @@
 #include "Components/Texture.h"
 #include "Components/Transform.h"
 #include "Components/Text.h"
-#include "Hole/Hole.h"
+#include "Dig/DigComponent.h"
 #include "Bag/Bag.h"
 #include "Emerald/Emerald.h"
 #include "Player/Player.h"
@@ -24,7 +24,10 @@ dae::Level::Level(GameObject* owner)
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
-	m_LevelScene = &dae::SceneManager::GetInstance().CreateScene();
+	auto gameScreen = std::make_unique<GameObject>();
+	m_pGameScreen = gameScreen.release();
+	m_pGameScreen->SetParent(GetOwner(), false);
+
 	CreateLevel(m_CurrentLevel);
 }
 
@@ -41,6 +44,8 @@ bool dae::Level::IsVertical(char c)
 void dae::Level::CreateLevel(int level)
 {
 	InitBackGround(level);
+	InitDigGround();
+	InitPlayer();
 	
 	//std::string line;
 	//std::string levelData = "./Data/media/levels/" + std::to_string(level) + "/Data.txt";
@@ -233,10 +238,23 @@ void dae::Level::InitBackGround(int level)
 		}
 	}
 	
-	background.release()->SetParent(GetOwner(), false);
+	background.release()->SetParent(m_pGameScreen, false);
 }
 
+void dae::Level::InitDigGround()
+{
+	auto digGround = std::make_unique<GameObject>();
+	digGround->AddComponent<DigComponent>();
+	digGround.release()->SetParent(m_pGameScreen, false);
+}
 
+void dae::Level::InitPlayer()
+{
+	auto player = std::make_unique<GameObject>();
+	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
+	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
+	player.release()->SetParent(m_pGameScreen, false);
+}
 
 void dae::Level::NextLevel()
 {

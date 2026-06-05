@@ -4,6 +4,8 @@
 #include "Core/DeltaTime.h"
 #include "Components/Texture.h"
 #include "Observers/GameEvents.h"
+#include "Dig/DigSystem.h"
+#include "Dig/Dig.h"
 
 dae::Player::Player(GameObject* Owner, InputType input, float speed)
 	:Component(Owner),
@@ -58,11 +60,7 @@ void dae::Player::Update()
 			return;
 		}
 
-		Event e{ PLAYER_MOVED };
-		e.nbArgs = 2;
-		e.args[0].v3 = m_Transform->GetWorldPosition();
-		e.args[1].v2 = GetOwner()->GetComponent<Texture>()->GetSize();
-		Notify(e, GetOwner());
+		DigLocator::GetDig().DigTile(pos, GetOwner()->GetComponent<Texture>()->GetSize());
 
 		pos.x += m_MoveDirection.x * m_Speed * Time::GetInstance().GetDeltaTime();
 		pos.y += m_MoveDirection.y * m_Speed * Time::GetInstance().GetDeltaTime();

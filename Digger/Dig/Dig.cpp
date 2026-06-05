@@ -1,9 +1,8 @@
-#include "Hole.h"
+#include "Dig.h"
 
-dae::Hole::Hole(GameObject* owner, int tileSize)
-	: Component(owner), m_tileSize(tileSize), m_DigGrid()
+dae::Dig::Dig(int tileSize)
+	: m_tileSize(tileSize), m_DigGrid()
 {
-
 	int index = 0;
 	int nextLineStart = 0;
 
@@ -30,7 +29,7 @@ dae::Hole::Hole(GameObject* owner, int tileSize)
 	}
 }
 
-const void dae::Hole::Render()
+const void dae::Dig::Render()
 {
 	//DrawAllDigTiles();
 	FillAllDigTiles();
@@ -41,7 +40,7 @@ const void dae::Hole::Render()
 	}
 }
 
-void dae::Hole::DrawAllDigTiles()
+void dae::Dig::DrawAllDigTiles()
 {
 	int size = m_tileSize / 8;
 
@@ -66,7 +65,7 @@ void dae::Hole::DrawAllDigTiles()
 	}
 }
 
-void dae::Hole::FillAllDigTiles()
+void dae::Dig::FillAllDigTiles()
 {
 	int size = m_tileSize / 8;
 
@@ -94,7 +93,7 @@ void dae::Hole::FillAllDigTiles()
 	}
 }
 
-void dae::Hole::FillDigShape(int tileId, char shape, int rotation)
+void dae::Dig::FillDigShape(int tileId, char shape, int rotation)
 {
 	std::array<std::array<bool, 8>, 8> pattern{};
 
@@ -126,7 +125,7 @@ void dae::Hole::FillDigShape(int tileId, char shape, int rotation)
 	}
 }
 
-void dae::Hole::RotateShape(std::array<std::array<bool, 8>, 8>& pattern, int rotationTimes)
+void dae::Dig::RotateShape(std::array<std::array<bool, 8>, 8>& pattern, int rotationTimes)
 {
 	for (int r = 0; r < rotationTimes; r++)
 	{
@@ -150,7 +149,7 @@ void dae::Hole::RotateShape(std::array<std::array<bool, 8>, 8>& pattern, int rot
 	}
 }
 
-void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
+void dae::Dig::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 {
 	int cellSize = m_tileSize / 8;
 	float offsetX = (float)m_tileSize / 2;
@@ -184,7 +183,7 @@ void dae::Hole::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 	}
 }
 
-bool dae::Hole::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize)
+bool dae::Dig::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize)
 {
 	int cellSize = m_tileSize / 8;
 

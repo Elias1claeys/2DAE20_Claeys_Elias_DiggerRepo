@@ -11,7 +11,7 @@ namespace dae
 	class Level : public Component
 	{
 	private:
-		std::vector<std::unique_ptr<GameObject>> m_pOwnedObjects{};
+		GameObject* m_pGameScreen;
 
 
 		std::vector<std::unique_ptr<GameObject>> m_LevelObjects;
@@ -24,6 +24,9 @@ namespace dae
 		bool IsVertical(char c);
 
 		void InitBackGround(int level);
+		void InitDigGround();
+		void InitPlayer();
+
 		std::unique_ptr<GameObject> CreateDigGround();
 
 	public:
