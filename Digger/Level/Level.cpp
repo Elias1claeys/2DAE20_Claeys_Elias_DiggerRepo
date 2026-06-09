@@ -341,13 +341,25 @@ bool dae::Level::CreateStarterPath()
 
 void dae::Level::NextLevel()
 {
-	//m_LevelScene->RemoveAll();
-	//
-	//if (m_CurrentLevel == 8)
-	//	m_CurrentLevel = 1;
-	//else
-	//	m_CurrentLevel++;
-	//
-	//GetOwner()->RemoveComponent<Hole>();
-	//CreateLevel(m_CurrentLevel);
+	//Reset everything
+	m_pGameScreen->RemoveAllChilderen();
+
+	m_LevelData.clear();
+	m_NextCheck.clear();
+	m_AlreadyChecked.clear();
+	m_NextCheck.push_back({ 0, -1 });
+	dae::DigLocator::GetDig().ResetDig();
+
+	m_LevelReadyForStart = false;
+
+	if (m_CurrentLevel == 8)
+	{
+		m_CurrentLevel = 1;
+	}
+	else
+	{
+		m_CurrentLevel++;
+	}
+
+	CreateLevel();
 }

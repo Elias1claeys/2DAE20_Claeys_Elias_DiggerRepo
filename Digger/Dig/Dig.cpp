@@ -219,3 +219,17 @@ bool dae::Dig::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize)
 
 	return true;
 }
+
+void dae::Dig::ResetDig()
+{
+	for (auto& tile : m_DigGrid)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 8; x++)
+			{
+				tile.DigCells[y][x] = false;
+			}
+		}
+	}
+}

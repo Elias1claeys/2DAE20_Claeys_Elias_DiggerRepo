@@ -78,7 +78,9 @@ namespace dae
 		const void Render() override;
 		void FillDigShape(int tileId, char shape, int rotationTimes) override;
 		void DigTile(glm::vec3 playerPos, glm::vec2 playerSize) override;
+		void ResetDig() override;
 		bool BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize) override;
+		
 
 		Dig(int tileSize);
 		virtual ~Dig() = default;
