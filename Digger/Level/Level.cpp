@@ -12,14 +12,14 @@
 #include "Emerald/Emerald.h"
 #include "Player/Player.h"
 #include "Collider/Collider.h"
-#include "Observers/Collision.h"
 #include "Observers/Score.h"
 #include "Resources/ResourceManager.h"
 #include "Observers/GameEvents.h"
 #include "Observers/SoundObserver.h"
+#include "Core/DeltaTime.h"
 
 dae::Level::Level(GameObject* owner)
-	: Component(owner)
+	: Component(owner), m_CurrentLevel(1)
 {
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
@@ -28,30 +28,15 @@ dae::Level::Level(GameObject* owner)
 	m_pGameScreen = gameScreen.release();
 	m_pGameScreen->SetParent(GetOwner(), false);
 
-	CreateLevel(m_CurrentLevel);
+	CreateLevel();
 }
 
-bool dae::Level::IsHorizontal(char c)
+void dae::Level::CreateLevel()
 {
-	return c == 'H' || c == 'L' || c == 'S';
-}
-
-bool dae::Level::IsVertical(char c)
-{
-	return c == 'V' || c == 'L' || c == 'S';
-}
-
-void dae::Level::CreateLevel(int level)
-{
-	InitBackGround(level);
+	InitBackGround();
 	InitDigGround();
-	InitPlayer();
+	ReadLevelData();
 	
-	//std::string line;
-	//std::string levelData = "./Data/media/levels/" + std::to_string(level) + "/Data.txt";
-	//std::ifstream file{ levelData };
-	//std::vector<std::string> lines;
-	//
 	//auto digGround = std::make_unique<GameObject>();
 	//digGround->AddComponent<dae::Hole>(64);
 	//
@@ -221,11 +206,11 @@ void dae::Level::CreateLevel(int level)
 	//m_LevelScene->Add(std::move(scoreText));
 }
 
-void dae::Level::InitBackGround(int level)
+void dae::Level::InitBackGround()
 {
 	auto background = std::make_unique<GameObject>();
 
-	std::string levelBack = "media/levels/" + std::to_string(level) + "/Back.png";
+	std::string levelBack = "media/levels/" + std::to_string(m_CurrentLevel) + "/Back.png";
 	
 	for (float x = 0; x <= 15; x++)
 	{
@@ -248,12 +233,110 @@ void dae::Level::InitDigGround()
 	digGround.release()->SetParent(m_pGameScreen, false);
 }
 
-void dae::Level::InitPlayer()
+void dae::Level::InitPlayersData()
 {
 	auto player = std::make_unique<GameObject>();
 	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 	player.release()->SetParent(m_pGameScreen, false);
+}
+
+void dae::Level::ReadLevelData()
+{
+	std::string line;
+	std::string levelData = "./Data/media/levels/" + std::to_string(m_CurrentLevel) + "/Data.txt";
+	std::ifstream file{ levelData };
+
+	if (file.is_open())
+	{
+		while (std::getline(file, line))
+		{
+			m_LevelData.push_back(line);
+		}
+	}
+}
+
+void dae::Level::Update()
+{
+	m_Time += Time::GetInstance().GetDeltaTime();
+	if (!m_LevelReadyForStart && m_Time > 0.1f)
+	{
+		m_Time = 0.f;
+		if (!CreateStarterPath()) return;
+		InitPlayersData();
+		m_LevelReadyForStart = true;
+	}
+}
+
+bool dae::Level::IsHorizontal(char c)
+{
+	return c == 'H' || c == 'L' || c == 'S';
+}
+
+bool dae::Level::IsVertical(char c)
+{
+	return c == 'V' || c == 'L' || c == 'S';
+}
+
+bool dae::Level::CreateStarterPath()
+{
+	auto checkCount = m_NextCheck.size();
+	for (int i = 0; i < checkCount; i++)
+	{
+		for (auto dir: m_Directions)
+		{
+			auto currentCheck = m_NextCheck[0] + dir;
+
+			if (currentCheck.x < 0 || currentCheck.x >= 15 || currentCheck.y < 0 || currentCheck.y >= 10 
+				|| std::find(m_AlreadyChecked.begin(), m_AlreadyChecked.end(), currentCheck) != m_AlreadyChecked.end())
+				continue;
+			
+			char tile = m_LevelData[(int)currentCheck.y][(int)currentCheck.x];
+			int index = (int)currentCheck.y * 15 + (int)currentCheck.x;
+
+			bool up = (currentCheck.y > 0) && IsVertical(m_LevelData[(int)currentCheck.y - 1][(int)currentCheck.x]);
+			bool down = (currentCheck.y < 10 - 1) && IsVertical(m_LevelData[(int)currentCheck.y + 1][(int)currentCheck.x]);
+			bool left = (currentCheck.x > 0) && IsHorizontal(m_LevelData[(int)currentCheck.y][(int)currentCheck.x - 1]);
+			bool right = (currentCheck.x < 15 - 1) && IsHorizontal(m_LevelData[(int)currentCheck.y][(int)currentCheck.x + 1]);
+			int rotation = 0;
+
+			switch (tile)
+			{
+			case 'S':
+			case 'V':
+				rotation = 0;
+				break;
+			case 'H':
+				rotation = 1;
+				break;
+			case 'L':
+				if (right && down)        rotation = 1;
+				else if (down && left)    rotation = 2;
+				else if (left && up)      rotation = 3;
+				break;
+			case 'T':
+				if (up && right && down)        rotation = 1;
+				else if (right && down && left)  rotation = 2;
+				else if (down && left && up)  rotation = 3;
+				break;
+			default:
+				continue;
+				break;
+			}
+
+			dae::DigLocator::GetDig().FillDigShape(index, tile, rotation);
+			m_NextCheck.push_back(currentCheck);
+
+		}
+
+		if (i < m_NextCheck.size())
+		{
+			m_AlreadyChecked.push_back(m_NextCheck[i]);
+			m_NextCheck.erase(m_NextCheck.begin());
+		}
+	}
+
+	return m_NextCheck.empty();
 }
 
 void dae::Level::NextLevel()
