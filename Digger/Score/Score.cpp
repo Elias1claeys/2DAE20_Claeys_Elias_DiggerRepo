@@ -1,7 +1,7 @@
 #include "Score.h"
 #include "Event/Event.h"
 #include "Components/Text.h"
-#include "GameEvents.h"
+#include "Observers/GameEvents.h"
 #include "Emerald/Emerald.h"
 #include "Collider/Collider.h"
 #include "Audio/SoundSystem.h"

@@ -3,7 +3,7 @@
 
 void dae::Subject::AddObserver(Observer* observer)
 {
-	m_Observers.push_back(std::move(observer));
+	m_Observers.push_back(observer);
 }
 
 void dae::Subject::RemoveObserver(Observer* observer)

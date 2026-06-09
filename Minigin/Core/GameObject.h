@@ -14,7 +14,7 @@ namespace dae
 	private:
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		GameObject* m_pParent{};
-		std::vector<std::unique_ptr<GameObject>> m_pChildren{};
+		std::vector<GameObject*> m_pChildren{};
 
 		bool IsChild(GameObject* child) const;
 		void AddChild(GameObject* child, bool keepWorldPosition);
@@ -31,7 +31,7 @@ namespace dae
 		void RemoveAllChilderen();
 		void SetParent(GameObject* parent, bool keepWorldPosition);
 		GameObject* GetParent() const { return m_pParent; }
-		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const { return m_pChildren; }
+		const std::vector<GameObject*>& GetChildren() const { return m_pChildren; }
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args)

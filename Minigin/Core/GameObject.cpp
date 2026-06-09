@@ -44,8 +44,7 @@ namespace dae
 
 	bool GameObject::IsChild(GameObject* child) const
 	{
-		return std::find_if(m_pChildren.begin(), m_pChildren.end(),
-			[child](const auto& c) { return c.get() == child; }) != m_pChildren.end();
+		return std::find(m_pChildren.begin(), m_pChildren.end(), child) != m_pChildren.end();
 	}
 
 	void GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
@@ -70,7 +69,7 @@ namespace dae
 
 		if (child->m_pParent) child->m_pParent->RemoveChild(child, keepWorldPosition);
 		child->m_pParent = this;
-		m_pChildren.push_back(std::unique_ptr<GameObject>(child));
+		m_pChildren.push_back(child);
 	}
 
 	void GameObject::RemoveChild(GameObject* child, bool keepWorldPosition)
@@ -80,8 +79,7 @@ namespace dae
 
 		UpdateTransForm(child, keepWorldPosition);
 
-		m_pChildren.erase(std::remove_if(m_pChildren.begin(), m_pChildren.end(),
-			[child](const auto& c) { return c.get() == child; }), m_pChildren.end());
+		m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), child), m_pChildren.end());
 
 		child->m_pParent = nullptr;
 	}
