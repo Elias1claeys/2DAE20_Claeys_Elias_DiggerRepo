@@ -38,7 +38,7 @@ namespace dae
 		return nullptr;
 	}
 
-	void WiggleState::CollideWithActor(glm::vec3 dir, Player* player)
+	void WiggleState::CollideWithActor(glm::vec3 dir, Entity* player)
 	{
 		if (dir != glm::vec3(0, 0, 0))
 			player->MoveBack(glm::vec3(dir.x * 2, dir.y * 2, 0));

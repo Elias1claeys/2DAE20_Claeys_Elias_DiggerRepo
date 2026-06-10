@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/GameObject.h"
 #include "BagState.h"
-#include "Player/Player.h"
+#include "Entities/Entity.h"
 #include <memory>
 
 namespace dae
@@ -22,7 +22,7 @@ namespace dae
 		GameObject* GetOwner() const { return Component::GetOwner(); }
 
 		void Update() override;
-		void CollideWithActor(glm::vec3 dir, Player* player);
+		void CollideWithActor(glm::vec3 dir, Entity* player);
 		bool IsDugOut();
 
 	private:

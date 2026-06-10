@@ -14,7 +14,7 @@ namespace dae
 		WiggleState& operator=(WiggleState&& other) = delete;
 
 		std::unique_ptr<BagState> Update(float deltaTime) override;
-		void CollideWithActor(glm::vec3 dir, Player* player) override;
+		void CollideWithActor(glm::vec3 dir, Entity* player) override;
 
 	private:
 		float m_Time = 0.5f;

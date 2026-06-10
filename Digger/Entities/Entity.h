@@ -5,7 +5,7 @@
 
 namespace dae 
 {
-	class Player : public Component, public Subject
+	class Entity : public Component, public Subject
 	{
 	private:
 		float m_Speed{};
@@ -26,12 +26,12 @@ namespace dae
 
 		void Update() override;
 
-		Player(GameObject* owner, InputType input, float speed);
-		virtual ~Player() = default;
-		Player(const Player& other) = delete;
-		Player(Player&& other) = delete;
-		Player& operator=(const Player& other) = delete;
-		Player& operator=(Player&& other) = delete;
+		Entity(GameObject* owner, InputType input, float speed);
+		virtual ~Entity() = default;
+		Entity(const Entity& other) = delete;
+		Entity(Entity&& other) = delete;
+		Entity& operator=(const Entity& other) = delete;
+		Entity& operator=(Entity&& other) = delete;
 
 	};
 }

@@ -24,7 +24,7 @@ namespace dae
 		return nullptr;
 	}
 
-	void StandardState::CollideWithActor(glm::vec3 dir, Player* player)
+	void StandardState::CollideWithActor(glm::vec3 dir, Entity* player)
 	{
 		glm::vec3 BagPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 

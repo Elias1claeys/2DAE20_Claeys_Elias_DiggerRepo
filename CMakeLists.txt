@@ -212,8 +212,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Emerald/Emerald.cpp
   Digger/Level/Level.cpp
   Digger/Level/LevelControls.cpp
-  Digger/Player/Player.cpp
-  Digger/Player/PlayerControls.cpp
+  Digger/Entities/Entity.cpp
+  Digger/Entities/PlayerMovement/PlayerControls.cpp
+  Digger/Entities/PlayerMovement/PlayerInputComponent.cpp
   Digger/Collider/CollisionObserver.cpp 
   Digger/Health/HealthObserver.cpp
   Digger/Health/HealthDisplay.cpp

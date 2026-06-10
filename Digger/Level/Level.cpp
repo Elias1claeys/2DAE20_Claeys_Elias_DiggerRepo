@@ -10,7 +10,7 @@
 #include "Dig/DigComponent.h"
 #include "Bag/Bag.h"
 #include "Emerald/Emerald.h"
-#include "Player/Player.h"
+#include "Entities/Entity.h"
 #include "Collider/Collider.h"
 #include "Resources/ResourceManager.h"
 #include "Observers/GameEvents.h"
@@ -203,7 +203,7 @@ bool dae::Level::CreateStarterPath()
 void dae::Level::InitPlayersData()
 {
 	auto player = std::make_unique<GameObject>();
-	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
+	player->AddComponent<Entity>(Entity::InputType::keyBoard, 100.f);
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 	m_pPlayers.push_back(std::move(player));
 }

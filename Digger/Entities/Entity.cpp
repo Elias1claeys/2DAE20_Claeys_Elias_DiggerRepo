@@ -1,5 +1,5 @@
-#include "Player.h"
-#include "PlayerControls.h"
+#include "Entity.h"
+#include "PlayerMovement/PlayerControls.h"
 #include "Input/InputManager.h"
 #include "Core/DeltaTime.h"
 #include "Components/Texture.h"
@@ -7,7 +7,7 @@
 #include "Dig/DigSystem.h"
 #include "Dig/Dig.h"
 
-dae::Player::Player(GameObject* Owner, InputType input, float speed)
+dae::Entity::Entity(GameObject* Owner, InputType input, float speed)
 	:Component(Owner),
 	m_Speed(speed)
 {
@@ -45,7 +45,7 @@ dae::Player::Player(GameObject* Owner, InputType input, float speed)
 	}
 }
 
-void dae::Player::Update()
+void dae::Entity::Update()
 {
 	glm::vec3 pos = m_Transform->GetWorldPosition();
 
@@ -69,7 +69,7 @@ void dae::Player::Update()
 	}
 }
 
-void dae::Player::SetDirection(glm::vec3 dir)
+void dae::Entity::SetDirection(glm::vec3 dir)
 {
 	m_MoveDirection = dir;
 
@@ -94,7 +94,7 @@ void dae::Player::SetDirection(glm::vec3 dir)
 	}
 }
 
-void dae::Player::MoveBack(glm::vec3 offset)
+void dae::Entity::MoveBack(glm::vec3 offset)
 {
 	auto pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 	pos.x -= offset.x;

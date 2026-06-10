@@ -27,7 +27,7 @@ namespace dae
 		return nullptr;
 	}
 
-	void FallState::CollideWithActor(glm::vec3, Player* player)
+	void FallState::CollideWithActor(glm::vec3, Entity* player)
 	{
 		player->SetDirection(glm::vec3(-1, 0, 0));
 	}

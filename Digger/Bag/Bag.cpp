@@ -22,7 +22,7 @@ void dae::Bag::Update()
 		m_CurrentState = std::move(newState);
 }
 
-void dae::Bag::CollideWithActor(glm::vec3 dir, Player* player)
+void dae::Bag::CollideWithActor(glm::vec3 dir, Entity* player)
 {
 	m_CurrentState->CollideWithActor(dir, player);
 }

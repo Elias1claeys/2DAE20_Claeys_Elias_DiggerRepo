@@ -1,6 +1,6 @@
 #include "Core/GameObject.h"
 #include "Event/Observer.h"
-#include "Player/Player.h"
+#include "Entities/Entity.h"
 
 namespace dae
 {

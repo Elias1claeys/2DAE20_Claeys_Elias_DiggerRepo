@@ -12,7 +12,7 @@ namespace dae
 	{
 		if (event.id == BAG_COLLISION)
 		{
-			auto player = event.args[0].go->GetComponent<Player>();
+			auto player = event.args[0].go->GetComponent<Entity>();
 			gameObject->GetComponent<Bag>()->CollideWithActor(player->GetDirection(), player);
 		}
 	}
