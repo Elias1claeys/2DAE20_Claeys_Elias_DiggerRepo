@@ -118,7 +118,8 @@ void dae::Level::Update()
 		m_Time = 0.f;
 		if (!CreateStarterPath()) return;
 		InitPlayersData();
-		InitEmeraldsAndBags();
+		InitEmeralds();
+		InitBags();
 
 		for (auto & player: m_pPlayers)
 		{
@@ -210,7 +211,7 @@ void dae::Level::InitPlayersData()
 	m_pPlayers.push_back(std::move(player));
 }
 
-void dae::Level::InitEmeraldsAndBags()
+void dae::Level::InitEmeralds()
 {
 	float Startx = m_TileSize / 2;
 	float Starty = m_TileSize + Startx;
@@ -255,7 +256,28 @@ void dae::Level::InitEmeraldsAndBags()
 				emerald->SetParent(m_pLevelScreen.get(), false);
 				m_pLevelObjects.push_back(std::move(emerald));
 			}
-			else if(m_LevelData[y][x] == 'B')
+		}
+	}
+}
+
+void dae::Level::InitBags()
+{
+	float Startx = m_TileSize / 2;
+	float Starty = m_TileSize + Startx;
+
+	auto playerSize = m_pPlayers[0]->GetComponent<Texture>()->GetSize();
+	playerSize.x /= 1.5;
+	playerSize.y /= 1.5;
+
+	glm::vec3 playerOffset;
+	playerOffset.x = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().x - playerSize.x) / 2;
+	playerOffset.y = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().y - playerSize.y) / 2;
+
+	for (int y = 0; y < m_LevelData.size(); y++)
+	{
+		for (int x = 0; x < m_LevelData[y].size(); x++)
+		{
+			if (m_LevelData[y][x] == 'B')
 			{
 				auto bag = std::make_unique<GameObject>();
 				bag->AddComponent<Bag>();
@@ -272,13 +294,13 @@ void dae::Level::InitEmeraldsAndBags()
 				bag->AddComponent<Collider>(offset, size);
 				bag->GetComponent<Collider>()->AddObserver(m_CollisionObserver.get());
 
-				for (auto & player : m_pPlayers)
+				for (auto& player : m_pPlayers)
 				{
 					Event bagEvent{ BAG_COLLISION };
 					bagEvent.nbArgs = 1;
 					bagEvent.args[0].go = player.get();
 
-					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true});
+					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true });
 				}
 
 				bag->SetParent(m_pLevelScreen.get(), false);

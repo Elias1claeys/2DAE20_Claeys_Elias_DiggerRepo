@@ -29,7 +29,14 @@ namespace dae
 
 	void FallState::CollideWithActor(glm::vec3, GameObject* player)
 	{	
+		auto playerPos = player->GetComponent<Transform>()->GetWorldPosition();
 		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
-		player->GetComponent<Transform>()->SetLocalPosition(bagpos);
+		auto bagsize = m_pBag->GetOwner()->GetComponent<Texture>()->GetSize();
+
+		if (playerPos.x > bagpos.x + 20 && 
+			playerPos.x < bagpos.x + bagsize.x - 20)
+		{
+			player->GetComponent<Transform>()->SetLocalPosition(bagpos);
+		}
 	}
 }

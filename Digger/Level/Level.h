@@ -45,7 +45,8 @@ namespace dae
 		void ReadLevelData();
 
 		void InitPlayersData();
-		void InitEmeraldsAndBags();
+		void InitEmeralds();
+		void InitBags();
 		bool CreateStarterPath();
 
 	public:
