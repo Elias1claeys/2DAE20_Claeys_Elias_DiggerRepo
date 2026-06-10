@@ -15,7 +15,7 @@ namespace dae
 		BagState& operator=(BagState&& other) = delete;
 
 		virtual std::unique_ptr<BagState> Update(float deltaTime) = 0;
-		virtual void CollideWithActor(glm::vec3 dir, Entity* player) = 0;
+		virtual void CollideWithActor(glm::vec3 dir, GameObject* player) = 0;
 
 	protected:
 		Bag* m_pBag;

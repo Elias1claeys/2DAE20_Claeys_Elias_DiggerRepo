@@ -1,6 +1,7 @@
 #include "StandardState.h"
 #include "WiggleState.h"
 #include "Components/Texture.h"
+#include "Entities/Entity.h"
 
 namespace dae
 {
@@ -24,27 +25,36 @@ namespace dae
 		return nullptr;
 	}
 
-	void StandardState::CollideWithActor(glm::vec3 dir, Entity* player)
+	void StandardState::CollideWithActor(glm::vec3 dir, GameObject* player)
 	{
-		glm::vec3 BagPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		glm::vec3 bagPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		glm::vec2 bagSize = m_pBag->GetOwner()->GetComponent<Texture>()->GetSize();
+
+		glm::vec3 playerPos = player->GetComponent<Transform>()->GetWorldPosition();
+		glm::vec2 playerSize = player->GetComponent<Texture>()->GetSize();
 
 		if (dir.x != 0)
 		{
-			if (BagPos.x <= 30 || BagPos.x >= 950)
+			if (bagPos.x <= 30 || bagPos.x >= 950)
 			{
-				player->MoveBack(glm::vec3(m_PreviousDirection.x * 5, 0, 0));
+				player->GetComponent<Entity>()->StopMovementInDirection(dir);
+				player->GetComponent<Transform>()->SetLocalPosition(playerPos - m_PreviousDirection);
 			}
 			else
 			{
 				m_BagDir = dir;
 			}
 		}
+		else if(dir.y != 0)
+		{
+			player->GetComponent<Entity>()->StopMovementInDirection(dir);
+			player->GetComponent<Transform>()->SetLocalPosition(playerPos - m_PreviousDirection);
+		}
 		else
 		{
-			player->MoveBack(glm::vec3(m_PreviousDirection.x * 5, m_PreviousDirection.y * 5, 0));
+			player->GetComponent<Transform>()->SetLocalPosition(playerPos - m_PreviousDirection);
 		}
 
-		
 		m_PreviousDirection = dir;
 	}
 }

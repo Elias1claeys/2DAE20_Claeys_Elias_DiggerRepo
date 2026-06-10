@@ -23,6 +23,15 @@ dae::Entity::Entity(GameObject* Owner, float speed)
 
 void dae::Entity::Update()
 {
+	if (m_NotMoving != glm::vec3(0, 0, 0) && m_NotMoving == m_MoveDirection)
+	{
+		m_MoveDirection = glm::vec3(0, 0, 0);
+	}
+	else if(m_NotMoving != glm::vec3(0, 0, 0))
+	{
+		m_NotMoving = glm::vec3(0, 0, 0);
+	}
+
 	glm::vec3 pos = m_Transform->GetWorldPosition();
 
 	if (m_MoveDirection != glm::vec3(0, 0, 0))
@@ -70,10 +79,7 @@ void dae::Entity::SetDirection(glm::vec3 dir)
 	}
 }
 
-void dae::Entity::MoveBack(glm::vec3 offset)
+void dae::Entity::StopMovementInDirection(glm::vec3 dir)
 {
-	auto pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
-	pos.x -= offset.x;
-	pos.y -= offset.y;
-	GetOwner()->GetComponent<Transform>()->SetLocalPosition(pos);
+	m_NotMoving = dir;
 }

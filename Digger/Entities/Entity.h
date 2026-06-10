@@ -10,13 +10,14 @@ namespace dae
 	private:
 		float m_Speed{};
 		glm::vec3 m_MoveDirection{};
+		glm::vec3 m_NotMoving{ 0, 0, 0 };
 		Transform* m_Transform{};
 		bool m_Flipped{ false };
 
 	public:
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
-		void MoveBack(glm::vec3 offset);
+		void StopMovementInDirection(glm::vec3 dir);
 
 		void Update() override;
 

@@ -22,7 +22,7 @@ namespace dae
 		GameObject* GetOwner() const { return Component::GetOwner(); }
 
 		void Update() override;
-		void CollideWithActor(glm::vec3 dir, Entity* player);
+		void CollideWithActor(glm::vec3 dir, GameObject* player);
 		bool IsDugOut();
 
 	private:
