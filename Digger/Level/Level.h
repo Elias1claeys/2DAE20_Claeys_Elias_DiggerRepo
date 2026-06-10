@@ -9,11 +9,12 @@ namespace dae
 	class Score;
 	class SoundObserver;
 	class Collision;
+	class HealthObserver;
 
 	class Level : public Component
 	{
 	private:
-		std::unique_ptr<GameObject> m_pGameScreen;
+		std::unique_ptr<GameObject> m_pLevelScreen;
 		int m_CurrentLevel{};
 
 		std::vector<std::unique_ptr<GameObject>> m_pLevelObjects;
@@ -28,16 +29,17 @@ namespace dae
 		float m_Time{};
 		float m_TileSize{ 64.f };
 
-		std::vector<GameObject*> m_pPlayers;
+		std::vector<std::unique_ptr<GameObject>> m_pPlayers;
+
 		std::unique_ptr<Score> m_ScoreObserver;
 		std::unique_ptr<SoundObserver> m_SoundObserver;
 		std::unique_ptr<Collision> m_CollisionObserver;
-
+		std::unique_ptr<HealthObserver> m_HealthObserver;
 
 		bool IsHorizontal(char c);
 		bool IsVertical(char c);
 
-		void InitScore();
+		void InitScoreAndHealth();
 		void InitBackGround();
 		void InitDigGround();
 		void ReadLevelData();

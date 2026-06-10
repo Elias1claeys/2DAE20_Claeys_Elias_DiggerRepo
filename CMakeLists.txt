@@ -214,8 +214,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Level/LevelControls.cpp
   Digger/Player/Player.cpp
   Digger/Player/PlayerControls.cpp
-  Digger/Collider/CollisionEvent.cpp 
-  Digger/Observers/LostHealth.cpp 
+  Digger/Collider/CollisionObserver.cpp 
+  Digger/Health/HealthObserver.cpp
+  Digger/Health/HealthDisplay.cpp
   Digger/Score/Score.cpp
   Digger/Observers/SoundObserver.cpp
   Digger/Dig/Dig.cpp

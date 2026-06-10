@@ -16,8 +16,10 @@
 #include "Observers/GameEvents.h"
 #include "Core/DeltaTime.h"
 #include "Score/Score.h"
-#include "Collider/CollisionEvent.h"
+#include "Collider/CollisionObserver.h"
 #include "Observers/SoundObserver.h"
+#include "Health/HealthDisplay.h"
+#include "Health/HealthObserver.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner), m_CurrentLevel(1)
@@ -25,17 +27,17 @@ dae::Level::Level(GameObject* owner)
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
-	m_pGameScreen = std::make_unique<GameObject>();
-	m_pGameScreen->SetParent(GetOwner(), false);
+	m_pLevelScreen = std::make_unique<GameObject>();
+	m_pLevelScreen->SetParent(GetOwner(), false);
 
 	m_SoundObserver = std::make_unique<SoundObserver>();
 	m_CollisionObserver = std::make_unique<Collision>();
 
-	InitScore();
+	InitScoreAndHealth();
 	CreateLevel();
 }
 
-void dae::Level::InitScore()
+void dae::Level::InitScoreAndHealth()
 {
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto scoreText = std::make_unique<GameObject>();
@@ -43,8 +45,16 @@ void dae::Level::InitScore()
 	scoreText->GetComponent<Transform>()->SetLocalPosition(10, 10);
 	scoreText->SetParent(GetOwner(), false);
 
+	auto health = std::make_unique<GameObject>();
+	health->AddComponent<HealthDisplay>();
+	health->GetComponent<Transform>()->SetLocalPosition(100, 10);
+	health->SetParent(GetOwner(), false);
+
 	m_ScoreObserver = std::make_unique<Score>(scoreText.get());
+	m_HealthObserver = std::make_unique<HealthObserver>(health.get());
+
 	m_pGameObjects.push_back(std::move(scoreText));
+	m_pGameObjects.push_back(std::move(health));
 }
 
 void dae::Level::CreateLevel()
@@ -72,7 +82,7 @@ void dae::Level::InitBackGround()
 		}
 	}
 	
-	background->SetParent(m_pGameScreen.get(), false);
+	background->SetParent(m_pLevelScreen.get(), false);
 	m_pLevelObjects.push_back(std::move(background));
 }
 
@@ -80,7 +90,7 @@ void dae::Level::InitDigGround()
 {
 	auto digGround = std::make_unique<GameObject>();
 	digGround->AddComponent<DigComponent>();
-	digGround->SetParent(m_pGameScreen.get(), false);
+	digGround->SetParent(m_pLevelScreen.get(), false);
 	m_pLevelObjects.push_back(std::move(digGround));
 }
 
@@ -108,6 +118,13 @@ void dae::Level::Update()
 		if (!CreateStarterPath()) return;
 		InitPlayersData();
 		InitEmeraldsAndBags();
+
+		for (auto & player: m_pPlayers)
+		{
+			player->SetParent(m_pLevelScreen.get(), false);
+			m_pLevelObjects.push_back(std::move(player));
+		}
+
 		m_LevelReadyForStart = true;
 	}
 }
@@ -188,9 +205,7 @@ void dae::Level::InitPlayersData()
 	auto player = std::make_unique<GameObject>();
 	player->AddComponent<Player>(Player::InputType::keyBoard, 100.f);
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
-	player->SetParent(m_pGameScreen.get(), false);
-	m_pPlayers.push_back(player.get());
-	m_pLevelObjects.push_back(std::move(player));
+	m_pPlayers.push_back(std::move(player));
 }
 
 void dae::Level::InitEmeraldsAndBags()
@@ -232,10 +247,10 @@ void dae::Level::InitEmeraldsAndBags()
 				
 				for(auto& player: m_pPlayers)
 				{
-					emerald->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player, emeraldEvent, playerSize, playerOffset });
+					emerald->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), emeraldEvent, playerSize, playerOffset});
 				}
 
-				emerald->SetParent(m_pGameScreen.get(), false);
+				emerald->SetParent(m_pLevelScreen.get(), false);
 				m_pLevelObjects.push_back(std::move(emerald));
 			}
 			else if(m_LevelData[y][x] == 'B')
@@ -252,19 +267,19 @@ void dae::Level::InitEmeraldsAndBags()
 				offset.x = (bag->GetComponent<Texture>()->GetSize().x - size.x) / 2;
 				offset.y = (bag->GetComponent<Texture>()->GetSize().y - size.y) / 2;
 
-				Event bagEvent{ BAG_COLLISION };
-				bagEvent.nbArgs = 1;
-				bagEvent.args[0].go = bag.get();
-
 				bag->AddComponent<Collider>(offset, size);
 				bag->GetComponent<Collider>()->AddObserver(m_CollisionObserver.get());
 
 				for (auto & player : m_pPlayers)
 				{
-					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player, bagEvent, playerSize, playerOffset, true });
+					Event bagEvent{ BAG_COLLISION };
+					bagEvent.nbArgs = 1;
+					bagEvent.args[0].go = player.get();
+
+					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true});
 				}
 
-				bag->SetParent(m_pGameScreen.get(), false);
+				bag->SetParent(m_pLevelScreen.get(), false);
 				m_pLevelObjects.push_back(std::move(bag));
 			}
 		}
@@ -274,7 +289,7 @@ void dae::Level::InitEmeraldsAndBags()
 void dae::Level::NextLevel()
 {
 	//Reset everything
-	m_pGameScreen->RemoveAllChilderen();
+	m_pLevelScreen->RemoveAllChilderen();
 
 	m_pLevelObjects.clear();
 	m_LevelData.clear();
