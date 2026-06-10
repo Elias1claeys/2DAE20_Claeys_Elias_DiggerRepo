@@ -20,6 +20,7 @@
 #include "Observers/SoundObserver.h"
 #include "Health/HealthDisplay.h"
 #include "Health/HealthObserver.h"
+#include "Entities/PlayerMovement/PlayerInputComponent.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner), m_CurrentLevel(1)
@@ -203,7 +204,8 @@ bool dae::Level::CreateStarterPath()
 void dae::Level::InitPlayersData()
 {
 	auto player = std::make_unique<GameObject>();
-	player->AddComponent<Entity>(Entity::InputType::keyBoard, 100.f);
+	player->AddComponent<Entity>(100.f);
+	player->AddComponent<PlayerInputComponent>(PlayerInputComponent::InputType::keyBoard);
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 	m_pPlayers.push_back(std::move(player));
 }

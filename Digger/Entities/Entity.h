@@ -14,19 +14,13 @@ namespace dae
 		bool m_Flipped{ false };
 
 	public:
-		enum InputType
-		{
-			keyBoard,
-			controller
-		};
-
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 		void MoveBack(glm::vec3 offset);
 
 		void Update() override;
 
-		Entity(GameObject* owner, InputType input, float speed);
+		Entity(GameObject* owner, float speed);
 		virtual ~Entity() = default;
 		Entity(const Entity& other) = delete;
 		Entity(Entity&& other) = delete;
