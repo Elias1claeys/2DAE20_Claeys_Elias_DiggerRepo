@@ -183,38 +183,40 @@ void dae::Dig::DigTile(glm::vec3 playerPos, glm::vec2 playerSize)
 	}
 }
 
-bool dae::Dig::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize)
+bool dae::Dig::BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize, bool checkTop)
 {
+	float offsetX = (float)m_tileSize / 2;
+	float offsetY = (float)m_tileSize + (float)m_tileSize / 2;
 	int cellSize = m_tileSize / 8;
 
-	float checkY = bagPos.y - (m_tileSize / 2.f) - cellSize;
+	float checkY;
 
-	float left = bagPos.x - (bagSize.x / 2) + cellSize;
-	float right = bagPos.x + (bagSize.x / 2);
-
-	for (auto x = left; x < right; x += cellSize)
+	if (checkTop)
 	{
-		int tileX = int(x) / m_tileSize;
-		int tileY = int(checkY) / m_tileSize;
+		checkY = bagPos.y - bagSize.y;
+	}
+	else
+	{
+		checkY = (bagPos.y + bagSize.y + 1.f) - offsetY - cellSize;
+	}
+
+	float centerX = (bagPos.x + bagSize.x / 2.f) - offsetX;
+
+	for (float x = centerX - (cellSize * 2); x < centerX + (cellSize * 2); x += cellSize)
+	{
+		int tileX = (int)x / m_tileSize;
+		int tileY = (int)checkY / m_tileSize;
 
 		if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
-			continue;
+			return false;
+
+		int cellX = std::clamp(((int)x % m_tileSize) / cellSize, 0, 7);
+		int cellY = std::clamp(((int)checkY % m_tileSize) / cellSize, 0, 7);
 
 		int tileId = tileY * 15 + tileX;
 
-		int localX = int(x) % m_tileSize;
-		int localY = int(checkY) % m_tileSize;
-
-		int cellX = localX / cellSize;
-		int cellY = localY / cellSize;
-
-		cellX = std::clamp(cellX, 0, 7);
-		cellY = std::clamp(cellY, 0, 7);
-
 		if (!m_DigGrid[tileId].DigCells[cellY][cellX])
-		{
 			return false;
-		}
 	}
 
 	return true;

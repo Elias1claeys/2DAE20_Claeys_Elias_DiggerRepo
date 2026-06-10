@@ -27,10 +27,10 @@ void dae::Bag::CollideWithActor(glm::vec3 dir, GameObject* player)
 	m_CurrentState->CollideWithActor(dir, player);
 }
 
-bool dae::Bag::IsDugOut()
+bool dae::Bag::IsDugOut(bool checkTop)
 {
 	glm::vec3 pos = GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 	glm::vec2 size = GetOwner()->GetComponent<Texture>()->GetSize();
 
-	return DigLocator::GetDig().BagDiggedOut(pos, size);
+	return DigLocator::GetDig().BagDiggedOut(pos, size, checkTop);
 }

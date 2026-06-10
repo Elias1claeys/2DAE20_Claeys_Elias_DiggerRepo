@@ -21,14 +21,15 @@ namespace dae
 
 		m_pBag->GetOwner()->GetComponent<Transform>()->SetLocalPosition(pos);
 
-		if (!m_pBag->IsDugOut())
+		if (!m_pBag->IsDugOut(false))
 			return std::make_unique<StandardState>(m_pBag);
 
 		return nullptr;
 	}
 
-	void FallState::CollideWithActor(glm::vec3, GameObject* )
-	{
-		//player->SetDirection(glm::vec3(-1, 0, 0));
+	void FallState::CollideWithActor(glm::vec3, GameObject* player)
+	{	
+		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		player->GetComponent<Transform>()->SetLocalPosition(bagpos);
 	}
 }

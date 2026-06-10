@@ -38,9 +38,10 @@ namespace dae
 		return nullptr;
 	}
 
-	void WiggleState::CollideWithActor(glm::vec3 , GameObject* )
+	void WiggleState::CollideWithActor(glm::vec3 dir, GameObject* player)
 	{
-		//if (dir != glm::vec3(0, 0, 0))
-		//	player->MoveBack(glm::vec3(dir.x * 2, dir.y * 2, 0));
+		auto playerPos = player->GetComponent<Transform>()->GetWorldPosition();
+		player->GetComponent<Entity>()->StopMovementInDirection(dir);
+		player->GetComponent<Transform>()->SetLocalPosition(playerPos - dir);
 	}
 }

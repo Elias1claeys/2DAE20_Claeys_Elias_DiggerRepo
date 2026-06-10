@@ -23,7 +23,7 @@ namespace dae
 
 		void Update() override;
 		void CollideWithActor(glm::vec3 dir, GameObject* player);
-		bool IsDugOut();
+		bool IsDugOut(bool checkTop);
 
 	private:
 		std::unique_ptr<BagState> m_CurrentState;

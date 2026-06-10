@@ -1,5 +1,6 @@
 #include "StandardState.h"
 #include "WiggleState.h"
+#include "FallState.h"
 #include "Components/Texture.h"
 #include "Entities/Entity.h"
 
@@ -19,9 +20,18 @@ namespace dae
 		m_pBag->GetOwner()->GetComponent<Transform>()->SetLocalPosition(BagPos);
 		m_BagDir = glm::vec3(0, 0, 0);
 
-		if (m_pBag->IsDugOut())
-			return std::make_unique<WiggleState>(m_pBag);
-
+		if (m_pBag->IsDugOut(false))
+		{
+			if (m_pBag->IsDugOut(true))
+			{
+				return std::make_unique<FallState>(m_pBag);
+			}
+			else
+			{
+				return std::make_unique<WiggleState>(m_pBag);
+			}
+		}
+			
 		return nullptr;
 	}
 
@@ -55,6 +65,9 @@ namespace dae
 			player->GetComponent<Transform>()->SetLocalPosition(playerPos - m_PreviousDirection);
 		}
 
-		m_PreviousDirection = dir;
+		if (dir != glm::vec3(0, 0, 0))
+		{
+			m_PreviousDirection = dir;
+		}
 	}
 }
