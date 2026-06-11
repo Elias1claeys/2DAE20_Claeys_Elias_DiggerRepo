@@ -314,13 +314,18 @@ void dae::Level::NextLevel()
 {
 	//Reset everything
 	m_pLevelScreen->RemoveAllChilderen();
-
+	m_pPlayers.clear();
 	m_pLevelObjects.clear();
 	m_LevelData.clear();
 	m_NextCheck.clear();
 	m_AlreadyChecked.clear();
 	m_NextCheck.push_back({ 0, -1 });
 	dae::DigLocator::GetDig().ResetDig();
+
+	//Reset the controls every time
+	InputManager::GetInstance().ResetCommands();
+	auto nextLevel = std::make_shared<dae::NextLevel>(this);
+	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
 	m_LevelReadyForStart = false;
 

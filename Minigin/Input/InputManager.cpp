@@ -80,3 +80,9 @@ void dae::InputManager::BindControllerCommand(unsigned int button, std::shared_p
 {
 	controllerCommands.push_back({button, command});
 }
+
+void dae::InputManager::ResetCommands()
+{
+	keyboardCommands.clear();
+	controllerCommands.clear();
+}

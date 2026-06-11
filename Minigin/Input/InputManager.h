@@ -12,6 +12,7 @@ namespace dae
 		bool ProcessInput();
 		void BindKeyBoardCommand(SDL_Scancode e, std::shared_ptr<Command> command);
 		void BindControllerCommand(unsigned int button, std::shared_ptr<Command> command);
+		void ResetCommands();
 
 	private:
 		void ProcessKeyBoardInput(SDL_Event e, KeyState state);
