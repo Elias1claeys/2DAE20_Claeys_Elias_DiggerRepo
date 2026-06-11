@@ -22,6 +22,7 @@
 #include "Health/HealthObserver.h"
 #include "LevelObserver.h"
 #include "Entities/Player/Player.h"
+#include "Entities/Nobbin/Nobbin.h"
 
 dae::Level::Level(GameObject* owner)
 	: Component(owner), m_CurrentLevel(1)
@@ -128,6 +129,12 @@ void dae::Level::Update()
 			player->SetParent(m_pLevelScreen.get(), false);
 			m_pLevelObjects.push_back(std::move(player));
 		}
+
+		auto nobbin = std::make_unique<GameObject>();
+		nobbin->AddComponent<Nobbin>();
+		nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
+		nobbin->SetParent(m_pLevelScreen.get(), false);
+		m_pLevelObjects.push_back(std::move(nobbin));
 
 		m_LevelReadyForStart = true;
 	}

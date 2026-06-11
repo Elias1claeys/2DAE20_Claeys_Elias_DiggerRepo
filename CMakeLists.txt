@@ -137,7 +137,7 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
- )
+)
 
 target_include_directories(imgui PUBLIC 
 ${imgui_SOURCE_DIR})
@@ -224,7 +224,11 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Audio/SoundObserver.cpp
   Digger/Dig/Dig.cpp
   Digger/Dig/DigSystem.cpp 
-  Digger/Dig/DigComponent.cpp)
+  Digger/Dig/DigComponent.cpp 
+  Digger/Entities/Nobbin/Nobbin.cpp
+  "Digger/Entities/Enemies/WanderingState.cpp"
+  Digger/Entities/Enemies/Enemy.cpp
+)
 
 target_include_directories(${TARGET_NAME} PUBLIC
   ${CMAKE_SOURCE_DIR}/Digger
