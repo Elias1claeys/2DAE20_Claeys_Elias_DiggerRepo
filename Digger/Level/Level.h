@@ -10,12 +10,15 @@ namespace dae
 	class SoundObserver;
 	class Collision;
 	class HealthObserver;
+	class LevelObserver;
 
 	class Level : public Component
 	{
 	private:
 		std::unique_ptr<GameObject> m_pLevelScreen;
 		int m_CurrentLevel{};
+		bool m_LevelCompleted{ false };
+		
 
 		std::vector<std::unique_ptr<GameObject>> m_pLevelObjects;
 		std::vector<std::unique_ptr<GameObject>> m_pGameObjects;
@@ -31,10 +34,12 @@ namespace dae
 
 		std::vector<std::unique_ptr<GameObject>> m_pPlayers;
 
+		//Observers
 		std::unique_ptr<Score> m_ScoreObserver;
 		std::unique_ptr<SoundObserver> m_SoundObserver;
 		std::unique_ptr<Collision> m_CollisionObserver;
 		std::unique_ptr<HealthObserver> m_HealthObserver;
+		std::unique_ptr<LevelObserver> m_LevelObserver;
 
 		bool IsHorizontal(char c);
 		bool IsVertical(char c);
@@ -53,6 +58,8 @@ namespace dae
 
 		void CreateLevel();
 		void NextLevel();
+		void LevelCompleted() { m_LevelCompleted = true; }
+		
 
 		void Update() override;
 

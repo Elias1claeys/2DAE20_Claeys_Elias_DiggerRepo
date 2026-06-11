@@ -20,6 +20,7 @@
 #include "Observers/SoundObserver.h"
 #include "Health/HealthDisplay.h"
 #include "Health/HealthObserver.h"
+#include "LevelObserver.h"
 #include "Entities/PlayerMovement/PlayerInputComponent.h"
 
 dae::Level::Level(GameObject* owner)
@@ -33,6 +34,7 @@ dae::Level::Level(GameObject* owner)
 
 	m_SoundObserver = std::make_unique<SoundObserver>();
 	m_CollisionObserver = std::make_unique<Collision>();
+	m_LevelObserver = std::make_unique<LevelObserver>(GetOwner());
 
 	InitScoreAndHealth();
 	CreateLevel();
@@ -48,7 +50,7 @@ void dae::Level::InitScoreAndHealth()
 
 	auto health = std::make_unique<GameObject>();
 	health->AddComponent<HealthDisplay>();
-	health->GetComponent<Transform>()->SetLocalPosition(100, 10);
+	health->GetComponent<Transform>()->SetLocalPosition(125, 10);
 	health->SetParent(GetOwner(), false);
 
 	m_ScoreObserver = std::make_unique<Score>(scoreText.get());
@@ -128,6 +130,12 @@ void dae::Level::Update()
 		}
 
 		m_LevelReadyForStart = true;
+	}
+
+	if (m_LevelCompleted)
+	{
+		m_LevelCompleted = false;
+		NextLevel();
 	}
 }
 
@@ -247,11 +255,15 @@ void dae::Level::InitEmeralds()
 				emerald->AddComponent<Collider>(offset, size);
 				emerald->GetComponent<Collider>()->AddObserver(m_ScoreObserver.get());
 				emerald->GetComponent<Collider>()->AddObserver(m_SoundObserver.get());
+				emerald->GetComponent<Collider>()->AddObserver(m_LevelObserver.get());
 				
 				for(auto& player: m_pPlayers)
 				{
 					emerald->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), emeraldEvent, playerSize, playerOffset});
 				}
+
+				Event emeraldSpawned{ EMERALD_SPAWNED };
+				m_LevelObserver->OnNotify(GetOwner(), emeraldSpawned);
 
 				emerald->SetParent(m_pLevelScreen.get(), false);
 				m_pLevelObjects.push_back(std::move(emerald));
@@ -321,6 +333,9 @@ void dae::Level::NextLevel()
 	m_AlreadyChecked.clear();
 	m_NextCheck.push_back({ 0, -1 });
 	dae::DigLocator::GetDig().ResetDig();
+
+	Event e{ LEVEL_COMPLETED };
+	m_LevelObserver->OnNotify(GetOwner(), e);
 
 	//Reset the controls every time
 	InputManager::GetInstance().ResetCommands();
