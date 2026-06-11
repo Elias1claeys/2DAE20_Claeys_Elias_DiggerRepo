@@ -1,11 +1,13 @@
-#include "PlayerInputComponent.h"
+#include "Player.h"
 #include "Input/InputManager.h"
-#include "PlayerControls.h"
+#include "PlayerInput.h"
 #include "Entities/Entity.h"
+#include "Components/Texture.h"
+#include "Core/DeltaTime.h"
 
 namespace dae
 {
-	PlayerInputComponent::PlayerInputComponent(GameObject* Owner, InputType input)
+	Player::Player(GameObject* Owner, InputType input)
 		:Component(Owner)
 	{
 		auto moveUp = std::make_shared<dae::Move>(this, glm::vec3{ 0, -1, 0 });
@@ -30,14 +32,41 @@ namespace dae
 			InputManager::GetInstance().BindControllerCommand(0x0010, moveUp);
 			InputManager::GetInstance().BindControllerCommand(0x4000, attack);
 		}
+
+		if (!GetOwner()->HasComponent<Texture>())
+		{
+			GetOwner()->AddComponent<Texture>();
+			GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig1.png");
+			GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
+			GetOwner()->GetComponent<Texture>()->FlipTexture();
+		}
+
+		GetOwner()->AddComponent<Entity>(100.f);
 	};
 
-	void PlayerInputComponent::SetDirection(glm::vec3 direction)
+	void Player::Update()
+	{
+		m_Time += Time::GetInstance().GetDeltaTime();
+
+		if (m_Time > 0.2f)
+		{
+			m_DigTextures++;
+			GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig" + std::to_string(m_DigTextures) + ".png");
+			GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
+
+			if (m_DigTextures == 2)
+				m_DigTextures = 0;
+
+			m_Time = 0;
+		}
+	}
+
+	void Player::SetDirection(glm::vec3 direction)
 	{
 		GetOwner()->GetComponent<Entity>()->SetDirection(direction);
 	}
 
-	glm::vec3 PlayerInputComponent::GetDirection()
+	glm::vec3 Player::GetDirection()
 	{
 		return GetOwner()->GetComponent<Entity>()->GetDirection();
 	}

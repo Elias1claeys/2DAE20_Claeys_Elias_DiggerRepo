@@ -3,15 +3,15 @@
 
 namespace dae
 {
-	class PlayerInputComponent;
+	class Player;
 
 	class GameActorCommand : public Command
 	{
-		PlayerInputComponent* m_Actor;
+		Player* m_Actor;
 	protected:
-		PlayerInputComponent* GetGameActor() const { return m_Actor; };
+		Player* GetGameActor() const { return m_Actor; };
 	public:
-		GameActorCommand(PlayerInputComponent* actor) { m_Actor = actor; };
+		GameActorCommand(Player* actor) { m_Actor = actor; };
 		virtual ~GameActorCommand() = default;
 	};
 
@@ -25,7 +25,7 @@ namespace dae
 
 		void Execute(KeyState state) override;
 
-		Move(PlayerInputComponent* actor, glm::vec3 dir);
+		Move(Player* actor, glm::vec3 dir);
 		virtual ~Move() = default;
 		Move(const Move& other) = delete;
 		Move(Move&& other) = delete;
@@ -46,7 +46,7 @@ namespace dae
 
 		void Execute(KeyState state) override;
 
-		Attack(PlayerInputComponent* actor);
+		Attack(Player* actor);
 		virtual ~Attack() = default;
 		Attack(const Attack& other) = delete;
 		Attack(Attack&& other) = delete;

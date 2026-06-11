@@ -10,14 +10,6 @@ dae::Entity::Entity(GameObject* Owner, float speed)
 	:Component(Owner),
 	m_Speed(speed)
 {
-	if (!GetOwner()->HasComponent<Texture>())
-	{
-		GetOwner()->AddComponent<Texture>();
-		GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig1.png");
-		GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
-		GetOwner()->GetComponent<Texture>()->FlipTexture();
-	}
-
 	m_Transform = GetOwner()->GetComponent<Transform>();
 }
 

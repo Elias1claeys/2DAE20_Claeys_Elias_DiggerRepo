@@ -1,5 +1,5 @@
-#include "PlayerControls.h"
-#include "Entities/PlayerMovement/PlayerInputComponent.h"
+#include "PlayerInput.h"
+#include "Entities/Player/Player.h"
 
 namespace dae
 {
@@ -7,7 +7,7 @@ namespace dae
     // Movement
     //-----------------------------
 
-    Move::Move(PlayerInputComponent* actor, glm::vec3 dir)
+    Move::Move(Player* actor, glm::vec3 dir)
         : GameActorCommand(actor), m_Direction(dir)
     {}
 
@@ -39,7 +39,7 @@ namespace dae
     // Attack
     //-----------------------------
 
-    Attack::Attack(PlayerInputComponent* actor)
+    Attack::Attack(Player* actor)
         : GameActorCommand(actor)
     {}
 
