@@ -43,12 +43,15 @@ namespace dae
 		return nullptr;
 	}
 
-	void FallState::CollideWithActor(glm::vec3, GameObject* player)
+	void FallState::CollideWithActor(glm::vec3 dir, GameObject* player)
 	{	
-		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		player->GetComponent<Entity>()->StopMovementInDirection(dir);
 		auto playerpos = player->GetComponent<Transform>()->GetWorldPosition();
+		player->GetComponent<Transform>()->SetLocalPosition(playerpos - dir);
 
-		if (bagpos.y <= playerpos.y)
+		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+
+		if (bagpos.y >= playerpos.y)
 		{
 			player->GetComponent<Transform>()->SetLocalPosition(bagpos);
 		}
