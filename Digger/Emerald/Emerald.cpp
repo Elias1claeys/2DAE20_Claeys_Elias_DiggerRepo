@@ -1,6 +1,6 @@
 #include "Emerald.h"
 #include "Components/Texture.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 
 dae::Emerald::Emerald(GameObject* owner)
 	: Component(owner)

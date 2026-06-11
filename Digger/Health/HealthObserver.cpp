@@ -1,7 +1,7 @@
 #include "HealthObserver.h"
 #include "Components/Text.h"
 #include "Event/Event.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 #include "HealthDisplay.h"
 
 namespace dae

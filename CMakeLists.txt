@@ -221,7 +221,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Health/HealthObserver.cpp
   Digger/Health/HealthDisplay.cpp
   Digger/Score/Score.cpp
-  Digger/Observers/SoundObserver.cpp
+  Digger/Audio/SoundObserver.cpp
   Digger/Dig/Dig.cpp
   Digger/Dig/DigSystem.cpp 
   Digger/Dig/DigComponent.cpp)

@@ -4,7 +4,7 @@
 #include "Dig/Dig.h"
 #include "Bag/bag.h"
 #include "Event/Event.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 
 namespace dae
 {

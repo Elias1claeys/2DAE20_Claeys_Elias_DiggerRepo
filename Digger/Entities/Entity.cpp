@@ -2,7 +2,7 @@
 #include "Input/InputManager.h"
 #include "Core/DeltaTime.h"
 #include "Components/Texture.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 #include "Dig/DigSystem.h"
 #include "Dig/Dig.h"
 

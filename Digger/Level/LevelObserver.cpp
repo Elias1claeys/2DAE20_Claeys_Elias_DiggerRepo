@@ -1,5 +1,5 @@
 #include "LevelObserver.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 #include "Level.h"
 
 namespace dae

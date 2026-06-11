@@ -5,7 +5,7 @@
 #include "Core/DeltaTime.h"
 #include "Dig/DigSystem.h"
 #include "Components/Transform.h"
-#include "Observers/GameEvents.h"
+#include "GameEvents.h"
 
 
 
