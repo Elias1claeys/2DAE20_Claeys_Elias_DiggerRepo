@@ -3,12 +3,12 @@
 #include "BagState.h"
 #include "Entities/Entity.h"
 #include <memory>
+#include "Event/Subject.h"
+
 
 namespace dae
 {
-	class Dig;
-
-	class Bag : public Component
+	class Bag : public Component, public Subject
 	{
 	public:
 
@@ -23,6 +23,7 @@ namespace dae
 
 		void Update() override;
 		void CollideWithActor(glm::vec3 dir, GameObject* player);
+		void CollectGold();
 		bool IsDugOut(bool checkTop);
 
 	private:

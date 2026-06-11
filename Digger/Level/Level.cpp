@@ -305,6 +305,7 @@ void dae::Level::InitBags()
 
 				bag->AddComponent<Collider>(offset, size);
 				bag->GetComponent<Collider>()->AddObserver(m_CollisionObserver.get());
+				bag->GetComponent<Bag>()->AddObserver(m_ScoreObserver.get());
 
 				for (auto& player : m_pPlayers)
 				{

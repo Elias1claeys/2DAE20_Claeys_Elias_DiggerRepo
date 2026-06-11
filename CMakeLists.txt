@@ -208,6 +208,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Bag/StandardState.cpp
   Digger/Bag/WiggleState.cpp
   Digger/Bag/FallState.cpp
+  Digger/Bag/GoldState.cpp
   Digger/Collider/Collider.cpp
   Digger/Emerald/Emerald.cpp
   Digger/Level/Level.cpp

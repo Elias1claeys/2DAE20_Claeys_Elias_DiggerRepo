@@ -5,6 +5,8 @@
 #include "Core/DeltaTime.h"
 #include "Dig/DigSystem.h"
 #include "Components/Transform.h"
+#include "Observers/GameEvents.h"
+
 
 
 dae::Bag::Bag(GameObject* owner)
@@ -33,4 +35,11 @@ bool dae::Bag::IsDugOut(bool checkTop)
 	glm::vec2 size = GetOwner()->GetComponent<Texture>()->GetSize();
 
 	return DigLocator::GetDig().BagDiggedOut(pos, size, checkTop);
+}
+
+void dae::Bag::CollectGold()
+{
+	Event e{ GOLD_COLLECTED };
+	Notify(e, GetOwner());
+	GetOwner()->RemoveComponent<Texture>();
 }

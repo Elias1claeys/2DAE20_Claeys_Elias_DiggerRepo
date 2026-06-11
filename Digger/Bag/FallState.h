@@ -15,5 +15,8 @@ namespace dae
 
 		std::unique_ptr<BagState> Update(float deltaTime) override;
 		void CollideWithActor(glm::vec3 dir, GameObject* player) override;
+
+	private:
+		glm::vec3 m_FirstPos{};
 	};
 }

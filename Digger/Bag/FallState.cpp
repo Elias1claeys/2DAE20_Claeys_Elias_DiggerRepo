@@ -2,6 +2,7 @@
 #include "Components/Texture.h"
 #include "Components/Transform.h"
 #include "StandardState.h"
+#include "GoldState.h"
 
 namespace dae
 {
@@ -10,6 +11,8 @@ namespace dae
 	{
 		m_pBag->GetOwner()->GetComponent<Texture>()->SetTexture("media/Bag/cfbag.png");
 		m_pBag->GetOwner()->GetComponent<Texture>()->SetSize(glm::vec2(64, 64));
+
+		m_FirstPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 	}
 
 
@@ -22,7 +25,20 @@ namespace dae
 		m_pBag->GetOwner()->GetComponent<Transform>()->SetLocalPosition(pos);
 
 		if (!m_pBag->IsDugOut(false))
-			return std::make_unique<StandardState>(m_pBag);
+		{
+			auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+
+			auto difference = bagpos.y - m_FirstPos.y;
+
+			if (difference >= 128)
+			{
+				return std::make_unique<GoldState>(m_pBag);
+			}
+			else
+			{
+				return std::make_unique<StandardState>(m_pBag);
+			}
+		}
 
 		return nullptr;
 	}
@@ -30,8 +46,11 @@ namespace dae
 	void FallState::CollideWithActor(glm::vec3, GameObject* player)
 	{	
 		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		auto playerpos = player->GetComponent<Transform>()->GetWorldPosition();
 
-		player->GetComponent<Transform>()->SetLocalPosition(bagpos);
-		
+		if (bagpos.y <= playerpos.y)
+		{
+			player->GetComponent<Transform>()->SetLocalPosition(bagpos);
+		}
 	}
 }
