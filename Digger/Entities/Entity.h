@@ -13,11 +13,13 @@ namespace dae
 		glm::vec3 m_NotMoving{ 0, 0, 0 };
 		Transform* m_Transform{};
 		bool m_Flipped{ false };
+		bool m_CanMove{ true };
 
 	public:
 		glm::vec3 GetDirection() { return m_MoveDirection; };
 		void SetDirection(glm::vec3 direction);
 		void StopMovementInDirection(glm::vec3 dir);
+		void CanMove() { m_CanMove = !m_CanMove; }
 
 		void Update() override;
 

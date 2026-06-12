@@ -48,26 +48,29 @@ void dae::Entity::Update()
 
 void dae::Entity::SetDirection(glm::vec3 dir)
 {
-	m_MoveDirection = dir;
+	if (m_CanMove)
+	{
+		m_MoveDirection = dir;
 
-	if (dir == glm::vec3{-1,  0, 0 } && !m_Flipped ||
-		dir == glm::vec3{ 1,  0, 0 } &&  m_Flipped ||
-		dir == glm::vec3{ 0,  1, 0 } &&  m_Flipped ||
-		dir == glm::vec3{ 0, -1, 0 } && !m_Flipped)
-	{
-		
-		GetOwner()->GetComponent<Texture>()->FlipTexture();
-		m_Flipped = !m_Flipped;
-	}
+		if (dir == glm::vec3{ -1,  0, 0 } && !m_Flipped ||
+			dir == glm::vec3{ 1,  0, 0 } && m_Flipped ||
+			dir == glm::vec3{ 0,  1, 0 } && m_Flipped ||
+			dir == glm::vec3{ 0, -1, 0 } && !m_Flipped)
+		{
 
-	if(dir == glm::vec3{0, -1, 0} ||
-	   dir == glm::vec3{0, 1, 0})
-	{
-		GetOwner()->GetComponent<Texture>()->SetRotation(90);
-	}
-	else if(dir != glm::vec3{0, 0, 0})
-	{
-		GetOwner()->GetComponent<Texture>()->SetRotation(0);
+			GetOwner()->GetComponent<Texture>()->FlipTexture();
+			m_Flipped = !m_Flipped;
+		}
+
+		if (dir == glm::vec3{ 0, -1, 0 } ||
+			dir == glm::vec3{ 0, 1, 0 })
+		{
+			GetOwner()->GetComponent<Texture>()->SetRotation(90);
+		}
+		else if (dir != glm::vec3{ 0, 0, 0 })
+		{
+			GetOwner()->GetComponent<Texture>()->SetRotation(0);
+		}
 	}
 }
 

@@ -88,10 +88,12 @@ namespace dae
 	{
 		m_IsDead = true;
 		m_TextureCount = 0;
+		GetOwner()->GetComponent<Entity>()->CanMove();
 	}
 
 	void Player::PlayerRespawn()
 	{
+		GetOwner()->GetComponent<Entity>()->CanMove();
 		GetOwner()->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 		m_IsDead = false;
 		m_TextureCount = 0;
