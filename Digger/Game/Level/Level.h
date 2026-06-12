@@ -15,6 +15,30 @@ namespace dae
 
 	class Level : public GameState
 	{
+	public:
+		enum GameType
+		{
+			SinglePlayer,
+			MultiPlayer,
+			Versus
+		};
+
+		void CreateLevel();
+		void NextLevel();
+		void LevelCompleted() { m_LevelCompleted = true; }
+		void EndGame() { m_GameEnded = true; };
+
+
+		void Update(float deltaTime) override;
+		std::unique_ptr<GameState> GoToNextState() override;
+
+		explicit Level(Game* game, GameType type);
+		virtual ~Level() = default;
+		Level(const Level& other) = delete;
+		Level(Level&& other) = delete;
+		Level& operator=(const Level& other) = delete;
+		Level& operator=(Level&& other) = delete;
+
 	private:
 		std::unique_ptr<GameObject> m_pLevelScreen;
 		int m_CurrentLevel{};
@@ -33,7 +57,7 @@ namespace dae
 		float m_Time{};
 		float m_TileSize{ 64.f };
 		bool m_GameEnded{ false };
-
+		GameType m_Type{};
 		int m_TotalEnemiesSpawned{ 0 };
 
 		std::vector<std::unique_ptr<GameObject>> m_pPlayers;
@@ -59,25 +83,5 @@ namespace dae
 		void InitEmeralds();
 		void InitBags();
 		bool CreateStarterPath();
-
-		
-
-	public:
-
-		void CreateLevel();
-		void NextLevel();
-		void LevelCompleted() { m_LevelCompleted = true; }
-		void EndGame() { m_GameEnded = true;  };
-		
-
-		void Update(float deltaTime) override;
-		std::unique_ptr<GameState> GoToNextState() override;
-
-		explicit Level(Game* game);
-		virtual ~Level() = default;
-		Level(const Level& other) = delete;
-		Level(Level&& other) = delete;
-		Level& operator=(const Level& other) = delete;
-		Level& operator=(Level&& other) = delete;
 	};
 }

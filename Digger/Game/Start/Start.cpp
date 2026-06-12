@@ -82,6 +82,11 @@ namespace dae
 
 	std::unique_ptr<GameState> Start::GoToNextState()
 	{
-		return std::make_unique<Level>(m_pGame);
+		if(m_SelectedButton == 0)
+			return std::make_unique<Level>(m_pGame, Level::SinglePlayer);
+		if (m_SelectedButton == 1)
+			return std::make_unique<Level>(m_pGame, Level::MultiPlayer);
+		else
+			return std::make_unique<Level>(m_pGame, Level::Versus);
 	}
 }

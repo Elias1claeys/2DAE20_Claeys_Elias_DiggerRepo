@@ -27,8 +27,8 @@
 #include "Game/GameState.h"
 #include "Game/Start/Start.h"
 
-dae::Level::Level(Game* game)
-	: GameState(game), m_CurrentLevel(1)
+dae::Level::Level(Game* game, GameType type)
+	: GameState(game), m_CurrentLevel(1), m_Type(type)
 {
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
@@ -234,6 +234,14 @@ void dae::Level::InitPlayersData()
 	player->AddComponent<Player>(Player::InputType::keyBoard);
 	player->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
 	m_pPlayers.push_back(std::move(player));
+
+	if (m_Type == GameType::MultiPlayer)
+	{
+		auto player2 = std::make_unique<GameObject>();
+		player2->AddComponent<Player>(Player::InputType::controller);
+		player2->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
+		m_pPlayers.push_back(std::move(player2));
+	}
 }
 
 void dae::Level::InitEnemies()
