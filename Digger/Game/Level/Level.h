@@ -33,7 +33,10 @@ namespace dae
 		float m_Time{};
 		float m_TileSize{ 64.f };
 
+		int m_TotalEnemiesSpawned{ 0 };
+
 		std::vector<std::unique_ptr<GameObject>> m_pPlayers;
+		std::vector<std::unique_ptr<GameObject>> m_pEnemies;
 
 		//Observers
 		std::unique_ptr<Score> m_ScoreObserver;
@@ -54,6 +57,8 @@ namespace dae
 		void InitEmeralds();
 		void InitBags();
 		bool CreateStarterPath();
+
+		
 
 	public:
 

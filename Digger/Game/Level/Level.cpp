@@ -119,6 +119,14 @@ void dae::Level::Update(float deltaTime)
 	m_Time += deltaTime;
 	if (!m_LevelReadyForStart && m_Time > 0.1f)
 	{
+		for (int i = 0; i < 5; i++)
+		{
+			auto nobbin = std::make_unique<GameObject>();
+			nobbin->AddComponent<Nobbin>();
+			nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
+			m_pEnemies.push_back(std::move(nobbin));
+		}
+
 		m_Time = 0.f;
 		if (!CreateStarterPath()) return;
 		InitPlayersData();
@@ -131,13 +139,15 @@ void dae::Level::Update(float deltaTime)
 			m_pLevelObjects.push_back(std::move(player));
 		}
 
-		auto nobbin = std::make_unique<GameObject>();
-		nobbin->AddComponent<Nobbin>();
-		nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
-		nobbin->SetParent(m_pLevelScreen.get(), false);
-		m_pLevelObjects.push_back(std::move(nobbin));
-
 		m_LevelReadyForStart = true;
+	}
+
+	if (m_LevelReadyForStart && m_Time > 10.f && m_TotalEnemiesSpawned < 5
+		|| m_LevelReadyForStart && m_TotalEnemiesSpawned == 0)
+	{
+		m_Time = 0.f;
+		m_pEnemies[m_TotalEnemiesSpawned]->SetParent(m_pLevelScreen.get(), false);
+		m_TotalEnemiesSpawned++;
 	}
 
 	if (m_LevelCompleted)
@@ -336,6 +346,7 @@ void dae::Level::NextLevel()
 	m_pLevelScreen->RemoveAllChilderen();
 	m_pPlayers.clear();
 	m_pLevelObjects.clear();
+	m_pEnemies.clear();
 	m_LevelData.clear();
 	m_NextCheck.clear();
 	m_AlreadyChecked.clear();
