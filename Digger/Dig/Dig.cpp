@@ -235,3 +235,24 @@ void dae::Dig::ResetDig()
 		}
 	}
 }
+
+bool dae::Dig::IsDugOut(glm::vec3 worldPos)
+{
+	float offsetX = m_tileSize / 2.f;
+	float offsetY = m_tileSize + m_tileSize / 2.f;
+
+	float wx = worldPos.x - offsetX;
+	float wy = worldPos.y - offsetY;
+
+	int tileX = (int)std::floor(wx / m_tileSize);
+	int tileY = (int)std::floor(wy / m_tileSize);
+
+	if (tileX < 0 || tileX >= 15 || tileY < 0 || tileY >= 10)
+		return false;
+
+	int cellX = std::clamp((int)((wx - tileX * m_tileSize) / (m_tileSize / 8.f)), 0, 7);
+	int cellY = std::clamp((int)((wy - tileY * m_tileSize) / (m_tileSize / 8.f)), 0, 7);
+
+	return m_DigGrid[tileY * 15 + tileX].DigCells[cellY][cellX];
+}
+

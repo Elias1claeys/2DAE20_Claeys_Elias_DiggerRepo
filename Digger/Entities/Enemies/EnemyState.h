@@ -1,3 +1,5 @@
+#pragma once
+#include <memory>
 #include "Entities/Entity.h"
 
 namespace dae
@@ -14,6 +16,7 @@ namespace dae
 		EnemyState& operator=(const EnemyState& other) = delete;
 		EnemyState& operator=(EnemyState&& other) = delete;
 
+		virtual void const Render() = 0;
 		virtual std::unique_ptr<EnemyState> Update(float deltaTime) = 0;
 
 	protected:

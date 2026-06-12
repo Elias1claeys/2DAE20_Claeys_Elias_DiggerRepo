@@ -13,16 +13,18 @@ namespace dae
 		virtual void DigTile(glm::vec3 playerPos, glm::vec2 playerSize) = 0;
 		virtual void ResetDig() = 0;
 		virtual bool BagDiggedOut(glm::vec3 bagPos, glm::vec2 bagSize, bool checkTop) = 0;
+		virtual bool IsDugOut(glm::vec3 worldPos) = 0;
 	};
 
 	class NullDigSystem final : public DigSystem
 	{
 	public:
-		virtual const void Render() override {};
-		virtual void FillDigShape(int, char, int) override {};
-		virtual void DigTile(glm::vec3, glm::vec2) override {};
-		virtual void ResetDig() override {};
-		virtual bool BagDiggedOut(glm::vec3, glm::vec2, bool) override { return false; };
+		const void Render() override {};
+		void FillDigShape(int, char, int) override {};
+		void DigTile(glm::vec3, glm::vec2) override {};
+		void ResetDig() override {};
+		bool BagDiggedOut(glm::vec3, glm::vec2, bool) override { return false; };
+		bool IsDugOut(glm::vec3) { return false; };
 	};;
 
 	class DigLocator final
