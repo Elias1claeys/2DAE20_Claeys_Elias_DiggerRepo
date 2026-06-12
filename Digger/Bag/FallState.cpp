@@ -3,6 +3,7 @@
 #include "Components/Transform.h"
 #include "StandardState.h"
 #include "GoldState.h"
+#include "Entities/Enemies/Enemy.h"
 
 namespace dae
 {
@@ -43,17 +44,22 @@ namespace dae
 		return nullptr;
 	}
 
-	void FallState::CollideWithActor(glm::vec3 dir, GameObject* player)
+	void FallState::CollideWithActor(glm::vec3 dir, GameObject* entity)
 	{	
-		player->GetComponent<Entity>()->StopMovementInDirection(dir);
-		auto playerpos = player->GetComponent<Transform>()->GetWorldPosition();
-		player->GetComponent<Transform>()->SetLocalPosition(playerpos - dir);
+		entity->GetComponent<Entity>()->StopMovementInDirection(dir);
+		auto playerpos = entity->GetComponent<Transform>()->GetWorldPosition();
+		entity->GetComponent<Transform>()->SetLocalPosition(playerpos - dir);
 
 		auto bagpos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 
 		if (bagpos.y >= playerpos.y)
 		{
-			player->GetComponent<Transform>()->SetLocalPosition(bagpos);
+			entity->GetComponent<Transform>()->SetLocalPosition(bagpos);
+
+			if (entity->HasComponent<Enemy>())
+			{
+				entity->GetComponent<Enemy>()->KillEnemy();
+			}
 		}
 	}
 }

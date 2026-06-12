@@ -14,20 +14,20 @@ namespace dae
 
 	void const WanderingState::Render()
 	{
-		auto enemyPos = m_pEnemy->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
-		auto enemySize = m_pEnemy->GetOwner()->GetComponent<Texture>()->GetSize();
-
-
-        for (auto &check : m_CheckPos)
-        {
-            SDL_FRect rect{};
-            rect.x = (float)check.x;
-            rect.y = (float)check.y;
-            rect.w = 8.f;
-            rect.h = 8.f;
-
-            Renderer::GetInstance().DrawRect({ 255, 0, 0, 255 }, rect);
-        }
+		//auto enemyPos = m_pEnemy->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
+		//auto enemySize = m_pEnemy->GetOwner()->GetComponent<Texture>()->GetSize();
+        //
+        //
+        //for (auto &check : m_CheckPos)
+        //{
+        //    SDL_FRect rect{};
+        //    rect.x = (float)check.x;
+        //    rect.y = (float)check.y;
+        //    rect.w = 8.f;
+        //    rect.h = 8.f;
+        //
+        //    Renderer::GetInstance().DrawRect({ 255, 0, 0, 255 }, rect);
+        //}
 	}
 
 	std::unique_ptr<EnemyState> WanderingState::Update(float )

@@ -1,6 +1,8 @@
 #include "Enemy.h"
 #include "WanderingState.h"
 #include "Core/DeltaTime.h"
+#include "Components/Texture.h"
+#include "Collider/Collider.h"
 
 namespace dae
 {
@@ -12,11 +14,19 @@ namespace dae
 
 	void Enemy::Update()
 	{
-		m_pEnemyState->Update(Time::GetInstance().GetDeltaTime());
+		if(!m_IsDead)
+			m_pEnemyState->Update(Time::GetInstance().GetDeltaTime());
 	}
 
 	void const Enemy::Render()
 	{
 		m_pEnemyState->Render();
+	}
+
+	void Enemy::KillEnemy()
+	{
+		m_IsDead = true;
+		GetOwner()->RemoveComponent<Texture>();
+		GetOwner()->RemoveComponent<Collider>();
 	}
 }

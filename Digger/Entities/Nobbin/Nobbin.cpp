@@ -19,7 +19,7 @@ namespace dae
 	{
 		m_Time += Time::GetInstance().GetDeltaTime();
 
-		if (m_Time > 0.2f)
+		if (m_Time > 0.2f && GetOwner()->HasComponent<Texture>())
 		{
 			m_Time = 0.f;
 			m_TextureAct++;

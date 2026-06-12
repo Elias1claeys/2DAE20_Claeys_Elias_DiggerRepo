@@ -15,10 +15,12 @@ namespace dae
 
 		GameObject* GetOwner() const { return Component::GetOwner(); }
 
+		void KillEnemy();
 		void Update() override;
 		void const Render() override;
 
 	private:
 		std::unique_ptr<EnemyState> m_pEnemyState;
+		bool m_IsDead{ false };
 	};
 }
