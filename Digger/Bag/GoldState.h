@@ -20,5 +20,6 @@ namespace dae
 		int m_GoldTexture{ 0 };
 		float m_Time{ 1 };
 		bool m_Collected{ false };
+		bool m_CanCollect{ false };
 	};
 }

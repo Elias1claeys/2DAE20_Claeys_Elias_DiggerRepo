@@ -13,7 +13,8 @@ namespace dae
 		};
 
 		float m_Time{};
-		int m_DigTextures{1};
+		int m_TextureCount{1};
+		bool m_IsDead{ false };
 
 		Player(GameObject* owner, InputType input);
 		virtual ~Player() = default;
@@ -23,6 +24,8 @@ namespace dae
 		Player& operator=(Player&& other) = delete;
 
 		void SetDirection(glm::vec3 direction);
+		void PlayerDead();
+		void PlayerRespawn();
 		void Update() override;
 		glm::vec3 GetDirection();
 	};

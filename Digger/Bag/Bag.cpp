@@ -43,3 +43,8 @@ void dae::Bag::CollectGold()
 	Notify(e, GetOwner());
 	GetOwner()->RemoveComponent<Texture>();
 }
+
+void dae::Bag::DestroyBag()
+{
+	GetOwner()->RemoveComponent<Texture>();
+}

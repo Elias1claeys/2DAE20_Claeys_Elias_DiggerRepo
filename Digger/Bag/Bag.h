@@ -25,6 +25,7 @@ namespace dae
 		void CollideWithActor(glm::vec3 dir, GameObject* player);
 		void CollectGold();
 		bool IsDugOut(bool checkTop);
+		void DestroyBag();
 
 	private:
 		std::unique_ptr<BagState> m_CurrentState;

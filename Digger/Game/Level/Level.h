@@ -53,6 +53,7 @@ namespace dae
 		void InitDigGround();
 		void ReadLevelData();
 
+		void InitEnemies();
 		void InitPlayersData();
 		void InitEmeralds();
 		void InitBags();

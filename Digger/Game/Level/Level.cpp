@@ -119,20 +119,13 @@ void dae::Level::Update(float deltaTime)
 	m_Time += deltaTime;
 	if (!m_LevelReadyForStart && m_Time > 0.1f)
 	{
-		for (int i = 0; i < 5; i++)
-		{
-			auto nobbin = std::make_unique<GameObject>();
-			nobbin->AddComponent<Nobbin>();
-			nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
-			m_pEnemies.push_back(std::move(nobbin));
-		}
-
 		m_Time = 0.f;
 		if (!CreateStarterPath()) return;
 		InitPlayersData();
+		InitEnemies();
 		InitEmeralds();
 		InitBags();
-
+		
 		for (auto & player: m_pPlayers)
 		{
 			player->SetParent(m_pLevelScreen.get(), false);
@@ -236,6 +229,17 @@ void dae::Level::InitPlayersData()
 	m_pPlayers.push_back(std::move(player));
 }
 
+void dae::Level::InitEnemies()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		auto nobbin = std::make_unique<GameObject>();
+		nobbin->AddComponent<Nobbin>();
+		nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
+		m_pEnemies.push_back(std::move(nobbin));
+	}
+}
+
 void dae::Level::InitEmeralds()
 {
 	float Startx = m_TileSize / 2;
@@ -324,6 +328,7 @@ void dae::Level::InitBags()
 				bag->GetComponent<Collider>()->AddObserver(m_CollisionObserver.get());
 				bag->GetComponent<Bag>()->AddObserver(m_ScoreObserver.get());
 
+
 				for (auto& player : m_pPlayers)
 				{
 					Event bagEvent{ BAG_COLLISION };
@@ -331,6 +336,22 @@ void dae::Level::InitBags()
 					bagEvent.args[0].go = player.get();
 
 					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), bagEvent, playerSize, playerOffset, true });
+				}
+				for (auto& enemie : m_pEnemies)
+				{
+					Event bagEvent{ BAG_COLLISION };
+					bagEvent.nbArgs = 1;
+					bagEvent.args[0].go = enemie.get();
+
+					auto enemieSize = enemie->GetComponent<Texture>()->GetSize();
+					enemieSize.x /= 1.5;
+					enemieSize.y /= 1.5;
+
+					glm::vec3 enemieOffset;
+					enemieOffset.x = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().x - enemieSize.x) / 2;
+					enemieOffset.y = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().y - enemieSize.y) / 2;
+
+					bag->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ enemie.get(), bagEvent, enemieSize, enemieOffset, true });
 				}
 
 				bag->SetParent(m_pLevelScreen.get(), false);
@@ -362,6 +383,7 @@ void dae::Level::NextLevel()
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
 	m_LevelReadyForStart = false;
+	m_TotalEnemiesSpawned = 0;
 
 	if (m_CurrentLevel == 8)
 	{

@@ -48,22 +48,53 @@ namespace dae
 	{
 		m_Time += Time::GetInstance().GetDeltaTime();
 
-		if (m_Time > 0.2f)
+		if (!m_IsDead)
 		{
-			m_DigTextures++;
-			GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig" + std::to_string(m_DigTextures) + ".png");
-			GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
+			if (m_Time > 0.2f)
+			{
+				m_TextureCount++;
+				GetOwner()->GetComponent<Texture>()->SetTexture("media/Digger/dig" + std::to_string(m_TextureCount) + ".png");
+				GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
 
-			if (m_DigTextures == 2)
-				m_DigTextures = 0;
+				if (m_TextureCount == 2)
+					m_TextureCount = 0;
 
-			m_Time = 0;
+				m_Time = 0;
+			}
+		}
+		else
+		{
+			if (m_Time > 0.5f)
+			{
+				m_TextureCount++;
+				GetOwner()->GetComponent<Texture>()->SetRotation(90);
+				GetOwner()->GetComponent<Texture>()->SetTexture("media/Grave/grave" + std::to_string(m_TextureCount) + ".png");
+				GetOwner()->GetComponent<Texture>()->SetSize({ 48, 48 });
+				
+				if (m_TextureCount == 5)
+					PlayerRespawn();
+
+				m_Time = 0;
+			}
 		}
 	}
 
 	void Player::SetDirection(glm::vec3 direction)
 	{
 		GetOwner()->GetComponent<Entity>()->SetDirection(direction);
+	}
+
+	void Player::PlayerDead()
+	{
+		m_IsDead = true;
+		m_TextureCount = 0;
+	}
+
+	void Player::PlayerRespawn()
+	{
+		GetOwner()->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 40, 104, 0 });
+		m_IsDead = false;
+		m_TextureCount = 0;
 	}
 
 	glm::vec3 Player::GetDirection()
