@@ -37,8 +37,6 @@ namespace dae
 
 	void StandardState::CollideWithActor(glm::vec3 dir, GameObject* player)
 	{
-		if (!player->HasComponent<Texture>())
-			return;
 
 		glm::vec3 bagPos = m_pBag->GetOwner()->GetComponent<Transform>()->GetWorldPosition();
 		glm::vec2 bagSize = m_pBag->GetOwner()->GetComponent<Texture>()->GetSize();

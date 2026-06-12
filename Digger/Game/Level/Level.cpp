@@ -406,9 +406,11 @@ void dae::Level::NextLevel()
 {
 	//Reset everything
 	m_pLevelScreen->RemoveAllChilderen();
+
 	m_pPlayers.clear();
 	m_pLevelObjects.clear();
 	m_pEnemies.clear();
+
 	m_LevelData.clear();
 	m_NextCheck.clear();
 	m_AlreadyChecked.clear();

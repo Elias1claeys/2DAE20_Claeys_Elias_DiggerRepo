@@ -26,7 +26,6 @@ namespace dae
 	void Enemy::KillEnemy()
 	{
 		m_IsDead = true;
-		GetOwner()->RemoveComponent<Texture>();
-		GetOwner()->RemoveComponent<Collider>();
+		GetOwner()->GetComponent<Transform>()->SetLocalPosition(glm::vec3(1000, 1000, 0));
 	}
 }
