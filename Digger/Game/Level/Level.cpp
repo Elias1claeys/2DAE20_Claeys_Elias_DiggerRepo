@@ -236,6 +236,32 @@ void dae::Level::InitEnemies()
 		auto nobbin = std::make_unique<GameObject>();
 		nobbin->AddComponent<Nobbin>();
 		nobbin->GetComponent<Transform>()->SetLocalPosition(glm::vec3{ 936, 104, 0 });
+
+		glm::vec2 size = nobbin->GetComponent<dae::Texture>()->GetSize();
+		size.x /= 2;
+		size.y /= 2;
+
+		glm::vec3 offset = { size.x / 2, size.y / 2, 0 };
+
+		nobbin->AddComponent<Collider>(offset, size);
+
+		for (auto& player : m_pPlayers)
+		{
+			Event tookDamage{ TOOK_DAMAGE };
+			tookDamage.args[0].go = player.get();
+
+			auto playerSize = m_pPlayers[0]->GetComponent<Texture>()->GetSize();
+			playerSize.x /= 1.5;
+			playerSize.y /= 1.5;
+
+			glm::vec3 playerOffset;
+			playerOffset.x = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().x - playerSize.x) / 2;
+			playerOffset.y = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().y - playerSize.y) / 2;
+
+			nobbin->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), tookDamage, playerSize, playerOffset });
+			nobbin->GetComponent<Collider>()->AddObserver(m_HealthObserver.get());
+		}
+		
 		m_pEnemies.push_back(std::move(nobbin));
 	}
 }
