@@ -23,19 +23,20 @@
 #include "LevelObserver.h"
 #include "Entities/Player/Player.h"
 #include "Entities/Nobbin/Nobbin.h"
+#include "Game/Game.h"
 
-dae::Level::Level(GameObject* owner)
-	: Component(owner), m_CurrentLevel(1)
+dae::Level::Level(Game* game)
+	: GameState(game), m_CurrentLevel(1)
 {
 	auto nextLevel = std::make_shared<dae::NextLevel>(this);
 	InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_F1, nextLevel);
 
 	m_pLevelScreen = std::make_unique<GameObject>();
-	m_pLevelScreen->SetParent(GetOwner(), false);
+	m_pLevelScreen->SetParent(m_pGame->GetOwner(), false);
 
 	m_SoundObserver = std::make_unique<SoundObserver>();
 	m_CollisionObserver = std::make_unique<Collision>();
-	m_LevelObserver = std::make_unique<LevelObserver>(GetOwner());
+	m_LevelObserver = std::make_unique<LevelObserver>(m_pGame->GetOwner());
 
 	InitScoreAndHealth();
 	CreateLevel();
@@ -47,12 +48,12 @@ void dae::Level::InitScoreAndHealth()
 	auto scoreText = std::make_unique<GameObject>();
 	scoreText->AddComponent<Text>("0", font);
 	scoreText->GetComponent<Transform>()->SetLocalPosition(10, 10);
-	scoreText->SetParent(GetOwner(), false);
+	scoreText->SetParent(m_pGame->GetOwner(), false);
 
 	auto health = std::make_unique<GameObject>();
 	health->AddComponent<HealthDisplay>();
 	health->GetComponent<Transform>()->SetLocalPosition(125, 10);
-	health->SetParent(GetOwner(), false);
+	health->SetParent(m_pGame->GetOwner(), false);
 
 	m_ScoreObserver = std::make_unique<Score>(scoreText.get());
 	m_HealthObserver = std::make_unique<HealthObserver>(health.get());
@@ -113,9 +114,9 @@ void dae::Level::ReadLevelData()
 	}
 }
 
-void dae::Level::Update()
+void dae::Level::Update(float deltaTime)
 {
-	m_Time += Time::GetInstance().GetDeltaTime();
+	m_Time += deltaTime;
 	if (!m_LevelReadyForStart && m_Time > 0.1f)
 	{
 		m_Time = 0.f;
@@ -269,7 +270,7 @@ void dae::Level::InitEmeralds()
 				}
 
 				Event emeraldSpawned{ EMERALD_SPAWNED };
-				m_LevelObserver->OnNotify(GetOwner(), emeraldSpawned);
+				m_LevelObserver->OnNotify(m_pGame->GetOwner(), emeraldSpawned);
 
 				emerald->SetParent(m_pLevelScreen.get(), false);
 				m_pLevelObjects.push_back(std::move(emerald));
@@ -342,7 +343,7 @@ void dae::Level::NextLevel()
 	dae::DigLocator::GetDig().ResetDig();
 
 	Event e{ LEVEL_COMPLETED };
-	m_LevelObserver->OnNotify(GetOwner(), e);
+	m_LevelObserver->OnNotify(m_pGame->GetOwner(), e);
 
 	//Reset the controls every time
 	InputManager::GetInstance().ResetCommands();

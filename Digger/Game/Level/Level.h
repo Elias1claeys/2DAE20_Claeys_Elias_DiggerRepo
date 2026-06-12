@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Core/GameObject.h"
+#include "Game/GameState.h"
 
 namespace dae
 {
@@ -12,7 +13,7 @@ namespace dae
 	class HealthObserver;
 	class LevelObserver;
 
-	class Level : public Component
+	class Level : public GameState
 	{
 	private:
 		std::unique_ptr<GameObject> m_pLevelScreen;
@@ -61,9 +62,10 @@ namespace dae
 		void LevelCompleted() { m_LevelCompleted = true; }
 		
 
-		void Update() override;
+		void Update(float deltaTime) override;
+		std::unique_ptr<GameState> GoToNextState() override { return nullptr; };
 
-		Level(GameObject* owner);
+		explicit Level(Game* game);
 		virtual ~Level() = default;
 		Level(const Level& other) = delete;
 		Level(Level&& other) = delete;

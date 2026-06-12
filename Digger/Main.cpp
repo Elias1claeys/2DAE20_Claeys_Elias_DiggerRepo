@@ -9,7 +9,7 @@
 #include "Core/SceneManager.h"
 #include "Resources/ResourceManager.h"
 #include "Core/Scene.h"
-#include "Level/Level.h"
+#include "Game/Game.h"
 #include "Audio/SoundSystem.h"
 #include "Audio/SDLSoundSystem.h"
 #include "Dig/DigSystem.h"
@@ -25,9 +25,9 @@ static void load()
 
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
-	auto level = std::make_unique<dae::GameObject>();
-	level->AddComponent<dae::Level>();
-	scene.Add(std::move(level));
+	auto game = std::make_unique<dae::GameObject>();
+	game->AddComponent<dae::Game>();
+	scene.Add(std::move(game));
 }
 
 int main(int, char*[]) {

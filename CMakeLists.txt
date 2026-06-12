@@ -211,9 +211,10 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Bag/GoldState.cpp
   Digger/Collider/Collider.cpp
   Digger/Emerald/Emerald.cpp
-  Digger/Level/Level.cpp
-  Digger/Level/LevelControls.cpp
-  Digger/Level/LevelObserver.cpp
+  Digger/Game/Level/Level.cpp
+  Digger/Game/Level/LevelControls.cpp
+  Digger/Game/Level/LevelObserver.cpp
+  Digger/Game/Game.cpp
   Digger/Entities/Entity.cpp
   Digger/Entities/Player/PlayerInput.cpp
   Digger/Entities/Player/Player.cpp
@@ -226,7 +227,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Dig/DigSystem.cpp 
   Digger/Dig/DigComponent.cpp 
   Digger/Entities/Nobbin/Nobbin.cpp
-  "Digger/Entities/Enemies/WanderingState.cpp"
+  Digger/Entities/Enemies/WanderingState.cpp
   Digger/Entities/Enemies/Enemy.cpp
 )
 
