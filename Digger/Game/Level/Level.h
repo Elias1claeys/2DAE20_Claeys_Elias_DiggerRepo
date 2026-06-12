@@ -32,6 +32,7 @@ namespace dae
 		bool m_LevelReadyForStart{ false };
 		float m_Time{};
 		float m_TileSize{ 64.f };
+		bool m_GameEnded{ false };
 
 		int m_TotalEnemiesSpawned{ 0 };
 
@@ -66,10 +67,11 @@ namespace dae
 		void CreateLevel();
 		void NextLevel();
 		void LevelCompleted() { m_LevelCompleted = true; }
+		void EndGame() { m_GameEnded = true;  };
 		
 
 		void Update(float deltaTime) override;
-		std::unique_ptr<GameState> GoToNextState() override { return nullptr; };
+		std::unique_ptr<GameState> GoToNextState() override;
 
 		explicit Level(Game* game);
 		virtual ~Level() = default;

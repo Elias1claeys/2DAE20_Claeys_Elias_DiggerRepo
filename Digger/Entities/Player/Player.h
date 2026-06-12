@@ -5,16 +5,18 @@ namespace dae
 {
 	class Player : public Component
 	{
+	private:
+		float m_Time{};
+		int m_TextureCount{ 1 };
+		bool m_IsDead{ false };
+		int m_Health{ 3 };
+
 	public:
 		enum InputType
 		{
 			keyBoard,
 			controller
 		};
-
-		float m_Time{};
-		int m_TextureCount{1};
-		bool m_IsDead{ false };
 
 		Player(GameObject* owner, InputType input);
 		virtual ~Player() = default;
@@ -23,10 +25,12 @@ namespace dae
 		Player& operator=(const Player& other) = delete;
 		Player& operator=(Player&& other) = delete;
 
+		bool IsDead() { return m_IsDead; }
 		void SetDirection(glm::vec3 direction);
 		void PlayerDead();
 		void PlayerRespawn();
 		void Update() override;
+
 		glm::vec3 GetDirection();
 	};
 }

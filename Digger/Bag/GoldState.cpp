@@ -27,32 +27,14 @@ namespace dae
 				m_pBag->GetOwner()->GetComponent<Texture>()->SetTexture("media/Gold/Gold" + std::to_string(m_GoldTexture) + ".png");
 				m_pBag->GetOwner()->GetComponent<Texture>()->SetSize(glm::vec2(64, 64));
 			}
-			else if(m_GoldTexture > 3)
-			{
-				m_CanCollect = true;
-			}
 		}
 
 		return nullptr;
 	}
 
-	void GoldState::CollideWithActor(glm::vec3, GameObject* entity)
+	void GoldState::CollideWithActor(glm::vec3, GameObject*)
 	{
-		if (!m_CanCollect)
-		{
-			if (entity->HasComponent<Player>())
-			{
-				entity->GetComponent<Player>()->PlayerDead();
-				m_pBag->DestroyBag();
-			}
-			else if (entity->HasComponent<Enemy>())
-			{
-				entity->GetComponent<Enemy>();
-			}
-
-			m_CanCollect = true;
-		}
-		else if (!m_Collected)
+		if (!m_Collected)
 		{
 			m_pBag->CollectGold();
 		}

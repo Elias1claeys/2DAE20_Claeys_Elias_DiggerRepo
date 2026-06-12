@@ -24,6 +24,8 @@
 #include "Entities/Player/Player.h"
 #include "Entities/Nobbin/Nobbin.h"
 #include "Game/Game.h"
+#include "Game/GameState.h"
+#include "Game/Start/Start.h"
 
 dae::Level::Level(Game* game)
 	: GameState(game), m_CurrentLevel(1)
@@ -56,7 +58,7 @@ void dae::Level::InitScoreAndHealth()
 	health->SetParent(m_pGame->GetOwner(), false);
 
 	m_ScoreObserver = std::make_unique<Score>(scoreText.get());
-	m_HealthObserver = std::make_unique<HealthObserver>(health.get());
+	m_HealthObserver = std::make_unique<HealthObserver>(health.get(), this);
 
 	m_pGameObjects.push_back(std::move(scoreText));
 	m_pGameObjects.push_back(std::move(health));
@@ -147,6 +149,11 @@ void dae::Level::Update(float deltaTime)
 	{
 		m_LevelCompleted = false;
 		NextLevel();
+	}
+
+	if (m_GameEnded)
+	{
+		m_pGame->GoToNextStage();
 	}
 }
 
@@ -258,7 +265,7 @@ void dae::Level::InitEnemies()
 			playerOffset.x = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().x - playerSize.x) / 2;
 			playerOffset.y = (m_pPlayers[0]->GetComponent<Texture>()->GetSize().y - playerSize.y) / 2;
 
-			nobbin->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), tookDamage, playerSize, playerOffset });
+			nobbin->GetComponent<Collider>()->AddTrigger(Collider::Trigger{ player.get(), tookDamage, playerSize, playerOffset, false });
 			nobbin->GetComponent<Collider>()->AddObserver(m_HealthObserver.get());
 		}
 		
@@ -421,4 +428,19 @@ void dae::Level::NextLevel()
 	}
 
 	CreateLevel();
+}
+
+std::unique_ptr<dae::GameState> dae::Level::GoToNextState()
+{
+	m_pGame->GetOwner()->RemoveAllChilderen();
+	m_pPlayers.clear();
+	m_pLevelObjects.clear();
+	m_pEnemies.clear();
+	m_LevelData.clear();
+	m_NextCheck.clear();
+	m_AlreadyChecked.clear();
+	InputManager::GetInstance().ResetCommands();
+	dae::DigLocator::GetDig().ResetDig();
+
+	return std::make_unique<Start>(m_pGame);
 }

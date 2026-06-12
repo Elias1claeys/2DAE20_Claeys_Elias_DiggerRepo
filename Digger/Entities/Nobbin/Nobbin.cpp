@@ -12,7 +12,7 @@ namespace dae
 		GetOwner()->AddComponent<Texture>()->SetTexture("media/nob/cnob1.png");
 		GetOwner()->GetComponent<Texture>()->SetSize(glm::vec2(48, 48));
 		GetOwner()->AddComponent<Enemy>();
-		GetOwner()->AddComponent<Entity>(100.f);
+		GetOwner()->AddComponent<Entity>(150.f);
 	}
 
 	void Nobbin::Update()
