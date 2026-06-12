@@ -4,7 +4,7 @@
 
 namespace dae
 {
-	LevelObserver::LevelObserver(GameObject* level)
+	LevelObserver::LevelObserver(Level* level)
 		: m_pLevel(level)
 	{}
 
@@ -21,7 +21,7 @@ namespace dae
 			{
 				m_TotalEmeralds = 0;
 				m_TotalEmeraldsCollected = 0;
-				m_pLevel->GetComponent<Level>()->LevelCompleted();
+				m_pLevel->LevelCompleted();
 			}
 		}
 		if (event.id == LEVEL_COMPLETED)

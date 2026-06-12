@@ -36,7 +36,7 @@ dae::Level::Level(Game* game)
 
 	m_SoundObserver = std::make_unique<SoundObserver>();
 	m_CollisionObserver = std::make_unique<Collision>();
-	m_LevelObserver = std::make_unique<LevelObserver>(m_pGame->GetOwner());
+	m_LevelObserver = std::make_unique<LevelObserver>(this);
 
 	InitScoreAndHealth();
 	CreateLevel();

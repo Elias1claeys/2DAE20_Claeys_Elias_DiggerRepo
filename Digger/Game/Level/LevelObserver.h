@@ -3,15 +3,17 @@
 
 namespace dae
 {
+	class Level;
+
 	class LevelObserver : public Observer
 	{
 	private:
 		int m_TotalEmeralds = 0;
 		int m_TotalEmeraldsCollected = 0;
-		GameObject* m_pLevel;
+		Level* m_pLevel;
 
 	public:
-		LevelObserver(GameObject* level);
+		LevelObserver(Level* level);
 		virtual ~LevelObserver() = default;
 		LevelObserver(const LevelObserver& other) = delete;
 		LevelObserver(LevelObserver&& other) = delete;

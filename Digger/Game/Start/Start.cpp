@@ -19,7 +19,7 @@ namespace dae
 
 		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_UP, goUp);
 		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_DOWN, goDown);
-		InputManager::GetInstance().BindControllerCommand(SDL_SCANCODE_SPACE, selectGame);
+		InputManager::GetInstance().BindKeyBoardCommand(SDL_SCANCODE_RETURN, selectGame);
 
 		InputManager::GetInstance().BindControllerCommand(0x0010, goUp);
 		InputManager::GetInstance().BindControllerCommand(0x0002, goDown);
