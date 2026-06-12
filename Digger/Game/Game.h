@@ -17,6 +17,7 @@ namespace dae
 		GameObject* GetOwner() const { return Component::GetOwner(); }
 
 		void Update() override;
+		void GoToNextStage();
 
 	private:
 		std::unique_ptr<GameState> m_pGameState;

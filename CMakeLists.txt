@@ -215,6 +215,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Digger/Game/Level/LevelControls.cpp
   Digger/Game/Level/LevelObserver.cpp
   Digger/Game/Game.cpp
+  Digger/Game/Start/Start.cpp
+  Digger/Game/Start/StartControls.cpp
   Digger/Entities/Entity.cpp
   Digger/Entities/Player/PlayerInput.cpp
   Digger/Entities/Player/Player.cpp
