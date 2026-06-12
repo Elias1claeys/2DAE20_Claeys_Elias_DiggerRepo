@@ -68,7 +68,7 @@ namespace dae
 
             int n = rand() % choices.size();
             m_PreviousDirection = choices[n];
-            m_PosToGo = enemyPos + choices[n] * 8.f;
+            m_PosToGo = enemyPos + choices[n] * tileSize;
 
             glm::vec3 dir = glm::normalize(m_PosToGo - enemyPos);
             m_pEnemy->GetOwner()->GetComponent<Transform>()->SetLocalPosition(enemyPos);
