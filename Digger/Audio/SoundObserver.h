@@ -4,7 +4,7 @@
 
 namespace dae
 {
-	enum CollectSound
+	enum Sounds
 	{
 		COLLECT_SOUND_1 = 0,
 		COLLECT_SOUND_2,
@@ -14,6 +14,7 @@ namespace dae
 		COLLECT_SOUND_6,
 		COLLECT_SOUND_7,
 		COLLECT_SOUND_8,
+		GAME_SOUND
 	};
 
 	class SoundObserver final : public Observer

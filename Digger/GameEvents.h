@@ -10,4 +10,7 @@ namespace dae {
 	constexpr EventId BAG_COLLISION = make_sdbm_hash("BagCollision");
 	constexpr EventId EMERALD_SPAWNED = make_sdbm_hash("EmeraldSpawned");
 	constexpr EventId LEVEL_COMPLETED = make_sdbm_hash("LevelCompleted");
+	constexpr EventId GAME_STARTED = make_sdbm_hash("GameStarted");
+
+
 }

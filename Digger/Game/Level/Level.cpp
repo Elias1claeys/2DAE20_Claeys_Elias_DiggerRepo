@@ -40,6 +40,9 @@ dae::Level::Level(Game* game, GameType type)
 	m_CollisionObserver = std::make_unique<Collision>();
 	m_LevelObserver = std::make_unique<LevelObserver>(this);
 
+	Event e{ GAME_STARTED };
+	m_SoundObserver->OnNotify(m_pGame->GetOwner(), e);
+
 	InitScoreAndHealth();
 	CreateLevel();
 }
